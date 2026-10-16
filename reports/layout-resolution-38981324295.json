@@ -1,0 +1,2181 @@
+{
+  "additionalCourses": [
+    {
+      "center": {
+        "lat": 33.535412034,
+        "lon": -111.9151711464
+      },
+      "city": "Scottsdale",
+      "id": "1ed27559-addf-477c-8a66-6ecb6b8a167c",
+      "name": "Scottsdale Silverado Golf Club",
+      "state": "AZ"
+    },
+    {
+      "center": {
+        "lat": 36.5685,
+        "lon": -121.949
+      },
+      "city": "Pebble Beach",
+      "id": "40977ee8-33ee-4195-b6a2-99a4ca83c2bc",
+      "name": "Pebble Beach Golf Links",
+      "state": "CA"
+    },
+    {
+      "center": {
+        "lat": 33.6428386,
+        "lon": -116.2685836
+      },
+      "city": "La Quinta",
+      "id": "5107284f-63df-489f-9bc7-d0dd15f005d1",
+      "name": "Pga West Private Jack Nicklaus Private Course",
+      "state": "CA"
+    },
+    {
+      "center": {
+        "lat": 35.1975711099,
+        "lon": -79.4577169418
+      },
+      "city": "Pinehurst",
+      "id": "86620a66-2f67-409e-8aaa-8d503d820631",
+      "name": "Pinehurst Resort Country Club No 2",
+      "state": "NC"
+    },
+    {
+      "center": {
+        "lat": 32.7800672,
+        "lon": -97.1012147
+      },
+      "city": "Arlington",
+      "id": "9379add5-9103-43fb-a659-b6c617b65eb0",
+      "name": "Texas Rangers Golf Club",
+      "state": "TX"
+    },
+    {
+      "center": {
+        "lat": 32.8971363,
+        "lon": -117.247647
+      },
+      "city": "San Diego",
+      "id": "9b9891db-3b45-48db-892f-149601b79d52",
+      "name": "Torrey Pines South Course",
+      "state": "CA"
+    }
+  ],
+  "auditRun": "38976460499",
+  "baselineCount": 32,
+  "builtAt": "2026-10-16T23:27:07.141344+00:00",
+  "dataReady": 38,
+  "limitations": "Data checks only, not field verification or app integration. No estimated yardages or inferred hole numbering. Official source corrections require content hashes and an unexpired review before publication.",
+  "officialSources": {
+    "2d201c28-68ec-4897-b7b1-8f19c8984d26": {
+      "expiresAt": "2027-04-16",
+      "fetchedAt": "2026-10-16T23:25:47.805519+00:00",
+      "layoutName": "Straits Course",
+      "reviewedAt": "2026-10-16",
+      "sha256": "be50e2b0b174dff5ced3310aeb7e55a6a91da0773372eb0d2ad7458629accb0d",
+      "type": "reviewed-official-scorecard",
+      "url": "https://www.kohlerwisconsin.com/content/dam/kohler-destinations/pdf_resource/dk/golf/whistling-straits/scorecard-the-straits.pdf"
+    },
+    "5b0dfcec-77bf-430e-bbe5-747e0199c565": {
+      "expiresAt": "2027-04-16",
+      "fetchedAt": "2026-10-16T23:25:48.055824+00:00",
+      "layoutName": "Pinehurst No. 5",
+      "reviewedAt": "2026-10-16",
+      "sha256": "6e331c9246094c1edf46e41052886849593b462b9d574cef6e5d23b7c4b6248b",
+      "type": "reviewed-official-scorecard",
+      "url": "https://www.pinehurst.com/wp-content/uploads/2025/10/NO5_scorecard_web.pdf"
+    },
+    "9379add5-9103-43fb-a659-b6c617b65eb0": {
+      "expiresAt": "2027-04-16",
+      "fetchedAt": "2026-10-16T23:25:47.909525+00:00",
+      "layoutName": "Texas Rangers Golf Club",
+      "reviewedAt": "2026-10-16",
+      "sha256": "815824a98ce1b5a91e7cf6daa64402dd8cc027584c25b257fdb223b52a7cdb46",
+      "type": "reviewed-official-scorecard",
+      "url": "https://www.texasrangersgolfclub.com/wp-content/uploads/sites/9836/2026/01/TRGC_Scorecard.jpg?w=1024"
+    }
+  },
+  "research": false,
+  "rows": [
+    {
+      "candidate": {
+        "center": {
+          "lat": 40.886427075,
+          "lon": -73.2139205933
+        },
+        "city": "Smithtown",
+        "id": "005243fd-7cde-47e0-953d-97c6456579db",
+        "name": "Nine Hole Par 3 At Smithtown Landing Golf Club",
+        "state": "NY"
+      },
+      "resolutionError": "No single identity-compatible course boundary",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 40.7907125927,
+          "lon": -77.8287031428
+        },
+        "city": "State College",
+        "id": "0da6ceff-f4d7-4980-9cc4-34506db7a924",
+        "name": "The Nine Hole At Centre Hills Country Club",
+        "state": "PA"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 24.7096059,
+          "lon": -81.0820483
+        },
+        "city": "Marathon",
+        "id": "0f9d1708-0bdf-4182-81c3-5b6f86ce0c91",
+        "name": "Florida Keys Country Club",
+        "state": "FL"
+      },
+      "resolutionError": "No single identity-compatible course boundary",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 33.7353325492,
+          "lon": -78.9087116718
+        },
+        "city": "Myrtle Beach",
+        "id": "129d61f6-996c-4249-bb23-87c19832a4f5",
+        "name": "World Tour Golf Links",
+        "state": "SC"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 32.5980971778,
+          "lon": -114.7047825509
+        },
+        "city": "Somerton",
+        "id": "1cd63acc-731e-49e5-b936-94bb1e7ef176",
+        "name": "Cocopah Rio Colorado Golf Course",
+        "state": "AZ"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "association": {
+        "candidates": [
+          {
+            "areaMeters2": 527654,
+            "distanceMeters": 46.7,
+            "id": "way/61414903",
+            "identityError": null,
+            "name": "Silverado Golf Club"
+          }
+        ],
+        "confidence": "mapped",
+        "method": "unique-named-boundary",
+        "pathMarginMeters": 100,
+        "selectedID": "way/61414903"
+      },
+      "candidate": {
+        "center": {
+          "lat": 33.535412034,
+          "lon": -111.9151711464
+        },
+        "city": "Scottsdale",
+        "id": "1ed27559-addf-477c-8a66-6ecb6b8a167c",
+        "name": "Scottsdale Silverado Golf Club",
+        "state": "AZ"
+      },
+      "resolution": {
+        "boundaryID": "way/61414903",
+        "compoundRefs": [],
+        "holeNumbering": "explicit-osm-tags",
+        "sourceParAgreement": true
+      },
+      "resolutionError": null,
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 35.146047,
+          "lon": -79.449955
+        },
+        "city": "Aberdeen",
+        "id": "1fd2236e-6dfe-4307-928a-5e78343b3285",
+        "name": "Pinehurst Resort Country Club No 10",
+        "state": "NC"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 27.6800785,
+          "lon": -81.9381554
+        },
+        "city": "Fort Green",
+        "id": "20067474-654f-44fc-9414-d22cffa04055",
+        "name": "Streamsong Resort - Red and Blue Courses",
+        "state": "FL"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 37.7184884842,
+          "lon": -122.4875164032
+        },
+        "city": "San Francisco",
+        "id": "21922834-62d3-4603-b624-b44867b60eb4",
+        "name": "Tpc Harding Park Harding Course",
+        "state": "CA"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 33.6362029696,
+          "lon": -116.2519598007
+        },
+        "city": "La Quinta",
+        "id": "240479b3-b7ae-4981-8402-059af56e3c0b",
+        "name": "Pga West Jack Nicklaus Tournament Course",
+        "state": "CA"
+      },
+      "resolutionError": "Hole 18: green missing, ambiguous or shared",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 39.8414577,
+          "lon": -88.8835367
+        },
+        "city": "Decatur",
+        "id": "26fa1b95-9888-464d-942c-8628d94c8c60",
+        "name": "Country Club of Decatur",
+        "state": "IL"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 42.6084664922,
+          "lon": -88.4095358849
+        },
+        "city": "Lake Geneva",
+        "id": "29c7fdb9-63d6-4709-92e6-f492d1ddacfd",
+        "name": "Wee Nip At Grand Geneva Resort Spa",
+        "state": "WI"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 26.2700801,
+          "lon": -80.2708805
+        },
+        "city": "Coral Springs",
+        "id": "29ca44fc-52a7-43e8-a11d-042d4a805c85",
+        "name": "Country Club Of Coral Springs",
+        "state": "FL"
+      },
+      "resolutionError": "Hole 3: OSM par 4 conflicts with scorecard par 5",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 33.4875968034,
+          "lon": -111.9115210027
+        },
+        "city": "Scottsdale",
+        "id": "2b446d32-4802-4a3f-b56b-2e413355f969",
+        "name": "Continental Golf Course",
+        "state": "AZ"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "association": {
+        "candidates": [
+          {
+            "areaMeters2": 428865,
+            "distanceMeters": 37.5,
+            "id": "relation/5150430",
+            "identityError": null,
+            "name": "Castlewood Country Club - Hill Course"
+          }
+        ],
+        "confidence": "mapped",
+        "method": "unique-named-boundary",
+        "pathMarginMeters": 100,
+        "selectedID": "relation/5150430"
+      },
+      "candidate": {
+        "center": {
+          "lat": 37.6370418,
+          "lon": -121.8948562
+        },
+        "city": "Pleasanton",
+        "id": "2ce49f7d-9dec-49b8-b461-eab7762d5b25",
+        "name": "Hill At Castlewood Country Club",
+        "state": "CA"
+      },
+      "resolution": {
+        "boundaryID": "relation/5150430",
+        "compoundRefs": [],
+        "holeNumbering": "explicit-osm-tags",
+        "sourceParAgreement": true
+      },
+      "resolutionError": null,
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 43.8498513,
+          "lon": -87.7346448
+        },
+        "city": "Sheboygan",
+        "id": "2d201c28-68ec-4897-b7b1-8f19c8984d26",
+        "name": "Whistling Straits",
+        "state": "WI"
+      },
+      "resolutionError": "Hole 6: center is outside its green",
+      "usedOfficialCard": true
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 40.1544777458,
+          "lon": -74.0952557778
+        },
+        "city": "Wall",
+        "id": "2e723d72-c3b0-47b0-98b0-eb663e17db67",
+        "name": "The Nine Hole Par 3 At Bel Aire Golf Club",
+        "state": "NJ"
+      },
+      "resolutionError": "No single identity-compatible course boundary",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 36.1571222697,
+          "lon": -98.600082366
+        },
+        "city": "Longdale",
+        "id": "3202f443-a9d0-4131-b011-ac146f1e2a2a",
+        "name": "Fairview Lakeside Country Club",
+        "state": "OK"
+      },
+      "resolutionError": "No single identity-compatible course boundary",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 32.3977186241,
+          "lon": -90.0966024399
+        },
+        "city": "Jackson",
+        "id": "33dfe2cc-a65e-4743-879a-6a86fbf5b124",
+        "name": "Country Club Of Jackson Dogwood Course",
+        "state": "MS"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 42.0746032,
+          "lon": -88.0834547
+        },
+        "city": "Hoffman Estates",
+        "id": "3435a28f-4475-4005-b57e-d0542e4ff90c",
+        "name": "Highland Florida Golf Club",
+        "state": "IL"
+      },
+      "resolutionError": "No single identity-compatible course boundary",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 35.1950548628,
+          "lon": -79.4370102882
+        },
+        "city": "Pinehurst",
+        "id": "3551f737-35a3-4970-b9ef-125c54bf4f6a",
+        "name": "Pinehurst Resort Country Club No 9",
+        "state": "NC"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 34.2478862049,
+          "lon": -79.6763039994
+        },
+        "city": "Florence",
+        "id": "3573f22f-278d-4462-b1b4-df41efcdd3d1",
+        "name": "The Country Club Of South Carolina",
+        "state": "SC"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 42.4707616,
+          "lon": -77.1035031
+        },
+        "city": "Wayne",
+        "id": "37504a94-022e-4674-bf70-0dd8222eafbd",
+        "name": "Arrowhead Creek Golf Course",
+        "state": "NY"
+      },
+      "resolutionError": "No single identity-compatible course boundary",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 30.8085547,
+          "lon": -85.2172426
+        },
+        "city": "Marianna",
+        "id": "3c129ed2-3637-426b-8b7c-9d74bd9bd6a8",
+        "name": "Florida Caverns Golf Course",
+        "state": "FL"
+      },
+      "resolutionError": "No single identity-compatible course boundary",
+      "usedOfficialCard": false
+    },
+    {
+      "association": {
+        "candidates": [
+          {
+            "areaMeters2": 531407,
+            "distanceMeters": 43.3,
+            "id": "relation/3741806",
+            "identityError": null,
+            "name": "Pebble Beach Golf Course"
+          }
+        ],
+        "confidence": "mapped",
+        "method": "unique-named-boundary",
+        "pathMarginMeters": 100,
+        "selectedID": "relation/3741806"
+      },
+      "candidate": {
+        "center": {
+          "lat": 36.5685,
+          "lon": -121.949
+        },
+        "city": "Pebble Beach",
+        "id": "40977ee8-33ee-4195-b6a2-99a4ca83c2bc",
+        "name": "Pebble Beach Golf Links",
+        "state": "CA"
+      },
+      "resolution": {
+        "boundaryID": "relation/3741806",
+        "compoundRefs": [],
+        "holeNumbering": "explicit-osm-tags",
+        "sourceParAgreement": true
+      },
+      "resolutionError": null,
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 42.6042101916,
+          "lon": -88.4071540833
+        },
+        "city": "Lake Geneva",
+        "id": "43126b8c-0484-4b7a-bd8f-ea698bbb9d63",
+        "name": "Brute At Grand Geneva Resort Spa",
+        "state": "WI"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 37.7220902,
+          "lon": -84.8186235
+        },
+        "city": "Harrodsburg",
+        "id": "445c5845-423e-47e9-ab8e-4ef3b6d0c7c8",
+        "name": "Nine Hole At Bright Leaf Golf Resort",
+        "state": "KY"
+      },
+      "resolutionError": "No single identity-compatible course boundary",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 32.9767721,
+          "lon": -117.2113068
+        },
+        "city": "Rancho Santa Fe",
+        "id": "50876d55-57a7-4719-98fd-f33f6024212f",
+        "name": "Fairbanks Ranch Country Club Lakes Ocean Course",
+        "state": "CA"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "association": {
+        "candidates": [
+          {
+            "areaMeters2": 744184,
+            "distanceMeters": 171.6,
+            "id": "relation/19213045",
+            "identityError": null,
+            "name": "Jack Nicklaus Private Golf Course (PGA West)"
+          }
+        ],
+        "confidence": "mapped",
+        "method": "unique-named-boundary",
+        "pathMarginMeters": 0,
+        "selectedID": "relation/19213045"
+      },
+      "candidate": {
+        "center": {
+          "lat": 33.6428386,
+          "lon": -116.2685836
+        },
+        "city": "La Quinta",
+        "id": "5107284f-63df-489f-9bc7-d0dd15f005d1",
+        "name": "Pga West Private Jack Nicklaus Private Course",
+        "state": "CA"
+      },
+      "resolution": {
+        "boundaryID": "relation/19213045",
+        "compoundRefs": [],
+        "holeNumbering": "explicit-osm-tags",
+        "sourceParAgreement": true
+      },
+      "resolutionError": null,
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 37.434881,
+          "lon": -122.440194
+        },
+        "city": "Half Moon Bay",
+        "id": "5524b404-5c29-4445-9ac3-9006f396a383",
+        "name": "Half Moon Bay Golf Links Ocean Course",
+        "state": "CA"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "association": {
+        "candidates": [
+          {
+            "areaMeters2": 744184,
+            "distanceMeters": 45.3,
+            "id": "relation/19213045",
+            "identityError": null,
+            "name": "Jack Nicklaus Private Golf Course (PGA West)"
+          }
+        ],
+        "confidence": "mapped",
+        "method": "unique-named-boundary",
+        "pathMarginMeters": 0,
+        "selectedID": "relation/19213045"
+      },
+      "candidate": {
+        "center": {
+          "lat": 33.6356279,
+          "lon": -116.2678528
+        },
+        "city": "La Quinta",
+        "id": "55511883-fbac-4d5a-8a60-2a46153e246d",
+        "name": "Jack Nicklaus Private Golf Course (PGA West)",
+        "state": "CA"
+      },
+      "resolution": {
+        "boundaryID": "relation/19213045",
+        "compoundRefs": [],
+        "holeNumbering": "explicit-osm-tags",
+        "sourceParAgreement": true
+      },
+      "resolutionError": null,
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 44.7145618,
+          "lon": -97.0222185
+        },
+        "city": "Castlewood",
+        "id": "59e1f611-1808-45a9-857a-9c28ee1e8685",
+        "name": "Castlewood Golf Course",
+        "state": "SD"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 35.1773161783,
+          "lon": -79.4750976562
+        },
+        "city": "Pinehurst",
+        "id": "5b0dfcec-77bf-430e-bbe5-747e0199c565",
+        "name": "Pinehurst Resort Country Club No 5",
+        "state": "NC"
+      },
+      "resolutionError": "Hole 18: green missing, ambiguous or shared",
+      "usedOfficialCard": true
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 33.7297648991,
+          "lon": -78.9097309113
+        },
+        "city": "Myrtle Beach",
+        "id": "5e088bfd-9306-4bf3-9e30-7f826b34ebf8",
+        "name": "River Oaks Golf Club",
+        "state": "SC"
+      },
+      "resolutionError": "No single identity-compatible course boundary",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 35.2533819315,
+          "lon": -79.3758773804
+        },
+        "city": "Whispering Pines",
+        "id": "5f8213eb-ad01-444e-92d7-b4710d643dc1",
+        "name": "Country Club Of Whispering Pines Pines Course",
+        "state": "NC"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 42.6754747237,
+          "lon": -76.8638706207
+        },
+        "city": "Ovid",
+        "id": "603bf859-77c8-49a3-bef1-f155a6d58d5e",
+        "name": "Bonavista State Park Golf Course",
+        "state": "NY"
+      },
+      "resolutionError": "Hole 1: OSM par 4 conflicts with scorecard par 5",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 42.870751854,
+          "lon": -77.2560750264
+        },
+        "city": "Canandaigua",
+        "id": "61686df4-72e0-48d3-9c71-c1e077013514",
+        "name": "Canandaigua Country Club",
+        "state": "NY"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 37.7249042196,
+          "lon": -122.4884605408
+        },
+        "city": "San Francisco",
+        "id": "61fb03c8-74fc-4fc8-87d0-0491190e2d54",
+        "name": "Tpc Harding Park Fleming Course",
+        "state": "CA"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 33.8151411,
+          "lon": -116.4500392
+        },
+        "city": "Cathedral City",
+        "id": "641e9d35-e694-4299-b92d-f9d9a8714079",
+        "name": "Nine Hole At Outdoor Resort Country Club",
+        "state": "CA"
+      },
+      "resolutionError": "No single identity-compatible course boundary",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 32.5670624,
+          "lon": -94.290604
+        },
+        "city": "Marshall",
+        "id": "6677c3a9-a4ab-4988-bc9b-7428f4ecbefb",
+        "name": "Marshall Lakeside Country Club",
+        "state": "TX"
+      },
+      "resolutionError": "No single identity-compatible course boundary",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 33.7391511773,
+          "lon": -78.8620519638
+        },
+        "city": "Myrtle Beach",
+        "id": "68767aec-5056-48a9-95a9-fae2fe735be4",
+        "name": "Pinehills At Myrtlewood Golf Club",
+        "state": "SC"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 37.6227221909,
+          "lon": -77.4659733929
+        },
+        "city": "Richmond",
+        "id": "691c6fa5-ced8-4fc3-8cab-51e9555db148",
+        "name": "Jefferson Lakeside Country Club",
+        "state": "VA"
+      },
+      "resolutionError": "No single identity-compatible course boundary",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 42.0821987784,
+          "lon": -76.848596201
+        },
+        "city": "Elmira",
+        "id": "6b867b91-a974-4552-b267-2d7756aab7f8",
+        "name": "Elmira Country Club",
+        "state": "NY"
+      },
+      "resolutionError": "Hole 1: OSM par 4 conflicts with scorecard par 5",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 33.7314725,
+          "lon": -78.871503
+        },
+        "city": "Myrtle Beach",
+        "id": "6d153944-0c71-48d2-b25c-91a5416875ed",
+        "name": "Myrtlewood Golf Club",
+        "state": "SC"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 41.8978996,
+          "lon": -84.6537628
+        },
+        "city": "Hillsdale",
+        "id": "72805971-d6d3-458a-aceb-a888e17e364f",
+        "name": "Wild Oaks Golf Course White Cedar Willow Oaks",
+        "state": "MI"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 33.6426744,
+          "lon": -116.2674494
+        },
+        "city": "La Quinta",
+        "id": "72d7ecd2-b079-4fe5-af57-28b1ec5428f7",
+        "name": "Pga West Private Tom Weiskopf Course",
+        "state": "CA"
+      },
+      "resolutionError": "No single identity-compatible course boundary",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 34.036447,
+          "lon": -118.4255583
+        },
+        "city": "Los Angeles",
+        "id": "759f60f6-e6c9-436d-8a3e-ea74c373eb9f",
+        "name": "Rancho Park Golf Course",
+        "state": "CA"
+      },
+      "resolutionError": "No single identity-compatible course boundary",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 37.7093869,
+          "lon": -122.4946306
+        },
+        "city": "San Francisco",
+        "id": "76112786-ef64-43c4-9753-4a0eaf85de77",
+        "name": "The Olympic Club Ocean Course",
+        "state": "CA"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 30.4621889,
+          "lon": -98.0945677
+        },
+        "city": "Spicewood",
+        "id": "790ad8fb-4054-42d7-896a-64e40c73dd62",
+        "name": "Barton Creek Lakeside Country Club",
+        "state": "TX"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 43.1986374,
+          "lon": -124.3909077
+        },
+        "city": "Randolph",
+        "id": "7abca90d-223a-478b-af96-ffffd0ed8f1e",
+        "name": "Bandon Dunes Golf Resort",
+        "state": "OR"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 26.7142963,
+          "lon": -80.0397109
+        },
+        "city": "Palm Beach",
+        "id": "7cb47279-7dea-48b0-9b36-7a10a821fde7",
+        "name": "The Breakers Ocean Course",
+        "state": "FL"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 42.1229061935,
+          "lon": -77.01108666
+        },
+        "city": "Corning",
+        "id": "7e1ef3c6-06ad-4d2c-8740-c750991c7fcf",
+        "name": "Corning Country Club",
+        "state": "NY"
+      },
+      "resolutionError": "Hole 8: green missing, ambiguous or shared",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 37.557016,
+          "lon": -121.9578797
+        },
+        "city": "Fremont",
+        "id": "7ef2b636-47c2-4287-a787-470b2053a666",
+        "name": "Fremont Park Golf Course",
+        "state": "CA"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 33.660656742,
+          "lon": -78.9238286018
+        },
+        "city": "Myrtle Beach",
+        "id": "7f16674b-aa99-4d0b-ac34-2e7d731b535e",
+        "name": "Midway Par 3 West Nine",
+        "state": "SC"
+      },
+      "resolutionError": "No single identity-compatible course boundary",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 33.6601745214,
+          "lon": -78.920545578
+        },
+        "city": "Myrtle Beach",
+        "id": "84348800-8f71-4b90-bb0f-271323bf78a4",
+        "name": "Midway Par 3 East Nine",
+        "state": "SC"
+      },
+      "resolutionError": "No single identity-compatible course boundary",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 42.4619171,
+          "lon": -98.6630917
+        },
+        "city": "O'Neill",
+        "id": "84404c39-fb7f-42a6-8d92-42332dc80a8e",
+        "name": "O'Neill Golf Club",
+        "state": "NE"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 32.3428413564,
+          "lon": -89.9865245819
+        },
+        "city": "Brandon",
+        "id": "8524ca24-31e8-4d52-b520-a16b35049f17",
+        "name": "Castlewoods Country Club The Bear Course",
+        "state": "MS"
+      },
+      "resolutionError": "No single identity-compatible course boundary",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 42.8219578169,
+          "lon": -76.9798666151
+        },
+        "city": "Geneva",
+        "id": "85be8a16-5507-4ea7-b82b-372d9d3879ec",
+        "name": "Seneca Lake Country Club",
+        "state": "NY"
+      },
+      "resolutionError": "No single identity-compatible course boundary",
+      "usedOfficialCard": false
+    },
+    {
+      "association": {
+        "candidates": [
+          {
+            "areaMeters2": 751947,
+            "distanceMeters": 0.0,
+            "id": "way/1358696570",
+            "identityError": null,
+            "name": "Pinehurst No. 2"
+          }
+        ],
+        "confidence": "mapped",
+        "method": "unique-named-boundary",
+        "pathMarginMeters": 0,
+        "selectedID": "way/1358696570"
+      },
+      "candidate": {
+        "center": {
+          "lat": 35.1975711099,
+          "lon": -79.4577169418
+        },
+        "city": "Pinehurst",
+        "id": "86620a66-2f67-409e-8aaa-8d503d820631",
+        "name": "Pinehurst Resort Country Club No 2",
+        "state": "NC"
+      },
+      "resolution": {
+        "boundaryID": "way/1358696570",
+        "compoundRefs": [
+          {
+            "courseNumber": 2,
+            "id": "way/785968521",
+            "number": 1,
+            "sourceRef": "1 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785968522",
+            "number": 2,
+            "sourceRef": "2 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785968524",
+            "number": 3,
+            "sourceRef": "3 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785968526",
+            "number": 4,
+            "sourceRef": "4 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785968527",
+            "number": 5,
+            "sourceRef": "5 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785968528",
+            "number": 6,
+            "sourceRef": "6 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785968529",
+            "number": 7,
+            "sourceRef": "7 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785968530",
+            "number": 8,
+            "sourceRef": "8 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785968531",
+            "number": 9,
+            "sourceRef": "9 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785980231",
+            "number": 10,
+            "sourceRef": "10 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785980232",
+            "number": 11,
+            "sourceRef": "11 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785980233",
+            "number": 12,
+            "sourceRef": "12 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785980234",
+            "number": 13,
+            "sourceRef": "13 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785984024",
+            "number": 14,
+            "sourceRef": "14 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785984025",
+            "number": 15,
+            "sourceRef": "15 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785984033",
+            "number": 16,
+            "sourceRef": "16 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785984818",
+            "number": 17,
+            "sourceRef": "17 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785985302",
+            "number": 18,
+            "sourceRef": "18 - #2"
+          }
+        ],
+        "holeNumbering": "explicit-osm-tags",
+        "sourceParAgreement": true
+      },
+      "resolutionError": null,
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 30.198936,
+          "lon": -81.3948838
+        },
+        "city": "Ponte Vedra Beach",
+        "id": "8a0c713e-0aee-40e9-a57f-ac384df48b7b",
+        "name": "Tpc Sawgrass Dyes Valley Course",
+        "state": "FL"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 32.7257622,
+          "lon": -117.137457
+        },
+        "city": "San Diego",
+        "id": "8f332b52-48fb-4704-adff-fd545c92da80",
+        "name": "Nine Hole At Balboa Park Municipal Golf Club",
+        "state": "CA"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "association": {
+        "candidates": [
+          {
+            "areaMeters2": 657356,
+            "distanceMeters": 0.0,
+            "id": "way/25930393",
+            "identityError": null,
+            "name": "Texas Rangers Golf Club"
+          }
+        ],
+        "confidence": "mapped",
+        "method": "unique-named-boundary",
+        "pathMarginMeters": 0,
+        "selectedID": "way/25930393"
+      },
+      "candidate": {
+        "center": {
+          "lat": 32.7800672,
+          "lon": -97.1012147
+        },
+        "city": "Arlington",
+        "id": "9379add5-9103-43fb-a659-b6c617b65eb0",
+        "name": "Texas Rangers Golf Club",
+        "state": "TX"
+      },
+      "resolution": {
+        "boundaryID": "way/25930393",
+        "compoundRefs": [],
+        "holeNumbering": "explicit-osm-tags",
+        "sourceParAgreement": true
+      },
+      "resolutionError": null,
+      "usedOfficialCard": true
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 40.4687411,
+          "lon": -88.9748967
+        },
+        "city": "Bloomington",
+        "id": "93be5fbe-7ea6-4234-a4da-deea19091621",
+        "name": "Lakeside Country Club",
+        "state": "IL"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 33.5307235474,
+          "lon": -111.9633328915
+        },
+        "city": "Paradise Valley",
+        "id": "954da3c2-1e68-4262-ac5e-84870bc8a9c9",
+        "name": "Mountain Shadows Golf Course",
+        "state": "AZ"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 33.5066631,
+          "lon": -111.9512066
+        },
+        "city": "Scottsdale",
+        "id": "96393ef9-cc13-495a-b18a-5309c40e733d",
+        "name": "The Phoenician Resort",
+        "state": "AZ"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 30.3573829,
+          "lon": -97.8914503
+        },
+        "city": "Austin",
+        "id": "969dcae3-0ba2-4599-b694-0f0b16710112",
+        "name": "University of Texas Golf Club",
+        "state": "TX"
+      },
+      "resolutionError": "Hole 1: OSM par 3 conflicts with scorecard par 4",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 27.6699597,
+          "lon": -81.9277308
+        },
+        "city": "Bowling Green",
+        "id": "9953ab5b-3b5f-4410-b0b4-711eeb265961",
+        "name": "Streamsong Resort Black Course",
+        "state": "FL"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 27.0956317,
+          "lon": -80.2691546
+        },
+        "city": "Stuart",
+        "id": "99b8f4db-fee6-4a71-8b6a-2b18e7b648f6",
+        "name": "The Florida Club",
+        "state": "FL"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 33.4958840509,
+          "lon": -82.0232820511
+        },
+        "city": "Augusta",
+        "id": "9b0c9a02-fb5a-4f55-9a0b-0c7a664675e6",
+        "name": "Augusta National Golf Club",
+        "state": "GA"
+      },
+      "resolutionError": "No single identity-compatible course boundary",
+      "usedOfficialCard": false
+    },
+    {
+      "association": {
+        "candidates": [
+          {
+            "areaMeters2": 633931,
+            "distanceMeters": 38.7,
+            "id": "way/35679036",
+            "identityError": null,
+            "name": "Torrey Pines South Course"
+          }
+        ],
+        "confidence": "mapped",
+        "method": "unique-named-boundary",
+        "pathMarginMeters": 0,
+        "selectedID": "way/35679036"
+      },
+      "candidate": {
+        "center": {
+          "lat": 32.8971363,
+          "lon": -117.247647
+        },
+        "city": "San Diego",
+        "id": "9b9891db-3b45-48db-892f-149601b79d52",
+        "name": "Torrey Pines South Course",
+        "state": "CA"
+      },
+      "resolution": {
+        "boundaryID": "way/35679036",
+        "compoundRefs": [],
+        "holeNumbering": "explicit-osm-tags",
+        "sourceParAgreement": true
+      },
+      "resolutionError": null,
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 38.7916833,
+          "lon": -104.8441437
+        },
+        "city": "Colorado Springs",
+        "id": "9bbebc08-0ecd-4d2a-a07f-ff44eaed7793",
+        "name": "The Country Club Of Colorado At Cheyenne Mountain Resort",
+        "state": "CO"
+      },
+      "resolutionError": "No single identity-compatible course boundary",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 33.4790982378,
+          "lon": -111.9171462454
+        },
+        "city": "Scottsdale",
+        "id": "9da247c1-63ac-412b-8195-5a2190912658",
+        "name": "Coronado Golf Course",
+        "state": "AZ"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 33.5344551317,
+          "lon": -111.9016313553
+        },
+        "city": "Scottsdale",
+        "id": "a433a23c-30e5-413f-a690-6397db3ec9a8",
+        "name": "Scottsdale Silverado Golf Club Silver Pony Course",
+        "state": "AZ"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 33.6927808275,
+          "lon": -116.31980896
+        },
+        "city": "La Quinta",
+        "id": "a9309e6a-4b6a-4f0e-ac2b-4ad0f003961e",
+        "name": "Pga West Pete Dye Mountain Course",
+        "state": "CA"
+      },
+      "resolutionError": "No single identity-compatible course boundary",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 28.9229058,
+          "lon": -95.9973725
+        },
+        "city": "Bay City",
+        "id": "ab21aa90-2d40-4926-b7a4-176743d401aa",
+        "name": "Rio Colorado",
+        "state": "TX"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 35.1190550368,
+          "lon": -83.0539264656
+        },
+        "city": "Sapphire",
+        "id": "aeabfcb1-b212-4de1-94d5-c8d46e8da6f5",
+        "name": "The Country Club Of Sapphire Valley",
+        "state": "NC"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 41.8549923,
+          "lon": -80.9455557
+        },
+        "city": "Geneva",
+        "id": "b11416df-0ace-4e77-a2b1-6a67557b3c1d",
+        "name": "Geneva on-the Lake Village Golf Course",
+        "state": "OH"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 44.1007268,
+          "lon": -93.4847826
+        },
+        "city": "Woodville Township",
+        "id": "b1a80b83-9ff9-4447-b28f-b80ae3568ed3",
+        "name": "Lakeside Country Club",
+        "state": "MN"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "association": {
+        "candidates": [
+          {
+            "areaMeters2": 751947,
+            "distanceMeters": 0.0,
+            "id": "way/1358696570",
+            "identityError": null,
+            "name": "Pinehurst No. 2"
+          }
+        ],
+        "confidence": "mapped",
+        "method": "unique-named-boundary",
+        "pathMarginMeters": 0,
+        "selectedID": "way/1358696570"
+      },
+      "candidate": {
+        "center": {
+          "lat": 35.1917072,
+          "lon": -79.4607309
+        },
+        "city": "Pinehurst",
+        "id": "b25a4e85-561a-4ca4-8028-7c3480c9bbc0",
+        "name": "Pinehurst No. 2",
+        "state": "NC"
+      },
+      "resolution": {
+        "boundaryID": "way/1358696570",
+        "compoundRefs": [
+          {
+            "courseNumber": 2,
+            "id": "way/785968521",
+            "number": 1,
+            "sourceRef": "1 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785968522",
+            "number": 2,
+            "sourceRef": "2 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785968524",
+            "number": 3,
+            "sourceRef": "3 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785968526",
+            "number": 4,
+            "sourceRef": "4 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785968527",
+            "number": 5,
+            "sourceRef": "5 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785968528",
+            "number": 6,
+            "sourceRef": "6 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785968529",
+            "number": 7,
+            "sourceRef": "7 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785968530",
+            "number": 8,
+            "sourceRef": "8 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785968531",
+            "number": 9,
+            "sourceRef": "9 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785980231",
+            "number": 10,
+            "sourceRef": "10 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785980232",
+            "number": 11,
+            "sourceRef": "11 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785980233",
+            "number": 12,
+            "sourceRef": "12 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785980234",
+            "number": 13,
+            "sourceRef": "13 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785984024",
+            "number": 14,
+            "sourceRef": "14 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785984025",
+            "number": 15,
+            "sourceRef": "15 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785984033",
+            "number": 16,
+            "sourceRef": "16 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785984818",
+            "number": 17,
+            "sourceRef": "17 - #2"
+          },
+          {
+            "courseNumber": 2,
+            "id": "way/785985302",
+            "number": 18,
+            "sourceRef": "18 - #2"
+          }
+        ],
+        "holeNumbering": "explicit-osm-tags",
+        "sourceParAgreement": true
+      },
+      "resolutionError": null,
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 42.5571328,
+          "lon": -88.4699792
+        },
+        "city": "Lake Geneva",
+        "id": "b3cca511-2b8d-4992-b57e-7506087006c7",
+        "name": "Lake Geneva Country Club",
+        "state": "WI"
+      },
+      "resolutionError": "Hole 11: green missing, ambiguous or shared",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 45.9036012,
+          "lon": -95.3119933
+        },
+        "city": "Alexandria",
+        "id": "bd07a530-217b-4e2b-8f82-d39258abfac0",
+        "name": "Geneva Golf Club",
+        "state": "MN"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 33.5036656549,
+          "lon": -111.9127989484
+        },
+        "city": "Scottsdale",
+        "id": "be64d30f-9f58-40d6-91d1-6491b4e9a3c2",
+        "name": "Scottsdale Shadows Golf Club",
+        "state": "AZ"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 27.6928971,
+          "lon": -81.9343397
+        },
+        "city": "Bowling Green",
+        "id": "bf3cfb6e-ec06-4d5c-856f-35df9c045c4e",
+        "name": "Streamsong Resort Red Course",
+        "state": "FL"
+      },
+      "resolutionError": "No single identity-compatible course boundary",
+      "usedOfficialCard": false
+    },
+    {
+      "association": {
+        "candidates": [
+          {
+            "areaMeters2": 739131,
+            "distanceMeters": 39.9,
+            "id": "relation/5940985",
+            "identityError": null,
+            "name": "Arnold Palmer Golf Course (PGA West)"
+          }
+        ],
+        "confidence": "mapped",
+        "method": "unique-named-boundary",
+        "pathMarginMeters": 0,
+        "selectedID": "relation/5940985"
+      },
+      "candidate": {
+        "center": {
+          "lat": 33.6493379,
+          "lon": -116.2726832
+        },
+        "city": "La Quinta",
+        "id": "c1b4702d-7d90-4d0f-83eb-8ce62dc88f80",
+        "name": "Arnold Palmer Golf Course (PGA West)",
+        "state": "CA"
+      },
+      "resolution": {
+        "boundaryID": "relation/5940985",
+        "compoundRefs": [],
+        "holeNumbering": "explicit-osm-tags",
+        "sourceParAgreement": true
+      },
+      "resolutionError": null,
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 41.8854538,
+          "lon": -88.3184481
+        },
+        "city": "Geneva",
+        "id": "c2a65c5c-1b4c-4bb2-965e-8987b5d793ec",
+        "name": "Geneva Golf Club",
+        "state": "IL"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 33.5070217317,
+          "lon": -82.0217063915
+        },
+        "city": "Augusta",
+        "id": "c4bce3af-a32c-48de-94b2-8ad0853b99a1",
+        "name": "The Nine Hole At Augusta National Golf Club",
+        "state": "GA"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 26.2468543,
+          "lon": -81.6498863
+        },
+        "city": "Naples",
+        "id": "c5ef676f-7c75-4801-8100-bef16cf6f1dd",
+        "name": "Olde Florida Golf Club",
+        "state": "FL"
+      },
+      "resolutionError": "Hole 2: green missing, ambiguous or shared",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 34.487851,
+          "lon": -81.958621
+        },
+        "city": "Laurens",
+        "id": "c8a2e390-fe6e-4c02-8e63-789e9fdd28ec",
+        "name": "Lakeside Country Club",
+        "state": "SC"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 37.2196331,
+          "lon": -121.7768306
+        },
+        "city": "San Jose",
+        "id": "c8d80238-12f3-4e1d-a038-0f9786d409ae",
+        "name": "Nine Hole At Santa Teresa Golf Club",
+        "state": "CA"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 33.7233402385,
+          "lon": -78.8866424561
+        },
+        "city": "Myrtle Beach",
+        "id": "ca872fc5-2a22-4d2b-b67a-b85657bc7aec",
+        "name": "Palmetto At Myrtlewood Golf Club",
+        "state": "SC"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 27.6928094,
+          "lon": -81.9344824
+        },
+        "city": "Bowling Green",
+        "id": "cd1ddc7c-0e82-4606-8f61-bf5e0224c5c9",
+        "name": "Streamsong Resort The Gauntlet Putting Course",
+        "state": "FL"
+      },
+      "resolutionError": "No single identity-compatible course boundary",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 40.3006630645,
+          "lon": -76.6252044867
+        },
+        "city": "Hershey",
+        "id": "cd37372a-a551-46d1-a525-1584c1b24d38",
+        "name": "East At Country Club Of Hershey",
+        "state": "PA"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 41.5597163,
+          "lon": -70.4806602
+        },
+        "city": "Mashpee",
+        "id": "ce3dbb2a-7dc0-43e1-ae5b-2d00014ebfa6",
+        "name": "The Club At New Seabury Ocean Course",
+        "state": "MA"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 29.761826,
+          "lon": -95.5820619
+        },
+        "city": "Houston",
+        "id": "cebffed4-b05e-4600-8ab9-00df2dd87e00",
+        "name": "Lakeside Country Club",
+        "state": "TX"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 33.5032561059,
+          "lon": -111.9420146942
+        },
+        "city": "Scottsdale",
+        "id": "d305fd56-bead-44a0-b86e-a784452bd76f",
+        "name": "The Phoenician Golf Club",
+        "state": "AZ"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 33.6069340671,
+          "lon": -78.9960576614
+        },
+        "city": "Murrells Inlet",
+        "id": "d4e4b7e6-518c-4803-9705-937d537bed76",
+        "name": "Tupelo Bay Golf Complex Executive Course",
+        "state": "SC"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 26.504377,
+          "lon": -80.1033358
+        },
+        "city": "Boynton Beach",
+        "id": "d8fc3bd1-ddbe-4bf9-873b-f70bb13fd874",
+        "name": "Country Club Of Florida",
+        "state": "FL"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 30.6174947,
+          "lon": -96.3295689
+        },
+        "city": "College Station",
+        "id": "da2e9543-38be-49b1-91bf-b742d20bb40f",
+        "name": "The Golf Club at Texas A&M",
+        "state": "TX"
+      },
+      "resolutionError": "Hole 9: center is outside its green",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 41.6496023,
+          "lon": -92.1737952303571
+        },
+        "city": "Muscatine",
+        "id": "dadc21a1-994a-4777-87e9-77980eb915d6",
+        "name": "Geneva Golf and Country Club",
+        "state": "IA"
+      },
+      "resolutionError": "No single identity-compatible course boundary",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 42.6092199,
+          "lon": -88.3937827
+        },
+        "city": "Town of Lyons",
+        "id": "df2b802e-465a-4c13-8e00-57939c3abe7b",
+        "name": "Grand Geneva Golf Resort",
+        "state": "WI"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 39.65768,
+          "lon": -76.395988
+        },
+        "city": "Street",
+        "id": "e4351d78-d20c-410f-be4e-9024576e165c",
+        "name": "Geneva Farm Golf Course",
+        "state": "MD"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 35.1832206,
+          "lon": -79.4755962
+        },
+        "city": "Pinehurst",
+        "id": "e534a5d3-ee60-4f66-bc3b-cc66e5d2e48e",
+        "name": "Pinehurst",
+        "state": "NC"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 30.1980018,
+          "lon": -81.3955144
+        },
+        "city": "Ponte Vedra Beach",
+        "id": "e643ab84-5a52-4bea-b692-a6c884bb536b",
+        "name": "Tpc Sawgrass The Players Stadium Course",
+        "state": "FL"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 33.6784434329,
+          "lon": -78.9160394669
+        },
+        "city": "Myrtle Beach",
+        "id": "e894bfc0-fbda-4f36-bfa9-27b1cd63f762",
+        "name": "Whispering Pines Golf Course",
+        "state": "SC"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 33.6829921,
+          "lon": -116.3130895
+        },
+        "city": "La Quinta",
+        "id": "e8e746ae-df9d-41c6-8fc8-e6b7c8d2293f",
+        "name": "Pga West Pete Dye Dunes Course",
+        "state": "CA"
+      },
+      "resolutionError": "No single identity-compatible course boundary",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 40.3245638148,
+          "lon": -79.994161947
+        },
+        "city": "Library",
+        "id": "edaa6eeb-c30d-43f4-bd9d-fceb979ac6ee",
+        "name": "Nine Hole At South Park Golf Course",
+        "state": "PA"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 33.6612221652,
+          "lon": -78.9261678307
+        },
+        "city": "Myrtle Beach",
+        "id": "eeeff7fa-b158-4543-9ad4-e4f0f093089c",
+        "name": "Aero Club Short Course",
+        "state": "SC"
+      },
+      "resolutionError": "Hole 6: green missing, ambiguous or shared",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 39.476607,
+          "lon": -104.735425
+        },
+        "city": "Parker",
+        "id": "efd61474-152c-457d-bcfc-e14b34ba610c",
+        "name": "Colorado Golf Club",
+        "state": "CO"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 47.0871361777778,
+          "lon": -67.4983664222222
+        },
+        "city": "Paroisse de Denmark",
+        "id": "f04b9fad-b32a-4dd7-a05c-e6ba924f7b63",
+        "name": "Castlewood Golf Course",
+        "state": "MN"
+      },
+      "resolutionError": "No single identity-compatible course boundary",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 40.7396434,
+          "lon": -89.5617709
+        },
+        "city": "Peoria Heights",
+        "id": "f55b72fc-127d-4774-9a35-678e7dddfd6f",
+        "name": "Country Club of Peoria Golf Course",
+        "state": "IL"
+      },
+      "resolutionError": "Hole 3: OSM par 3 conflicts with scorecard par 5",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 33.6636035865,
+          "lon": -78.9194297791
+        },
+        "city": "Myrtle Beach",
+        "id": "f5e75e15-5c71-455e-8670-5a4281bddcb9",
+        "name": "Midway Par 3 North Nine",
+        "state": "SC"
+      },
+      "resolutionError": "No single identity-compatible course boundary",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 33.427626974,
+          "lon": -111.6493964195
+        },
+        "city": "Mesa",
+        "id": "fa4e99ba-2ef8-4b60-93ef-7016164641d6",
+        "name": "Nine Hole Executive At Viewpoint Golf Resort",
+        "state": "AZ"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 27.6928094,
+          "lon": -81.9344824
+        },
+        "city": "Bowling Green",
+        "id": "fa73f575-254e-4fbb-a8fa-3d4e8bda0be2",
+        "name": "Streamsong Resort The Chain",
+        "state": "FL"
+      },
+      "resolutionError": "No single identity-compatible course boundary",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 42.7469944,
+          "lon": -76.6923021
+        },
+        "city": "Aurora",
+        "id": "fb56df13-3914-456e-953e-272f493d0f38",
+        "name": "Wells College Golf Course",
+        "state": "NY"
+      },
+      "resolutionError": "No single identity-compatible course boundary",
+      "usedOfficialCard": false
+    },
+    {
+      "candidate": {
+        "center": {
+          "lat": 27.6777052,
+          "lon": -81.932506
+        },
+        "city": "Bowling Green",
+        "id": "fe4adccc-d0ff-4c44-8b63-367a959e47d4",
+        "name": "Streamsong Resort Blue Course",
+        "state": "FL"
+      },
+      "resolutionError": "Boundary does not contain one complete uniquely numbered layout",
+      "usedOfficialCard": false
+    }
+  ],
+  "runID": "38981324295",
+  "sourceCommit": "ad8c6ebf5f4042bb471f796a69aa6e1b33fd2ffe",
+  "validatedCourseIDs": [
+    "0d2bf55e-418c-48b8-97b2-2a0a2da612a6",
+    "10bd6244-2445-4836-8af5-87e9552eff29",
+    "11e81205-be02-4d73-b0ca-f327ba18013b",
+    "1617bc72-1ad4-4d06-888a-cc655b4bb891",
+    "1ed27559-addf-477c-8a66-6ecb6b8a167c",
+    "2490794e-b371-4b0f-9669-294b30209815",
+    "24925661-c5ad-4a89-87f2-b97a8f77fe83",
+    "2cfe80e9-2d2f-4123-abd9-5f48aa21a8f8",
+    "2f8238b3-85d2-4d54-b1af-779dec846381",
+    "30cff352-5828-4898-869e-27572c066de8",
+    "40977ee8-33ee-4195-b6a2-99a4ca83c2bc",
+    "43c3a4e2-b921-4d92-a2a8-bf49b0dfa38c",
+    "458216f8-4ac8-46c7-a5eb-a70d2ae419e6",
+    "47454fab-f250-4b4d-b339-42375e95c90e",
+    "49724583-02ca-40a6-8d87-5d650a34d703",
+    "5107284f-63df-489f-9bc7-d0dd15f005d1",
+    "53ab4f0a-5bc0-49fc-8d0c-eb8ad3e23fd8",
+    "5ae10e34-4746-4466-8d61-45a2ffa5d448",
+    "7d018c05-69b9-41d2-9154-5fe67319ef6e",
+    "7f1e2c7c-a103-4e0f-a91b-51da1e74851a",
+    "806869cd-d6ae-49aa-a7a3-e6d4eddebcbf",
+    "8441d9e6-9ab1-439b-beee-91b16c49e650",
+    "86620a66-2f67-409e-8aaa-8d503d820631",
+    "8a17d0e9-b216-44d9-aae2-f235e22f7acc",
+    "8b348733-f617-461c-8ef6-47e2198899a4",
+    "90d34fdb-bbee-4e03-b77f-fedc187a82d4",
+    "9379add5-9103-43fb-a659-b6c617b65eb0",
+    "9b9891db-3b45-48db-892f-149601b79d52",
+    "a3eb4392-fa9b-465b-b5d3-faa9a0147a12",
+    "a44d859b-2d85-4253-8b6d-b06ed374c71e",
+    "ad7f9ae2-e55c-4969-bb13-7d5185817801",
+    "bcc23409-7ba0-4dd6-a598-b844f6b62293",
+    "c11311e7-51b8-4495-adbc-355748feef56",
+    "d0c2313d-9b8d-4822-9578-66ca22d33d1c",
+    "d2ffc96f-6ea2-4cf9-b6f5-2fda3b9b64f8",
+    "db18bece-fceb-4527-adee-36772fc16c17",
+    "e9898b90-8142-4ece-b1c7-809302124622",
+    "ec631dc6-c54f-4540-9e7c-be75d759e91b"
+  ]
+}
