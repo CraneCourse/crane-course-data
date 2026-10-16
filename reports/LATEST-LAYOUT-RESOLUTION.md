@@ -1,1 +1,1 @@
-[Latest layout resolution](layout-resolution-38978798804.md)
+[Latest layout resolution](layout-resolution-38980874829.md)
