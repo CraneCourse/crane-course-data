@@ -47,3 +47,30 @@ explicitly use `numbering: "inferred"` and pass every existing geometry, schema,
 Swift and Watch gate. This workflow cannot deploy to Pages.
 
 Sources and reports: © OpenStreetMap contributors, Geofabrik, OpenGolfAPI; ODbL 1.0.
+
+## October 16 findings
+
+The first full cloud run completed successfully. Across the 74 original candidates
+whose first matching failure was numbering, 70 failed an earlier inference gate:
+18 lacked usable tee yardages, 14 had unresolved boundaries, 13 had conflicting
+mapped numbers, 10 lacked enough greens, eight had invalid polygons or unusable
+vertex-average centers, five needed course-name identity review, and two had
+compound refs. These are first reasons, so other problems may coexist.
+
+The remaining four did not produce a safe unique hypothesis. Geneva Farm admitted
+multiple endpoint layouts; Centre Hills reached the bounded search limit; Pinehurst
+No. 10 and Lakeside in Texas had no complete fit. This does not prove those courses
+can never be supported. Inference added **zero** published courses; the existing
+32 remain intact.
+
+Of 96 blind known-course trials, 26 exactly recovered the original path/green
+assignments and 70 were withheld; none gave a wrong unique assignment. Only three
+of 32 fully blinded courses were uniquely recovered: PGA West Private Arnold
+Palmer, Country Club of Hilton Head, and PGA West Stadium. One-hole masking is much
+easier and is not evidence of general nationwide recovery.
+
+The useful next investigation is separating adjacent subcourses and validating
+course identity/scorecards with independent, license-compatible public evidence.
+Aerial green detection alone would not resolve duplicate hole numbers, missing
+scorecards, or which of several layouts belongs to a directory entry. Do not relax
+these gates just to increase the published count.

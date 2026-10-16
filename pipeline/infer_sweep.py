@@ -68,17 +68,22 @@ def main():
     # These are public OSM/scorecard data only, never player information.
     fixture_dir = Path('tests/fixtures/inference')
     fixture_dir.mkdir(parents=True, exist_ok=True)
-    good = next((c for c in controls if c['exactRecovery'] is True), None)
-    ambiguous = next((c for c in controls if c['result']['status'] == 'ambiguous'), None)
-    selected = {'correct': good, 'ambiguous': ambiguous}
-    if ambiguous is None:
-        for r in rows:
-            for mode, key in [('mapped-paths','mappedPaths'), ('tee-green','teeGreen')]:
-                if r.get(key, {}).get('status') == 'ambiguous':
-                    selected['ambiguous'] = {'candidate':r['candidate'], 'mask':None, 'mode':mode, 'result':r[key], 'exactRecovery':None}
-                    break
-            if selected['ambiguous']:
+    # Prefer recovering an entire blinded course over the easier single-hole case.
+    good = next((c for c in controls if c['exactRecovery'] is True and c['mask']=='all'), None)
+    if good is None:
+        good = next((c for c in controls if c['exactRecovery'] is True), None)
+    selected = {'correct': good, 'ambiguous': None}
+    # Save a naturally ambiguous failing course when available, not only a masked
+    # known-good course. Both experiments stay covered by the full sweep report.
+    for r in rows:
+        for mode, key in [('mapped-paths','mappedPaths'), ('tee-green','teeGreen')]:
+            if r.get(key, {}).get('status') == 'ambiguous':
+                selected['ambiguous'] = {'candidate':r['candidate'], 'mask':None, 'mode':mode, 'result':r[key], 'exactRecovery':None}
                 break
+        if selected['ambiguous']:
+            break
+    if selected['ambiguous'] is None:
+        selected['ambiguous'] = next((c for c in controls if c['result']['status']=='ambiguous'), None)
     fixture_manifest = {}
     for name, control in selected.items():
         if control is None:
@@ -100,10 +105,12 @@ def main():
     wrong = [c for c in controls if c['exactRecovery'] is False]
     counts = dict(Counter(r['status'] for r in rows))
     research = [r for r in rows if r['status']=='numbering-research']
+    blockers = dict(Counter(r['mappedPaths']['reason'] for r in research if r['mappedPaths']['status']=='ineligible'))
     report = {'builtAt':now(), 'runID':os.environ['GITHUB_RUN_ID'], 'sourceCommit':os.environ['GITHUB_SHA'],
               'inputRun':read('work/input-run.json'), 'baselineRunID':baseline['runID'], 'policy':asdict(DEFAULT),
               'sampleCount':207, 'stateScopedSampleCount':146, 'extraControls':1,
               'counts':counts, 'mappedPathResults':dict(Counter(r['mappedPaths']['status'] for r in research)),
+              'earlyBlockers':blockers,
               'teeGreenResults':dict(Counter(r['teeGreen']['status'] for r in research)),
               'controlTrials':len(controls), 'correctUniqueRecoveries':sum(c['exactRecovery'] is True for c in controls),
               'incorrectUniqueRecoveries':len(wrong), 'newPublishedCourses':0, 'publishedCoursesUnchanged':32,
@@ -120,7 +127,10 @@ def main():
            'Mapped-path outcomes: '+str(report['mappedPathResults']),
            'Tee/green-only outcomes: '+str(report['teeGreenResults']),'',
            'Numbers/par already present are preserved. All assignments share no greens/starts; all transitions, including last→first, are checked. Search uses enlarged yardage/transfer tolerances to expose near alternatives. Finding two solutions or reaching a search budget withholds the course. No clubhouse/entrance anchors were present in the saved extraction format.','',
-           '## Course outcomes','', '| Course | State | Mapped paths | Tee/green hypotheses |','|---|---|---|---|']
+           '## Earlier blockers','', '| Reason | Candidates |','|---|---|']
+    lines += [f'| {reason} | {count} |' for reason,count in sorted(blockers.items(),key=lambda item:-item[1])]
+    lines += ['', 'These are first blocking reasons, not proof that each course has only one problem. Resolve course identity/subcourse separation and missing scorecards before expecting numbering inference to increase coverage. This run does not establish that all remaining courses are impossible to support.',
+              '', '## Course outcomes','', '| Course | State | Mapped paths | Tee/green hypotheses |','|---|---|---|---|']
     def safe(s):
         return str(s).replace('|','/').replace('\n',' ').replace('<','&lt;').replace('>','&gt;')
     for r in sorted(rows,key=lambda r:r['candidate']['name']):
