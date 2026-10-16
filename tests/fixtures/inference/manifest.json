@@ -1,162 +1,160 @@
 {
   "ambiguous": {
     "assignment": null,
-    "courseID": "0d2bf55e-418c-48b8-97b2-2a0a2da612a6",
-    "mask": "all",
-    "mode": "mapped-paths",
+    "courseID": "e4351d78-d20c-410f-be4e-9024576e165c",
+    "mask": null,
+    "mode": "tee-green",
     "status": "ambiguous"
   },
   "correct": {
     "assignment": [
       {
-        "greenID": "way/1259663870",
-        "nextTeeMeters": 35.35,
+        "greenID": "way/395489809",
+        "nextTeeMeters": 112.31,
         "number": 1,
-        "pathID": "way/1290396860",
-        "startID": "way/1290396860",
-        "yards": 535.75
+        "pathID": "way/1393156591",
+        "startID": "way/1393156591",
+        "yards": 425.44
       },
       {
-        "greenID": "way/1260470886",
-        "nextTeeMeters": 40.73,
+        "greenID": "way/395489818",
+        "nextTeeMeters": 53.74,
         "number": 2,
-        "pathID": "way/1290396859",
-        "startID": "way/1290396859",
-        "yards": 412.94
+        "pathID": "way/1393156592",
+        "startID": "way/1393156592",
+        "yards": 510.21
       },
       {
-        "greenID": "way/1259689110",
-        "nextTeeMeters": 83.32,
+        "greenID": "way/395489826",
+        "nextTeeMeters": 52.07,
         "number": 3,
-        "pathID": "way/1290396861",
-        "startID": "way/1290396861",
-        "yards": 391.17
+        "pathID": "way/1393156593",
+        "startID": "way/1393156593",
+        "yards": 176.23
       },
       {
-        "greenID": "way/1260470896",
-        "nextTeeMeters": 143.29,
+        "greenID": "way/395693295",
+        "nextTeeMeters": 51.65,
         "number": 4,
-        "pathID": "way/1290396858",
-        "startID": "way/1290396858",
-        "yards": 203.03
+        "pathID": "way/1393156594",
+        "startID": "way/1393156594",
+        "yards": 392.1
       },
       {
-        "greenID": "way/1260462316",
-        "nextTeeMeters": 37.06,
+        "greenID": "way/395693296",
+        "nextTeeMeters": 78.4,
         "number": 5,
-        "pathID": "way/1290397098",
-        "startID": "way/1290397098",
-        "yards": 456.96
+        "pathID": "way/1393156595",
+        "startID": "way/1393156595",
+        "yards": 230.82
       },
       {
-        "greenID": "way/1260462323",
-        "nextTeeMeters": 181.98,
+        "greenID": "way/395693298",
+        "nextTeeMeters": 38.79,
         "number": 6,
-        "pathID": "way/1290397820",
-        "startID": "way/1290397820",
-        "yards": 425.86
+        "pathID": "way/1393156596",
+        "startID": "way/1393156596",
+        "yards": 545.44
       },
       {
-        "greenID": "way/1260470889",
-        "nextTeeMeters": 50.69,
+        "greenID": "way/395693300",
+        "nextTeeMeters": 39.99,
         "number": 7,
-        "pathID": "way/1290397822",
-        "startID": "way/1290397822",
-        "yards": 376.9
+        "pathID": "way/1393176581",
+        "startID": "way/1393176581",
+        "yards": 434.35
       },
       {
-        "greenID": "way/1260470917",
-        "nextTeeMeters": 39.7,
+        "greenID": "way/395693301",
+        "nextTeeMeters": 101.89,
         "number": 8,
-        "pathID": "way/1290397825",
-        "startID": "way/1290397825",
-        "yards": 147.6
+        "pathID": "way/1393176582",
+        "startID": "way/1393176582",
+        "yards": 357.41
       },
       {
-        "greenID": "way/1259689105",
-        "nextTeeMeters": 81.84,
+        "greenID": "way/395698841",
+        "nextTeeMeters": 137.72,
         "number": 9,
-        "pathID": "way/1290397827",
-        "startID": "way/1290397827",
-        "yards": 416.87
+        "pathID": "way/1393176583",
+        "startID": "way/1393176583",
+        "yards": 450.51
       },
       {
-        "greenID": "way/1259738145",
-        "nextTeeMeters": 57.88,
+        "greenID": "way/395693303",
+        "nextTeeMeters": 166.28,
         "number": 10,
-        "pathID": "way/1290405740",
-        "startID": "way/1290405740",
-        "yards": 415.96
+        "pathID": "way/1393176584",
+        "startID": "way/1393176584",
+        "yards": 432.04
       },
       {
-        "greenID": "way/1260462333",
-        "nextTeeMeters": 74.13,
+        "greenID": "way/395693304",
+        "nextTeeMeters": 56.68,
         "number": 11,
-        "pathID": "way/1290405738",
-        "startID": "way/1290405738",
-        "yards": 547.83
+        "pathID": "way/1393176585",
+        "startID": "way/1393176585",
+        "yards": 508.0
       },
       {
-        "greenID": "way/1260470915",
-        "nextTeeMeters": 49.58,
+        "greenID": "way/395693305",
+        "nextTeeMeters": 90.24,
         "number": 12,
-        "pathID": "way/1290405733",
-        "startID": "way/1290405733",
-        "yards": 179.07
+        "pathID": "way/1393176586",
+        "startID": "way/1393176586",
+        "yards": 204.87
       },
       {
-        "greenID": "way/1260470895",
-        "nextTeeMeters": 37.76,
+        "greenID": "way/395693306",
+        "nextTeeMeters": 273.01,
         "number": 13,
-        "pathID": "way/1290405741",
-        "startID": "way/1290405741",
-        "yards": 407.45
+        "pathID": "way/1393178537",
+        "startID": "way/1393178537",
+        "yards": 440.47
       },
       {
-        "greenID": "way/1260471856",
-        "nextTeeMeters": 111.87,
+        "greenID": "way/395693307",
+        "nextTeeMeters": 82.72,
         "number": 14,
-        "pathID": "way/1290405734",
-        "startID": "way/1290405734",
-        "yards": 382.04
+        "pathID": "way/1393178538",
+        "startID": "way/1393178538",
+        "yards": 573.33
       },
       {
-        "greenID": "way/1260480480",
-        "nextTeeMeters": 119.96,
+        "greenID": "way/395693308",
+        "nextTeeMeters": 37.04,
         "number": 15,
-        "pathID": "way/1290405737",
-        "startID": "way/1290405737",
-        "yards": 537.41
+        "pathID": "way/1393178539",
+        "startID": "way/1393178539",
+        "yards": 150.18
       },
       {
-        "greenID": "way/1260480485",
-        "nextTeeMeters": 111.06,
+        "greenID": "way/395693309",
+        "nextTeeMeters": 44.9,
         "number": 16,
-        "pathID": "way/1290405731",
-        "startID": "way/1290405731",
-        "yards": 374.37
+        "pathID": "way/1393178541",
+        "startID": "way/1393178541",
+        "yards": 364.16
       },
       {
-        "greenID": "way/1260470893",
-        "nextTeeMeters": 83.43,
+        "greenID": "way/395489797",
+        "nextTeeMeters": 122.38,
         "number": 17,
-        "pathID": "way/1290405732",
-        "startID": "way/1290405732",
-        "yards": 235.23
+        "pathID": "way/1393178542",
+        "startID": "way/1393178542",
+        "yards": 130.37
       },
       {
-        "greenID": "way/1259689097",
-        "nextTeeMeters": 34.89,
+        "greenID": "way/395699644",
+        "nextTeeMeters": 119.53,
         "number": 18,
-        "pathID": "way/1290405735",
-        "startID": "way/1290405735",
-        "yards": 351.61
+        "pathID": "way/1393178543",
+        "startID": "way/1393178543",
+        "yards": 537.14
       }
     ],
-    "courseID": "0d2bf55e-418c-48b8-97b2-2a0a2da612a6",
-    "mask": [
-      1
-    ],
+    "courseID": "49724583-02ca-40a6-8d87-5d650a34d703",
+    "mask": "all",
     "mode": "mapped-paths",
     "status": "unique-hypothesis"
   }
