@@ -1,0 +1,32 @@
+{
+  "additionalCourses": [],
+  "auditRun": "38976460499",
+  "baselineCount": 32,
+  "builtAt": "2026-10-16T22:47:25.280485+00:00",
+  "dataReady": 32,
+  "limitations": "Data checks only, not field verification or app integration. No estimated yardages or inferred hole numbering. Official source corrections require content hashes and an unexpired review before publication.",
+  "officialSources": {
+    "2d201c28-68ec-4897-b7b1-8f19c8984d26": {
+      "expiresAt": "2027-04-16",
+      "fetchedAt": "2026-10-16T22:46:42.019439+00:00",
+      "layoutName": "Straits Course",
+      "reviewedAt": "2026-10-16",
+      "sha256": "be50e2b0b174dff5ced3310aeb7e55a6a91da0773372eb0d2ad7458629accb0d",
+      "type": "reviewed-official-scorecard",
+      "url": "https://www.kohlerwisconsin.com/content/dam/kohler-destinations/pdf_resource/dk/golf/whistling-straits/scorecard-the-straits.pdf"
+    },
+    "9379add5-9103-43fb-a659-b6c617b65eb0": {
+      "expiresAt": "2027-04-16",
+      "fetchedAt": "2026-10-16T22:46:42.250016+00:00",
+      "layoutName": "Texas Rangers Golf Club",
+      "reviewedAt": "2026-10-16",
+      "sha256": "815824a98ce1b5a91e7cf6daa64402dd8cc027584c25b257fdb223b52a7cdb46",
+      "type": "reviewed-official-scorecard",
+      "url": "https://www.texasrangersgolfclub.com/wp-content/uploads/sites/9836/2026/01/TRGC_Scorecard.jpg?w=1024"
+    }
+  },
+  "research": true,
+  "rows": [],
+  "runID": "38977685678",
+  "sourceCommit": "83848bcd7e85b39e7119f8a96d4d5a054c696e55"
+}
