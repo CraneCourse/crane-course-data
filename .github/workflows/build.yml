@@ -104,7 +104,7 @@ jobs:
           path: work/validation
       - name: Compile and run the actual Swift matching kernel
         run: |
-          swiftc reference/AppKernel.swift reference/main.swift -o /tmp/course-reference
+          swiftc -O reference/AppKernel.swift reference/main.swift -o /tmp/course-reference
           /tmp/course-reference work/validation work/swift.json
       - name: Replay frozen real controls when present
         run: |
@@ -114,6 +114,7 @@ jobs:
         run: python -m pipeline.export
       - run: python -m pytest -q
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
         with:
           name: validation-evidence
           path: |

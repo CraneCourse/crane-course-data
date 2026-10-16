@@ -24,14 +24,36 @@ def validate_controls(swift, payloads):
             for a,b in zip(control['holes'],extraction['holes'])]
     assert len(shifts)==18 and max(shifts)<1, f'Lakeside center mismatch: {max(shifts)}m'
     assert not swift['control-'+KIAWAH]['pass'] and 'Mapped hole numbers' in swift['control-'+KIAWAH]['reason']
-    assert not swift[KIAWAH]['pass'] and 'Mapped hole numbers' in swift[KIAWAH]['reason']
-    nums=payloads[KIAWAH]['python'].get('reason','')
-    missing=[4,5,6,12,13,14,15]
-    from pipeline.match import number
-    mapped=sorted(number(w) for w in payloads[KIAWAH]['ways'] if w['tags'].get('golf')=='hole' and number(w) is not None)
-    assert mapped==[n for n in range(1,19) if n not in missing], f'Kiawah mapping changed: {mapped}; inspect before updating fixture'
-    return {'lakesideHoles':18,'lakesideMaximumCenterDifferenceMeters':max(shifts),'kiawahMappedNumbers':mapped,
-            'kiawahFailure':swift[KIAWAH]['reason'],'referenceAppCommit':read('reference/provenance.json')['appCommit']}
+    from pipeline.match import number, diagnose
+    api_geometry=swift['control-'+KIAWAH]['parsedGeometry']['elements']
+    api_ways=[{'id':'way/'+str(w['id']), 'tags':w.get('tags') or {},
+               'points':[(v['lon'],v['lat']) for v in w['geometry']]} for w in api_geometry]
+    api_mapped=sorted(number(w) for w in api_ways if w['tags'].get('golf')=='hole' and number(w) is not None)
+    expected=[1,2,3,7,8,9,10,11,16,17,18]
+    assert api_mapped==expected, f'Kiawah API control mapping changed: {api_mapped}'
+    c=payloads[KIAWAH]['candidate']['center']
+    api_result=diagnose(payloads[KIAWAH]['scorecard']['holes'],api_ways,(c['lon'],c['lat']))
+    assert not api_result['pass'] and api_result['rule']=='numbering'
+    direct_mapped=sorted(number(w) for w in payloads[KIAWAH]['ways'] if w['tags'].get('golf')=='hole' and number(w) is not None)
+    # Direct extracts contain all 18 lines: the API's eleven-line failure is not
+    # a valid expectation for a different input. Verify each input honestly.
+    assert direct_mapped==list(range(1,19)), f'Kiawah extract control changed: {direct_mapped}'
+    assert swift[KIAWAH]['pass'], f'Kiawah direct matching changed: {swift[KIAWAH]}'
+    return {'lakesideHoles':18,'lakesideMaximumCenterDifferenceMeters':max(shifts),
+            'kiawahAPIMappedNumbers':api_mapped,'kiawahAPIFailure':swift['control-'+KIAWAH]['reason'],
+            'kiawahDirectMappedNumbers':direct_mapped,'kiawahDirectMatchingPass':True,
+            'referenceAppCommit':read('reference/provenance.json')['appCommit']}
+
+def first_difference(a,b,path='holes'):
+    if equivalent(a,b): return None
+    if isinstance(a,dict) and isinstance(b,dict):
+        for key in sorted(a.keys()|b.keys()):
+            if not equivalent(a.get(key),b.get(key)):
+                return first_difference(a.get(key),b.get(key),path+'.'+key)
+    if isinstance(a,list) and isinstance(b,list) and len(a)==len(b):
+        for i,(x,y) in enumerate(zip(a,b)):
+            if not equivalent(x,y): return first_difference(x,y,f'{path}[{i}]')
+    return {'path':path,'python':str(a)[:300],'swift':str(b)[:300]}
 
 def main():
     cloud_only()
@@ -48,7 +70,7 @@ def main():
         py=p['python']; ref=swift[cid]
         assert py['pass']==ref['pass'], f'{cid}: Swift/Python decision mismatch'
         if py['pass']:
-            assert equivalent(py['holes'],ref['holes']), f'{cid}: Swift/Python full Hole mismatch'
+            assert equivalent(py['holes'],ref['holes']), f'{cid}: Swift/Python full Hole mismatch: {first_difference(py["holes"],ref["holes"])}'
         row={'candidate':p['candidate'],'baselineStatus':baseline.get(cid,'control'),'association':p['association'],
              'matching':{k:v for k,v in py.items() if k!='holes'},'swift':{k:v for k,v in ref.items() if k!='holes'},
              'scorecardSource':p['scorecardSource'],'stateSource':p['source'],'parserErrors':p['parserErrors']}
@@ -86,19 +108,19 @@ def main():
     passed=[r for r in original if r['status']=='data-ready']
     new=[r for r in passed if r['baselineStatus']=='unsupported']
     report={'builtAt':built,'runID':os.environ['GITHUB_RUN_ID'],'sourceCommit':os.environ['GITHUB_SHA'],
-            'sampleCount':len(original),'measuredSampleCount':len(expected)-1,'dataReady':len(passed),
+            'inputRun':read('work/input-run.json') if Path('work/input-run.json').exists() else {'id':os.environ['GITHUB_RUN_ID'],'head_sha':os.environ['GITHUB_SHA']},'sampleCount':len(original),'measuredSampleCount':len(expected)-1,'dataReady':len(accepted),'sampleDataReady':len(passed),'additionalControlDataReady':int(KIAWAH in accepted),
             'previouslyUnsupportedNowReady':len(new),'baselineReadyRetained':sum(r['baselineStatus']=='ready' for r in passed),
             'controls':controls,'rows':rows,'counts':dict(Counter(r['status'] for r in original)),
             'limitations':'Data-ready is not field-verified or an end-to-end app download. Aerial/elevation downloads and app integration are separate. No inferred numbering or changed green centers.'}
     stem=f'build-{built[:10]}-{os.environ["GITHUB_RUN_ID"]}'
     write(f'reports/{stem}.json',report); write('dist/report.json',report)
     lines=[f'# Phase 2 course data — {built[:10]}','',
-           f'**{len(passed)} distinct courses pass all data gates**, including **{len(new)} previously unsupported**. '
+           f'**{len(accepted)} distinct courses pass all data gates** ({len(passed)} from the original sample), including **{len(new)} previously unsupported**. '
            f'{len(original)} original candidates; {len(expected)-1} in state scope; Kiawah is an additional regression control.','',
            report['limitations'],'',
            f'Run: https://github.com/CraneCourse/crane-course-data/actions/runs/{os.environ["GITHUB_RUN_ID"]}',
            f'Source: `{os.environ["GITHUB_SHA"]}`','',
-           f'Lakeside: 18/18 holes; maximum center difference from app/provider control {max(0,controls["lakesideMaximumCenterDifferenceMeters"]):.6f} m. Kiawah: 11/18 mapped, rejected for missing numbers.','',
+           f'Lakeside: 18/18 holes; maximum center difference from app/provider control {max(0,controls["lakesideMaximumCenterDifferenceMeters"]):.6f} m. Kiawah API: 11/18 mapped, rejected for missing numbers. The direct extract has 18/18 and passes matching; its publication decision is listed below.','',
            'Swift CoreLocation and JSONEncoder ran on a standard GitHub macOS runner. Full exported Hole structures match the independent Python port. All common tees fit the Watch budget, with a 1 KB metadata reserve.','',
            'Boundary names must agree after conservative word normalization; aliases and conflicting subcourse numbers are not guessed. Duplicate mapped layouts count once. Invalid polygons, centers outside greens, extra hole lines and unresolved boundaries are withheld.','',
            '## Every course','', '| Course | State | Result | Reason |','|---|---|---|---|']
@@ -109,7 +131,7 @@ def main():
     Path(f'reports/{stem}.md').write_text('\n'.join(lines)+'\n')
     Path('reports/LATEST-BUILD.md').write_text(f'[Latest phase-two report]({stem}.md)\n')
     links=''.join(f'<li><a href="{html.escape(c["file"])}">{html.escape(c["name"])} ({c["holes"]} holes)</a></li>' for c in index)
-    Path('dist/index.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Crane Course data</title><style>body{font:17px system-ui;max-width:850px;margin:3rem auto;padding:0 1rem;line-height:1.6;background:#f5f8f5;color:#163d2c}a{color:#216047}</style><h1>Crane Course data</h1>'+f'<p><strong>{len(passed)} courses pass the phase-two data checks.</strong></p><p>'+html.escape(report['limitations'])+'</p><p><a href="index.json">Download index</a> · <a href="report.json">Full validation report</a> · <a href="https://github.com/CraneCourse/crane-course-data">Source and documentation</a></p><ul>'+links+'</ul><footer>© OpenStreetMap contributors · Geofabrik · OpenGolfAPI · <a href="LICENSE-DATA">ODbL 1.0</a></footer></html>')
+    Path('dist/index.html').write_text('<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Crane Course data</title><style>body{font:17px system-ui;max-width:850px;margin:3rem auto;padding:0 1rem;line-height:1.6;background:#f5f8f5;color:#163d2c}a{color:#216047}</style><h1>Crane Course data</h1>'+f'<p><strong>{len(accepted)} courses pass the phase-two data checks.</strong></p><p>'+html.escape(report['limitations'])+'</p><p><a href="index.json">Download index</a> · <a href="report.json">Full validation report</a> · <a href="https://github.com/CraneCourse/crane-course-data">Source and documentation</a></p><ul>'+links+'</ul><footer>© OpenStreetMap contributors · Geofabrik · OpenGolfAPI · <a href="LICENSE-DATA">ODbL 1.0</a></footer></html>')
     assert sum(p.stat().st_size for p in Path('dist').rglob('*') if p.is_file())<100_000_000, 'Site exceeds project safety limit'
     # Preserve actual public API controls and extracted control inputs as regression fixtures.
     for cid in (LAKESIDE,KIAWAH):

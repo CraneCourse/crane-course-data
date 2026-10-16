@@ -40,6 +40,7 @@ for file in try FileManager.default.contentsOfDirectory(at: root, includingPrope
     let candidate = row["candidate"] as! [String: Any]
     let id = candidate["id"] as! String
     func bytes(_ value: Any) throws -> Data { try JSONSerialization.data(withJSONObject: value) }
+    var controlGeometry: Any? = nil
     do {
         let center = try JSONDecoder().decode(Point.self, from: bytes(candidate["center"]!))
         let geometry: CourseDirectory.Geometry
@@ -48,6 +49,7 @@ for file in try FileManager.default.contentsOfDirectory(at: root, includingPrope
         } else {
             geometry = try JSONDecoder().decode(CourseDirectory.Geometry.self, from: bytes(row["geometry"]!))
         }
+        if row["providerFeatures"] != nil { controlGeometry = try JSONSerialization.jsonObject(with: encoder.encode(geometry)) }
         let holes = try CourseDirectory.match(scorecard: bytes(row["scorecard"]!), geometry: geometry, center: center)
         let tees = holes.dropFirst().reduce(Set(holes[0].teeYardages.keys)) { $0.intersection($1.teeYardages.keys) }.sorted()
         let sizes = try tees.map { tee in
@@ -56,6 +58,11 @@ for file in try FileManager.default.contentsOfDirectory(at: root, includingPrope
         output[file.deletingPathExtension().lastPathComponent] = ["pass": true, "holes": try JSONSerialization.jsonObject(with: encoder.encode(holes)), "watchBytes": sizes.max()!]
     } catch {
         output[file.deletingPathExtension().lastPathComponent] = ["pass": false, "reason": error.localizedDescription]
+    }
+    if let geometry = controlGeometry {
+        var entry = output[file.deletingPathExtension().lastPathComponent] as! [String: Any]
+        entry["parsedGeometry"] = geometry
+        output[file.deletingPathExtension().lastPathComponent] = entry
     }
 }
 try JSONSerialization.data(withJSONObject: output, options: [.sortedKeys]).write(to: URL(fileURLWithPath: CommandLine.arguments[2]))
