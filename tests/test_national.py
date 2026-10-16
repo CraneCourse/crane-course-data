@@ -63,7 +63,8 @@ def test_incomplete_state_is_not_absent_geometry_and_all_ids_accounted():
     assert len(rows)==4
     assert rows['a']['status']==rows['b']['status']=='incomplete'
     assert rows['c']['status']==rows['d']['status']=='outside-geography'
-    assert EXTRACTS['DC']==EXTRACTS['MD']=='maryland'
+    assert EXTRACTS['DC']=='district-of-columbia' and EXTRACTS['MD']=='maryland'
+    assert len(set(EXTRACTS.values()))==49
     with pytest.raises(AssertionError):
         aggregate(cs,[{'extract':'alabama','complete':True,'rows':[],'errors':[]}])
     with pytest.raises(AssertionError):

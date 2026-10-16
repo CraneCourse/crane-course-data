@@ -1,0 +1,174 @@
+name: Validate national geometry candidates
+on:
+  workflow_dispatch:
+    inputs:
+      geometry_run:
+        description: Completed successful national geometry run ID
+        required: true
+        type: string
+      geometry_sha:
+        description: Exact source commit of that geometry run
+        required: true
+        type: string
+      previous_run:
+        description: Optional previous validation run to resume the same survey after source reset
+        required: false
+        type: string
+      request_budget:
+        description: Shared acquisition budget (1..800), capped again per UTC day across resumes
+        default: '800'
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: national-scorecard-validation
+  cancel-in-progress: false
+env:
+  GEOMETRY_RUN: ${{ inputs.geometry_run }}
+  GEOMETRY_SHA: ${{ inputs.geometry_sha }}
+  PREVIOUS_RUN: ${{ inputs.previous_run }}
+  REQUEST_BUDGET: ${{ inputs.request_budget }}
+jobs:
+  scorecards:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - run: python -m pytest -q
+      - run: python -m pipeline.national_validation verify
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.geometry_run }}
+          name: national-geometry-evidence
+          path: .
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          github-token: ${{ github.token }}
+          run-id: '38981324295'
+          name: layout-validation-evidence
+          path: work/frozen
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        if: inputs.previous_run != ''
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.previous_run }}
+          name: national-acquisition
+          path: work/previous
+      - run: python -m pipeline.national_validation acquire
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: national-acquisition
+          path: work/national-validation
+          retention-days: 7
+  match:
+    needs: scorecards
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    permissions:
+      contents: read
+      actions: read
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        shard: [0, 1, 2, 3]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.geometry_run }}
+          name: national-geometry-evidence
+          path: .
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: national-acquisition
+          path: work/national-validation
+      - run: python -m pipeline.national_validation "$SHARD"
+        env:
+          SHARD: ${{ matrix.shard }}
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: national-matched-${{ matrix.shard }}
+          path: |
+            work/validation
+            work/national-validation/shards
+          retention-days: 7
+  validate:
+    if: always() && needs.scorecards.result == 'success'
+    needs: [scorecards, match]
+    runs-on: macos-14
+    timeout-minutes: 180
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.geometry_run }}
+          name: national-geometry-evidence
+          path: .
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          name: national-acquisition
+          path: work/national-validation
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        continue-on-error: true
+        with:
+          pattern: national-matched-*
+          merge-multiple: true
+          path: work
+      - run: python -m pipeline.national_validation controls
+      - name: Actual Swift CoreLocation, full Hole encoding and all common Watch tees
+        run: |
+          swiftc -O reference/AppKernel.swift reference/main.swift -o /tmp/course-reference
+          /tmp/course-reference work/validation work/swift.json
+          mkdir -p work/replay
+          python -m pipeline.replay
+      - id: finish
+        continue-on-error: true
+        run: python -m pipeline.national_validation finish
+      - run: python -m pytest -q
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: national-validation-evidence
+          path: |
+            work/national-validation
+            work/validation
+            work/swift.json
+            reports/national-validation-*
+          retention-days: 7
+      - name: Record research results only; no deployment
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add reports/national-validation-* reports/LATEST-NATIONAL-VALIDATION.md
+          git commit -m "Record national data validation $GITHUB_RUN_ID"
+          git pull --rebase origin main
+          git push origin HEAD:main
+      - if: steps.finish.outcome != 'success'
+        run: exit 1

@@ -79,3 +79,55 @@ require substantial additional work, and better code cannot guarantee its recove
 There is no promised national supported count or launch date. All processing and
 validation stays on standard public GitHub Actions runners; no player data, paid
 sources, vendor outreach or local course processing is used.
+
+## Cloud survey and validation workflow
+
+`national.yml` pins the successful 16,776-candidate inventory and verifies its
+workflow, branch, exact source commit and completion before reuse. A cloud canary
+run (`38982553669`, source `231ad9b`) passed 61 tests, then stopped before state
+extraction because the official Maryland extent does **not** establish DC coverage.
+The corrected allowlist uses Geofabrik's dedicated
+[District of Columbia extract](https://download.geofabrik.de/north-america/us/district-of-columbia.html),
+whose official polygon is fetched, hashed and checked on the runner. DC directory
+centers outside that extent remain unresolved. They do not invalidate other states.
+There are 49 extracts for the contiguous 48 states and DC. AK/HI remain outside
+current app geography/imagery limits.
+
+The screen reuses filtered state extracts with at most three state jobs running.
+A conservative way/boundary bounding-box index only reduces search work; the
+existing exact distance, explicit identity and numbered-layout selection still
+apply. Nine- and eighteen-hole layouts require their entire unique numbered set.
+Enough way greens is preliminary evidence only. Relation greens, parser errors,
+source dates and every candidate/state outcome are retained. Failed jobs count as
+incomplete, never as absent geometry. Geometry candidates are **not** supported
+courses. The screen does not change centers, matching thresholds or publication.
+
+`national-validation.yml` separately takes the exact successful geometry run ID and
+source SHA. One sequential client acquires public scorecards; four deterministic
+matching shards run at most two at a time, then standard macOS Actions runs the
+actual Swift kernel, existing Python quality checks, course/index schemas and Watch
+encoding gates. All 38 published identities are replayed from pinned successful
+validation run `38981324295` as separately labelled frozen controls. New layout
+identities are deduplicated by actual matched path/green IDs, with published IDs
+preferred. Fresh geometry results and frozen controls are counted separately.
+Candidate export files are retained as reviewable artifacts; neither workflow
+publishes or changes the existing 38-course catalog.
+
+[OpenGolfAPI's anonymous limit](https://courses.opengolfapi.org/pricing) is 1,000
+requests/day/IP. Acquisition therefore uses a shared ceiling of 800 calls per run
+and UTC day across its resume chain (leaving headroom for the prior 115-request
+inventory), 1.5-second pacing, bounded network timeouts and
+no automatic retries. Remaining/reset headers and HTTP 429 stop new requests; a
+resume waits for the source reset rather than rotating runner IPs to bypass it.
+Successful saved cards can be reused with their original source dates and pinned
+provenance. Optional `previous_run` resumes the same geometry survey without a new
+code push. A later dispatch must name the latest recorded validation run for that
+geometry survey; omitting the resume cannot reset its request ledger. Newly screened
+geometry can use an earlier pinned scorecard with its source date preserved. Budget and acquisition failures stay incomplete, with every candidate
+accounted for. A complete geometry survey may precede complete scorecard validation.
+
+The official [bulk schema](https://github.com/opengolfapi/data/blob/main/SCHEMA.md)
+was inspected as a possible efficient source. Its April 2026 public release carries
+per-hole pars/handicaps and explicitly excludes per-tee yardages, which these quality
+gates require. Total course yardage cannot substitute for hole/tee yardage. No bulk
+adapter, invented yardages or weakened gate was introduced.

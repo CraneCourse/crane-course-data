@@ -17,7 +17,7 @@ from pipeline.match import valid_way
 
 INVENTORY_RUN='38981104633'
 INVENTORY_SHA='dec9d728641ce1ec1a80d575e64b11a1e598a525'
-EXTRACTS=dict(STATE_NAMES, DC='maryland')
+EXTRACTS=dict(STATE_NAMES, DC='district-of-columbia')
 ALL_STATES=set(EXTRACTS)|{'AK','HI'}
 LIMITATIONS=('Geometry candidates are preliminary: explicit identity-compatible boundaries, unique 9/18 numbered hole paths and enough way greens only. '
               'No scorecard, full matching, polygon/center, actual Swift, schema, Watch, imagery-download or field verification is implied. '
@@ -58,7 +58,7 @@ def verify_dc_extent(candidates):
     """The official extract polygon, not a state-name assumption, proves coverage."""
     import hashlib
     from shapely.geometry import Polygon, MultiPolygon, Point
-    url='https://download.geofabrik.de/north-america/us/maryland.poly'
+    url='https://download.geofabrik.de/north-america/us/district-of-columbia.poly'
     with urllib.request.urlopen(url,timeout=45) as response: body=response.read(1_000_001)
     assert len(body)<=1_000_000
     lines=iter(body.decode('utf-8').splitlines()[1:]); polygons=[]; holes=[]
@@ -75,10 +75,9 @@ def verify_dc_extent(candidates):
     area=MultiPolygon([Polygon(shell,[h for h in holes if Polygon(shell).covers(Polygon(h))]) for shell in polygons])
     assert area.is_valid
     anchors=[(-77.0365,38.8977),(-77.0091,38.8899),(-76.987,38.860),(-76.98,38.94),(-77.07,38.95)]
-    assert all(area.covers(Point(p)) for p in anchors), 'Maryland extent does not establish representative DC coverage'
+    assert all(area.covers(Point(p)) for p in anchors), 'District of Columbia extent does not establish representative DC coverage'
     dc=[c for c in candidates if c['state']=='DC']
     coverage={c['id']:area.covers(Point(c['center']['lon'],c['center']['lat'])) for c in dc}
-    assert all(coverage.values()), 'DC directory coordinates outside verified Maryland extent; review extract mapping'
     evidence={'url':url,'fetchedAt':now(),'sha256':hashlib.sha256(body).hexdigest(),
               'representativeDCAnchors':anchors,'directoryDCCenterCoverage':coverage}
     write('work/national/dc-extent.json',evidence)
@@ -148,6 +147,7 @@ def survey(extract):
     assert extract in EXTRACTS.values()
     from pipeline.run_state import acquire
     states=sorted(s for s,e in EXTRACTS.items() if e==extract)
+    dc_coverage=read('work/national/dc-extent.json')['directoryDCCenterCoverage']
     candidates=[c for c in inventory() if c['state'] in states]
     target=Path(f'work/national/states/{extract}.json')
     result={'extract':extract,'states':states,'startedAt':now(),'complete':False,'rows':[], 'errors':[]}
@@ -159,7 +159,10 @@ def survey(extract):
         index=SpatialIndex(handler.ways,handler.areas)
         for candidate in candidates:
             try:
-                row,payload=screen(candidate,index)
+                if candidate['state']=='DC' and not dc_coverage.get(candidate['id'],False):
+                    row={'candidate':candidate,'stage':'directory-candidate','status':'outside-extract','reason':'Directory center outside verified DC extract extent; identity/location unresolved'}; payload=None
+                else:
+                    row,payload=screen(candidate,index)
                 if payload:
                     payload.update(state=extract,source=result['source'],parserErrors=handler.errors)
                     write(f'work/national/candidates/{candidate["id"]}.json',payload)
@@ -206,22 +209,22 @@ def aggregate(candidates, state_results):
 def report():
     candidates=inventory()
     rows,extracts,state_counts=aggregate(candidates,[read(p) for p in Path('work/national/states').glob('*.json')])
-    complete=len(extracts)==48 and all(r['complete'] for r in extracts.values()) and not any(r['status']=='incomplete' for r in rows.values())
+    complete=len(extracts)==49 and all(r['complete'] for r in extracts.values()) and not any(r['status']=='incomplete' for r in rows.values())
     result={'builtAt':now(),'runID':os.environ['GITHUB_RUN_ID'],'sourceCommit':os.environ['GITHUB_SHA'],
         'inputRun':read('work/national/input-run.json'),'dcExtentEvidence':read('work/national/dc-extent.json'),'complete':complete,'counts':dict(Counter(r['status'] for r in rows.values())),
-        'candidateCount':len(candidates),'directoryInvalidCoordinatesWithheld':23,'expectedExtractCount':48,
+        'candidateCount':len(candidates),'directoryInvalidCoordinatesWithheld':23,'expectedExtractCount':49,
         'completedExtractCount':sum(r['complete'] for r in extracts.values()),'stateToExtract':EXTRACTS,
         'stateCounts':state_counts,'extracts':[{k:v for k,v in r.items() if k!='rows'} for r in extracts.values()],
         'rows':list(rows.values()),'limitations':LIMITATIONS,
-        'dcMappingEvidence':'https://download.geofabrik.de/north-america/us/maryland.poly (verified DC extent); Maryland+DC share one cached extract'}
+        'dcMappingEvidence':'https://download.geofabrik.de/north-america/us/district-of-columbia.poly (verified DC extent); DC uses its dedicated extract'}
     stem='national-geometry-'+os.environ['GITHUB_RUN_ID']; write('reports/'+stem+'.json',result)
-    lines=['# National mapped-geometry survey','',LIMITATIONS,'',f"Complete: **{complete}**. {len(candidates)} directory candidates accounted for; {result['completedExtractCount']}/48 extracts completed. 23 invalid-coordinate listing entries remain separately withheld.",'',
+    lines=['# National mapped-geometry survey','',LIMITATIONS,'',f"Complete: **{complete}**. {len(candidates)} directory candidates accounted for; {result['completedExtractCount']}/49 extracts completed. 23 invalid-coordinate listing entries remain separately withheld.",'',
         f"Counts: `{json.dumps(result['counts'],sort_keys=True)}`",'',
         f"Run: https://github.com/CraneCourse/crane-course-data/actions/runs/{os.environ['GITHUB_RUN_ID']}",
         f"Pinned directory run: {INVENTORY_RUN}, commit `{INVENTORY_SHA}`.",'',
-        'DC uses the [official Maryland extract extent](https://download.geofabrik.de/north-america/us/maryland.poly), shared with MD. AK/HI are outside this survey geography. Relation-only greens are not fabricated as ways. Parser errors and source timestamps/hashes remain in JSON evidence.','',
-        '| State | Directory | Geometry candidates | Withheld | Outside geography | Incomplete |','|---|---:|---:|---:|---:|---:|']
-    for s,counts in state_counts.items(): lines.append('| '+' | '.join(map(str,[s,sum(counts.values()),counts.get('geometry-candidate',0),counts.get('geometry-withheld',0),counts.get('outside-geography',0),counts.get('incomplete',0)]))+' |')
+        'DC uses the [official dedicated extract extent](https://download.geofabrik.de/north-america/us/district-of-columbia.poly). AK/HI are outside this survey geography. Relation-only greens are not fabricated as ways. Parser errors and source timestamps/hashes remain in JSON evidence.','',
+        '| State | Directory | Geometry candidates | Withheld | Outside geography/extent | Incomplete |','|---|---:|---:|---:|---:|---:|']
+    for s,counts in state_counts.items(): lines.append('| '+' | '.join(map(str,[s,sum(counts.values()),counts.get('geometry-candidate',0),counts.get('geometry-withheld',0),counts.get('outside-geography',0)+counts.get('outside-extract',0),counts.get('incomplete',0)]))+' |')
     Path('reports/'+stem+'.md').write_text('\n'.join(lines)+'\n')
     Path('reports/LATEST-NATIONAL.md').write_text(f'[Latest national geometry survey]({stem}.md)\n')
     print(result['counts'],flush=True)

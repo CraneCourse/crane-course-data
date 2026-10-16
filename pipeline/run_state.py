@@ -8,7 +8,7 @@ from pipeline.extract import GolfHandler, measure
 
 def acquire(state):
     cloud_only()
-    assert state in STATE_NAMES.values()
+    assert state in set(STATE_NAMES.values())|{'district-of-columbia'}
     root = Path('work/extracts') / state
     root.mkdir(parents=True, exist_ok=True)
     filtered = root / 'golf.osm.pbf'
