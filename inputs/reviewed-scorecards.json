@@ -1,0 +1,39 @@
+{
+  "2d201c28-68ec-4897-b7b1-8f19c8984d26": {
+    "courseName": "Whistling Straits",
+    "layoutName": "Straits Course",
+    "sourcePage": "https://www.kohlerwisconsin.com/content/dam/kohler-destinations/pdf_resource/dk/golf/whistling-straits/scorecard-the-straits.pdf",
+    "url": "https://www.kohlerwisconsin.com/content/dam/kohler-destinations/pdf_resource/dk/golf/whistling-straits/scorecard-the-straits.pdf",
+    "reviewedAt": "2026-10-16",
+    "expiresAt": "2027-04-16",
+    "sha256": null,
+    "note": "Official Straits scorecard. Provider hole 6 has an inconsistent par-3 yardage; do not rotate or infer hole numbers to fit it. Numeric scorecard facts only; artwork is not redistributed.",
+    "par": [4,5,3,4,5,4,3,4,4,4,5,3,4,4,4,5,3,4],
+    "tees": {
+      "Black": [493,597,188,494,603,409,221,506,442,391,645,163,402,396,503,568,249,520],
+      "Blue": [405,533,180,451,563,378,205,470,412,376,563,138,389,360,464,545,223,487],
+      "Green": [370,521,166,414,543,360,185,429,384,334,544,118,364,346,429,535,197,424],
+      "White": [361,508,154,404,527,352,172,405,371,320,519,99,336,332,402,513,165,420],
+      "Red": [325,447,111,354,459,282,132,355,347,304,479,89,319,271,367,412,131,380]
+    },
+    "totals": {"Black":7790,"Blue":7142,"Green":6663,"White":6360,"Red":5564}
+  },
+  "9379add5-9103-43fb-a659-b6c617b65eb0": {
+    "courseName": "Texas Rangers Golf Club",
+    "layoutName": "Texas Rangers Golf Club",
+    "sourcePage": "https://www.texasrangersgolfclub.com/course-tour/",
+    "url": "https://www.texasrangersgolfclub.com/wp-content/uploads/sites/9836/2026/01/TRGC_Scorecard.jpg?w=1024",
+    "reviewedAt": "2026-10-16",
+    "expiresAt": "2027-04-16",
+    "sha256": null,
+    "note": "Official January 2026 scorecard, visually reviewed. Provider hole 2 has the official hole 11 yardage; use the club's complete card instead of rotating geometry. Numeric facts only; artwork is not redistributed.",
+    "par": [5,4,3,4,4,3,4,4,5,4,3,4,5,4,3,4,4,5],
+    "tees": {
+      "Black": [589,448,187,372,440,132,346,461,605,381,173,480,512,428,192,327,405,532],
+      "Gold": [566,400,154,349,411,123,322,405,574,359,147,431,496,393,172,306,378,501],
+      "Silver": [532,357,133,331,366,112,300,383,538,343,128,396,475,362,151,292,360,447],
+      "Bronze": [425,269,96,294,255,89,262,318,466,278,102,330,389,308,116,202,307,368]
+    },
+    "totals": {"Black":7010,"Gold":6487,"Silver":6006,"Bronze":4874}
+  }
+}
