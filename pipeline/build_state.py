@@ -22,6 +22,7 @@ def main():
     for c in candidates:
         origin = (c['center']['lon'], c['center']['lat'])
         score = read(f'work/scorecards/{c["id"]}.json')
+        if 'response' not in score: raise RuntimeError(f'Scorecard acquisition failed: {c["id"]}; retain previous publication')
         row = measure(c, handler, score)
         boundary, project, link = association(handler.areas, origin)
         ways = [w for w in handler.ways if w['tags'].get('golf') in KINDS and valid_way(w, origin)]

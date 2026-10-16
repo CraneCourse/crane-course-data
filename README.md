@@ -1,12 +1,14 @@
-# Crane Course public data measurement
+# Crane Course public course data
 
-This repository measures whether free public golf-course data can support reliable,
-complete course downloads. **It currently publishes research reports, not playable courses.**
+This repository measures and validates free public golf-course data for complete course downloads.
+Phase two publishes only courses passing the full data gates; app integration is separate.
+
+[Phase-two pipeline](PHASE2.md) · [Latest build report](reports/LATEST-BUILD.md) · [Published dataset](https://cranecourse.github.io/crane-course-data/)
 The Crane Course app source remains private and is not included here.
 
 [Latest report](reports/LATEST.md) · [Sources and terms](SOURCES.md) · [Measurement workflow](.github/workflows/measure.yml)
 
-## Current phase: measurement
+## Phase-one measurement (retained)
 
 The fixed input sample contains 207 public directory candidates from a previous coverage
 sweep: 17 passed the app's geometry checks and 190 did not. It was a selected sample,
@@ -30,7 +32,7 @@ A manually triggered GitHub Actions workflow:
 
 All processing and tests run in GitHub Actions. Entry points refuse local execution.
 There are no app telemetry inputs, player locations, rounds, credentials, paid services,
-Overpass queries, external vendors, or automatic schedules. Standard public runners are
+Overpass queries, external vendors, in the measurement workflow. The phase-two build runs weekly. Standard public runners are
 used; no larger runners or paid storage are enabled. Only the report job has write
 permission through the default short-lived GITHUB_TOKEN.
 

@@ -8,7 +8,7 @@ def main():
     for c in candidates:
         values = {}
         for suffix in ('holes', 'features'):
-            url=f'https://api.opengolfapi.org/v1/courses/{c["id"]}/{suffix}'
+            url=(f'https://api.opengolfapi.org/api/v1/features?course={c["id"]}' if suffix=='features' else f'https://api.opengolfapi.org/v1/courses/{c["id"]}/holes')
             for attempt in range(4):
                 time.sleep(1.3 + (10 * attempt if attempt else 0))
                 try:
