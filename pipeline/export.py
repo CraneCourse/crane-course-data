@@ -122,7 +122,7 @@ def main():
            f'Source: `{os.environ["GITHUB_SHA"]}`','',
            f'Lakeside: 18/18 holes; maximum center difference from app/provider control {max(0,controls["lakesideMaximumCenterDifferenceMeters"]):.6f} m. Kiawah API: 11/18 mapped, rejected for missing numbers. The direct extract has 18/18 and passes matching; its publication decision is listed below.','',
            'Swift CoreLocation and JSONEncoder ran on a standard GitHub macOS runner. Full exported Hole structures match the independent Python port. All common tees fit the Watch budget, with a 1 KB metadata reserve.','',
-           'Boundary names must agree after conservative word normalization; aliases and conflicting subcourse numbers are not guessed. Duplicate mapped layouts count once. Invalid polygons, centers outside greens, extra hole lines and unresolved boundaries are withheld.','',
+           'Boundary names must agree after conservative word normalization; aliases and conflicting subcourse numbers are not guessed. Duplicate mapped layouts count once. Invalid polygons, centers outside greens, extra numbered hole lines and unresolved boundaries are withheld.','',
            '## Every course','', '| Course | State | Result | Reason |','|---|---|---|---|']
     def safe(s): return str(s).replace('|','/').replace('\n',' ').replace('<','&lt;').replace('>','&gt;')
     for r in sorted(rows,key=lambda x:x['candidate']['name']):

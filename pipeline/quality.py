@@ -2,7 +2,7 @@ import re, unicodedata, math
 from shapely.geometry import shape, Point, Polygon, LineString
 from shapely.ops import transform
 from pyproj import Transformer
-from pipeline.match import distance
+from pipeline.match import distance, number
 
 STOP = {'the','at','of','golf','course','club','country','resort','no','tpc','private'}
 def name_tokens(name):
@@ -29,8 +29,8 @@ def check(payload, holes, watch_bytes):
     project=Transformer.from_crs('EPSG:4326',f'+proj=aeqd +lat_0={c["lat"]} +lon_0={c["lon"]} +datum=WGS84 +units=m',always_xy=True).transform
     area=shape(payload['boundary']).buffer(100)
     ways={w['id']:w for w in payload['ways']}
-    paths=[w for w in payload['ways'] if w['tags'].get('golf')=='hole']
-    if len(paths)!=len(holes): return 'Extra unassigned hole lines within course boundary'
+    paths=[w for w in payload['ways'] if w['tags'].get('golf')=='hole' and number(w) is not None]
+    if len(paths)!=len(holes): return 'Extra numbered hole lines within course boundary'
     for w in payload['ways']:
         if w['tags'].get('golf')!='hole':
             p=w['points']

@@ -52,6 +52,8 @@ def test_publication_budget_and_extra_line():
     p,holes=quality_fixture()
     assert 'Watch' in check(p,holes,54000)
     p['ways'].append(dict(p['ways'][0],id='way/999',tags={'golf':'hole'}))
+    assert check(p,holes,12000) is None  # Same unnumbered-line scope as the Swift matcher.
+    p['ways'].append(dict(p['ways'][0],id='way/1000',tags={'golf':'hole','ref':'10'}))
     assert 'Extra' in check(p,holes,12000)
 
 def test_export_schema_matches_complete_holes_and_rejects_unknown_fields():

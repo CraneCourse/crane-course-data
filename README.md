@@ -40,12 +40,12 @@ Run **Actions → Measure public course data → Run workflow**. Jobs may take s
 minutes per state. Failed downloads or missing jobs are explicitly reported, not
 silently counted as absent mapping. Reports include the exact workflow commit and run.
 
-## Limits and next decisions
+## Phase-one limits (historical)
 
 The phase-one matcher is a Python diagnostic, not a parity-certified Swift port.
 A provisional pass is only potential for phase two. Boundary identity, Swift parity,
 front/back containment, Watch size, imagery and complete export validation remain.
-Lakeside/Kiawah real-fixture parity belongs to phase two and has not been claimed here.
+Phase two now verifies Lakeside/Kiawah real fixtures; see PHASE2.md and the build report.
 
 An inference inventory count means only enough green/tee polygons exist. It does **not**
 prove which hole they belong to. Even a unique solution under a heuristic model does not
