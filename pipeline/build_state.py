@@ -52,9 +52,10 @@ def main():
             elif review is not None:
                 # Never fall back to a known-wrong provider scorecard.
                 payload['sourceResolutionError']=error
+        row['fullResult']={k:v for k,v in payload['python'].items() if k!='holes'}
         write(f'work/validation/{c["id"]}.json', payload)
         rows.append(row)
-        print(c['name'], result['rule'], result['reason'], flush=True)
+        print(c['name'], payload['python']['rule'], payload['python']['reason'], flush=True)
     write(f'work/results/{state}.json', {'state': state, 'rows': rows})
 
 if __name__ == '__main__': main()

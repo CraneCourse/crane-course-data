@@ -55,6 +55,9 @@ def first_difference(a,b,path='holes'):
             if not equivalent(x,y): return first_difference(x,y,f'{path}[{i}]')
     return {'path':path,'python':str(a)[:300],'swift':str(b)[:300]}
 
+def export_order(cid, baseline, published):
+    return (cid not in published, baseline.get(cid)!='ready', cid)
+
 def main():
     cloud_only()
     swift=read('work/swift.json')
@@ -63,10 +66,14 @@ def main():
     assert set(payloads)==expected, 'Missing or unexpected course jobs; do not replace published index'
     controls=validate_controls(swift,payloads)
     baseline={r['entry']['candidate']['id']:r['status'] for r in read('inputs/baseline.json')['rows']}
+    prior=Path('reports/build-2026-10-16-38973050174.json')
+    published={r['candidate']['id'] for r in read(prior)['rows'] if r['status']=='data-ready'} if prior.exists() else set()
+    floors=[read(p) for p in Path('reports').glob('layout-resolution-*.json') if not read(p).get('research',True)]
+    if floors: published |= set(max(floors,key=lambda r:r['builtAt'])['validatedCourseIDs'])
     built=now(); version=os.environ['GITHUB_RUN_ID']+'-'+os.environ['GITHUB_SHA'][:12]
     rows=[]; accepted={}; seen={}
     # Prefer an originally supported entry when duplicate directory identities describe one map.
-    for cid,p in sorted(payloads.items(), key=lambda item:(baseline.get(item[0])!='ready',item[0])):
+    for cid,p in sorted(payloads.items(), key=lambda item:export_order(item[0],baseline,published)):
         py=p['python']; ref=swift[cid]
         assert py['pass']==ref['pass'], f'{cid}: Swift/Python decision mismatch'
         if py['pass']:

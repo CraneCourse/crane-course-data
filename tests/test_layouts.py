@@ -87,3 +87,9 @@ def test_parent_subcourse_requires_all_explicit_numbers():
     assert error is None and len(result['layoutResolution']['compoundRefs'])==9
     p['ways'][0]['tags']['ref']='1'
     assert separate(p,[b])[0] is None
+
+
+def test_new_alias_cannot_replace_existing_published_course_id():
+    from pipeline.export import export_order
+    ids=['a-new-alias','z-already-published']
+    assert sorted(ids,key=lambda cid:export_order(cid,{}, {'z-already-published'}))[0]=='z-already-published'

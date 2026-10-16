@@ -53,7 +53,7 @@ def report():
     build=read('dist/report.json'); resolution=read('work/layout-resolution.json')
     baseline={r['candidate']['id'] for r in read('reports/build-2026-10-16-38973050174.json')['rows'] if r['status']=='data-ready'}
     ready={r['candidate']['id'] for r in build['rows'] if r['status']=='data-ready'}
-    assert baseline<=ready, 'Existing verified courses regressed; do not publish'
+    assert baseline<=ready, 'Existing verified course IDs regressed; do not publish: '+str(sorted(baseline-ready))
     added=[r for r in build['rows'] if r['candidate']['id'] in ready-baseline]
     resolution.update(runID=os.environ['GITHUB_RUN_ID'],sourceCommit=os.environ['GITHUB_SHA'],builtAt=now(),
                       baselineCount=len(baseline),dataReady=len(ready),validatedCourseIDs=sorted(ready),additionalCourses=[r['candidate'] for r in added],
