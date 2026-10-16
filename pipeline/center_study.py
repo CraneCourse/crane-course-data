@@ -1,6 +1,7 @@
 """Research only: measure an area-centroid alternative without changing exports."""
 from collections import Counter
 from contextlib import contextmanager
+from functools import lru_cache
 from copy import deepcopy
 from pathlib import Path
 from unittest.mock import patch
@@ -39,13 +40,19 @@ def area_center(way):
     # Only greens change. Other feature centers and all source vertices stay intact.
     if way['tags'].get('golf') != 'green':
         return vertex_center(way)
-    points = way['points']
+    return cached_area_center(tuple(tuple(p) for p in way['points']))
+
+
+@lru_cache(maxsize=4096)
+def cached_area_center(points):
+    # Each green is compared with many holes/features; project its unchanged
+    # polygon once. The cache key includes all vertices, not just an OSM ID.
     if len(points) < 4 or points[0] != points[-1]:
         raise ValueError('Open or incomplete green polygon')
     polygon = Polygon(points)
     if not polygon.is_valid or polygon.is_empty or polygon.area <= 0:
         raise ValueError('Invalid green polygon; no repair attempted')
-    origin = vertex_center(way)
+    origin = vertex_center({'points': points})
     crs = f'+proj=aeqd +lat_0={origin[1]} +lon_0={origin[0]} +datum=WGS84 +units=m'
     forward = Transformer.from_crs('EPSG:4326', crs, always_xy=True).transform
     backward = Transformer.from_crs(crs, 'EPSG:4326', always_xy=True).transform
