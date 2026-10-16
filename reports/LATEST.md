@@ -1,1 +1,1 @@
-The first cloud measurement is pending. No coverage claim yet.
+[Latest measurement](measure-2026-10-16-38953919597.md)
