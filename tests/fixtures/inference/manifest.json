@@ -1,0 +1,163 @@
+{
+  "ambiguous": {
+    "assignment": null,
+    "courseID": "0d2bf55e-418c-48b8-97b2-2a0a2da612a6",
+    "mask": "all",
+    "mode": "mapped-paths",
+    "status": "ambiguous"
+  },
+  "correct": {
+    "assignment": [
+      {
+        "greenID": "way/1259663870",
+        "nextTeeMeters": 35.35,
+        "number": 1,
+        "pathID": "way/1290396860",
+        "startID": "way/1290396860",
+        "yards": 535.75
+      },
+      {
+        "greenID": "way/1260470886",
+        "nextTeeMeters": 40.73,
+        "number": 2,
+        "pathID": "way/1290396859",
+        "startID": "way/1290396859",
+        "yards": 412.94
+      },
+      {
+        "greenID": "way/1259689110",
+        "nextTeeMeters": 83.32,
+        "number": 3,
+        "pathID": "way/1290396861",
+        "startID": "way/1290396861",
+        "yards": 391.17
+      },
+      {
+        "greenID": "way/1260470896",
+        "nextTeeMeters": 143.29,
+        "number": 4,
+        "pathID": "way/1290396858",
+        "startID": "way/1290396858",
+        "yards": 203.03
+      },
+      {
+        "greenID": "way/1260462316",
+        "nextTeeMeters": 37.06,
+        "number": 5,
+        "pathID": "way/1290397098",
+        "startID": "way/1290397098",
+        "yards": 456.96
+      },
+      {
+        "greenID": "way/1260462323",
+        "nextTeeMeters": 181.98,
+        "number": 6,
+        "pathID": "way/1290397820",
+        "startID": "way/1290397820",
+        "yards": 425.86
+      },
+      {
+        "greenID": "way/1260470889",
+        "nextTeeMeters": 50.69,
+        "number": 7,
+        "pathID": "way/1290397822",
+        "startID": "way/1290397822",
+        "yards": 376.9
+      },
+      {
+        "greenID": "way/1260470917",
+        "nextTeeMeters": 39.7,
+        "number": 8,
+        "pathID": "way/1290397825",
+        "startID": "way/1290397825",
+        "yards": 147.6
+      },
+      {
+        "greenID": "way/1259689105",
+        "nextTeeMeters": 81.84,
+        "number": 9,
+        "pathID": "way/1290397827",
+        "startID": "way/1290397827",
+        "yards": 416.87
+      },
+      {
+        "greenID": "way/1259738145",
+        "nextTeeMeters": 57.88,
+        "number": 10,
+        "pathID": "way/1290405740",
+        "startID": "way/1290405740",
+        "yards": 415.96
+      },
+      {
+        "greenID": "way/1260462333",
+        "nextTeeMeters": 74.13,
+        "number": 11,
+        "pathID": "way/1290405738",
+        "startID": "way/1290405738",
+        "yards": 547.83
+      },
+      {
+        "greenID": "way/1260470915",
+        "nextTeeMeters": 49.58,
+        "number": 12,
+        "pathID": "way/1290405733",
+        "startID": "way/1290405733",
+        "yards": 179.07
+      },
+      {
+        "greenID": "way/1260470895",
+        "nextTeeMeters": 37.76,
+        "number": 13,
+        "pathID": "way/1290405741",
+        "startID": "way/1290405741",
+        "yards": 407.45
+      },
+      {
+        "greenID": "way/1260471856",
+        "nextTeeMeters": 111.87,
+        "number": 14,
+        "pathID": "way/1290405734",
+        "startID": "way/1290405734",
+        "yards": 382.04
+      },
+      {
+        "greenID": "way/1260480480",
+        "nextTeeMeters": 119.96,
+        "number": 15,
+        "pathID": "way/1290405737",
+        "startID": "way/1290405737",
+        "yards": 537.41
+      },
+      {
+        "greenID": "way/1260480485",
+        "nextTeeMeters": 111.06,
+        "number": 16,
+        "pathID": "way/1290405731",
+        "startID": "way/1290405731",
+        "yards": 374.37
+      },
+      {
+        "greenID": "way/1260470893",
+        "nextTeeMeters": 83.43,
+        "number": 17,
+        "pathID": "way/1290405732",
+        "startID": "way/1290405732",
+        "yards": 235.23
+      },
+      {
+        "greenID": "way/1259689097",
+        "nextTeeMeters": 34.89,
+        "number": 18,
+        "pathID": "way/1290405735",
+        "startID": "way/1290405735",
+        "yards": 351.61
+      }
+    ],
+    "courseID": "0d2bf55e-418c-48b8-97b2-2a0a2da612a6",
+    "mask": [
+      1
+    ],
+    "mode": "mapped-paths",
+    "status": "unique-hypothesis"
+  }
+}
