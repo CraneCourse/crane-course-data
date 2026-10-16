@@ -1,0 +1,8 @@
+{
+  "appCommit": "c37e6036088759faddc59e5c3364f88e3c6eea31",
+  "purpose": "Only the authorized public data matching/model kernel; no app UI, accounts or player data.",
+  "sourceSHA256": {
+    "CourseData.swift": "55766bcd5397af6862a214ce59e86764fecaaa49ea1419a97f54c79297be3d51",
+    "CourseDownload.swift": "71b09398879bb7d1e7cea53794455e698ee169630395f428360654ce8f066a3a"
+  }
+}

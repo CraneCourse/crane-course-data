@@ -1,0 +1,1 @@
+Public OSM/OpenGolfAPI controls are captured by the successful cloud build, including source provenance. No player data. ODbL 1.0; © OpenStreetMap contributors via Geofabrik and OpenGolfAPI. They are replayed independently in subsequent builds before fresh controls are checked.

@@ -1,0 +1,17 @@
+# Phase 2: mapped course exports
+
+Run **Actions → Build validated course data → Run workflow**. It also runs weekly on Monday at 06:23 UTC. Standard public GitHub runners only; no processing on the owner's computer, secrets, player information, paid sources, or Overpass calls.
+
+The pipeline reuses the phase-one state/scorecard caches and prepares all 146 state-scoped sample entries plus Kiawah as an extra regression control. Complete extraction precedes a standard macOS runner's Swift CoreLocation comparison. `reference/AppKernel.swift` contains only the authorized model/matching kernel from app commit c37e603, with source hashes recorded alongside. No UI, application project, account, or user data is published.
+
+`full_match.py` ports the complete Hole output. The Swift reference independently checks acceptance and every field, including path replacement, feature assignment, and front/center/back. Lakeside is also compared against the app parser's live OpenGolfAPI geometry; every green center must agree within 1 metre. Kiawah must remain rejected for its eleven mapped holes (4–6 and 12–15 absent). Changed control evidence halts publication for inspection. Successful builds retain public real fixtures for subsequent replay.
+
+Publication additionally requires closed valid polygons, front/center/back inside the matched green, all points within the boundary plus 100 m and geographic limits, no extra hole lines, conservative course/boundary name agreement, JSON-schema validation and an actual Swift-encoded Watch payload for every common tee. A further 1 KB is reserved below 55 KB for round metadata. Duplicate identical mapped layouts count only once. Unknown aliases, unnamed or overlapping boundaries, multipart relation greens, inferred hole numbers and area-weighted centers are not guessed.
+
+These deliberately stricter gates can exclude courses the current app accepts. Reports list every exclusion. **Data-ready does not mean field-verified, end-to-end download tested, or available in the app.** The app and its existing downloads are unchanged. NAIP imagery/3DEP elevation downloads remain a later integration check. No screenshot, aerial image or elevation grid is hosted here.
+
+`dist/index.json` contains relative file paths, checksums, tee choices, version and timestamp. Each file uses the app's exact Point/Hole encoding inside the planned new envelope; the app does not yet download this envelope. Schemas are in `schemas/` and published alongside data. Geometry is OSM-mapped; no inferred numbering is published.
+
+Only a complete successful run deploys, via an artifact from the same workflow. Operational failure leaves the previous site intact; consumers must check `builtAt`. A static index and report are committed/exported before deployment. The website exposes only public course data under ODbL. State input checksums, timestamps, association decisions and all matching results are retained in the report; detailed validation artifacts expire after seven days. No larger runner or paid hosting is used.
+
+The original 207-entry sample is selected, not representative national coverage. The denominator and additional Kiawah control are reported separately. The green-center displacement report from phase one remains available; centers still use vertex means.
