@@ -26,3 +26,11 @@ def test_candidates_keep_only_public_directory_fields():
 def test_national_inventory_includes_unsupported_geographies_explicitly():
     assert len(STATES)==51
     assert {'AK','HI','DC'} <= set(STATES)
+
+
+def test_live_lat_lng_fields_and_conflicting_aliases():
+    row={'id':'24925661-c5ad-4a89-87f2-b97a8f77fe83','course_name':'Course','state':'NY','lat':42.0,'lng':-77.0}
+    assert candidate(row,'NY')['center']=={'lat':42.0,'lon':-77.0}
+    row['latitude']=43.0
+    with pytest.raises(ValueError,match='Conflicting'):
+        candidate(row,'NY')

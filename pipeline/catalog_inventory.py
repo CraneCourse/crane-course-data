@@ -12,8 +12,8 @@ import uuid
 from pipeline.common import cloud_only, STATE_NAMES, now, write
 
 STATES = sorted(set(STATE_NAMES) | {'AK', 'HI', 'DC'})
-LIMIT = 200
-MAX_REQUESTS = 180  # Shared serial client; do not evade source daily limits.
+LIMIT = 500
+MAX_REQUESTS = 120  # Shared serial client; do not evade source daily limits.
 
 
 def candidate(row, requested_state):
@@ -21,7 +21,11 @@ def candidate(row, requested_state):
     name = row.get('course_name') or row.get('name')
     if not isinstance(name, str) or not name.strip():
         raise ValueError('Missing course name')
-    lat, lon = row.get('latitude'), row.get('longitude')
+    # Live state listings use lat/lng; the published OpenAPI schema lists
+    # latitude/longitude. Accept either explicit pair, never swapped coordinates.
+    lat, lon = row.get('lat', row.get('latitude')), row.get('lng', row.get('longitude'))
+    if ('lat' in row and 'latitude' in row and row['lat'] != row['latitude']) or ('lng' in row and 'longitude' in row and row['lng'] != row['longitude']):
+        raise ValueError('Conflicting coordinate fields')
     if any(isinstance(v, bool) or not isinstance(v,(int,float)) or not math.isfinite(v) for v in (lat,lon)):
         raise ValueError('Missing or nonfinite coordinates')
     if not -90 <= lat <= 90 or not -180 <= lon <= 180:
@@ -75,6 +79,9 @@ def main():
                         all_candidates[c['id']]=c
                     except (ValueError,TypeError,KeyError) as exc:
                         errors.append({'id':row.get('id'),'reason':str(exc)})
+                if page_count == 1 and not any(c['state']==state for c in all_candidates.values()):
+                    errors.append('First page has no parseable candidates; stop acquisition for schema review')
+                    stop=True; break
                 offset+=len(rows)  # Honor server clamping; require an empty terminal page.
             except urllib.error.HTTPError as exc:
                 errors.append(f'HTTP {exc.code}; no automatic retries in inventory')
