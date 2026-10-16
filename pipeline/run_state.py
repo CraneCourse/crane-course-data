@@ -6,12 +6,9 @@ from pathlib import Path
 from pipeline.common import cloud_only, STATE_NAMES, sample, state_for, read, write, now
 from pipeline.extract import GolfHandler, measure
 
-def main():
+def acquire(state):
     cloud_only()
-    parser = argparse.ArgumentParser()
-    parser.add_argument('state', choices=sorted(STATE_NAMES.values()))
-    args = parser.parse_args()
-    state = args.state
+    assert state in STATE_NAMES.values()
     root = Path('work/extracts') / state
     root.mkdir(parents=True, exist_ok=True)
     filtered = root / 'golf.osm.pbf'
@@ -27,6 +24,18 @@ def main():
         write(metadata_path, {'url': url, 'downloadedAt': now(), 'sha256': digest, 'fileInfo': info,
                              'httpHeaders': headers.read_text(), 'filter': ['nwr/golf', 'wr/leisure=golf_course']})
         raw.unlink()  # Only a transient downloaded public input; keep the small filtered cache.
+    return root
+
+
+def main():
+    cloud_only()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('state', choices=sorted(STATE_NAMES.values()))
+    args = parser.parse_args()
+    state = args.state
+    root = acquire(state)
+    filtered = root / 'golf.osm.pbf'
+    metadata_path = root / 'source.json'
     handler = GolfHandler()
     handler.apply_file(str(filtered), locations=True, idx='flex_mem')
     rows = []
