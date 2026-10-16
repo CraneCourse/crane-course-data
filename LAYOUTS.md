@@ -7,6 +7,23 @@ and the approved App Store submission are unchanged. These are data-ready course
 real-device downloads, aerial imagery, field accuracy and app integration remain
 separate checks.
 
+## Validated result
+
+[Run 38978798804](https://github.com/CraneCourse/crane-course-data/actions/runs/38978798804)
+passed all validation and deployed **38 distinct courses**, up from 32 with all
+previous IDs retained. All 45 tests passed, along with actual Swift/Python parity,
+Watch-size, schema and the existing real-course controls. Inputs were the frozen
+147-course cloud audit; this was not a fresh national extraction.
+
+The six additions are Scottsdale Silverado Golf Club, Pebble Beach Golf Links,
+PGA West Private Jack Nicklaus Private Course, Pinehurst No. 2, Texas Rangers Golf
+Club and Torrey Pines South. See the linked report for full per-course results.
+
+Whistling Straits' scorecard is corrected but the course remains withheld: hole 6's
+existing vertex-average center is outside its green. Pinehurst No. 5 remains
+withheld because hole 5's mapped 165.2-yard path conflicts with its longest listed
+tee of 428 yards. Neither failure is bypassed to increase coverage.
+
 ## What changed
 
 - Match a directory entry to a uniquely named OSM boundary before matching holes.
