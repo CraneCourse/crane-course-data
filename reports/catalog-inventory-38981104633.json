@@ -1,0 +1,1946 @@
+{
+  "builtAt": "2026-10-16T23:26:29.335160+00:00",
+  "completeStatePaginationCount": 51,
+  "countsByState": {
+    "AK": 31,
+    "AL": 182,
+    "AR": 217,
+    "AZ": 469,
+    "CA": 1148,
+    "CO": 310,
+    "CT": 212,
+    "DC": 8,
+    "DE": 52,
+    "FL": 1543,
+    "GA": 488,
+    "HI": 107,
+    "IA": 383,
+    "ID": 139,
+    "IL": 575,
+    "IN": 310,
+    "KS": 277,
+    "KY": 185,
+    "LA": 157,
+    "MA": 408,
+    "MD": 174,
+    "ME": 157,
+    "MI": 837,
+    "MN": 360,
+    "MO": 275,
+    "MS": 164,
+    "MT": 127,
+    "NC": 630,
+    "ND": 82,
+    "NE": 183,
+    "NH": 124,
+    "NJ": 364,
+    "NM": 114,
+    "NV": 120,
+    "NY": 1022,
+    "OH": 527,
+    "OK": 236,
+    "OR": 177,
+    "PA": 763,
+    "RI": 67,
+    "SC": 432,
+    "SD": 87,
+    "TN": 212,
+    "TX": 637,
+    "UT": 149,
+    "VA": 416,
+    "VT": 87,
+    "WA": 361,
+    "WI": 475,
+    "WV": 142,
+    "WY": 74
+  },
+  "limitations": "Directory inventory only, not supported-course counts or a geometry survey. Name/coordinate validation does not establish identity, complete scorecards, mapping, imagery availability or field accuracy. AK/HI are counted separately; current app geography/imagery gates exclude them. No player data.",
+  "requestBudget": 120,
+  "requestCount": 115,
+  "runID": "38981104633",
+  "sourceCommit": "dec9d728641ce1ec1a80d575e64b11a1e598a525",
+  "sources": [
+    {
+      "fetchedAt": "2026-10-16T23:23:02.998119+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "499",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 31,
+      "sha256": "a89bd23f1c27f3d1e6d2ffd30c323358deb13204d4c1c4415a6fbf00f94d805f",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/AK?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:23:05.027278+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "498",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "5a96afc0a4f0fc9d2bd4e6464f275318c1fde500c327a8ac09392868090a3504",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/AK?limit=500&offset=31"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:23:06.973107+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "497",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 182,
+      "sha256": "f69f0d4fd253378aea794af5cc71a5ba5b2fc7809c10926d5829d2608aedf434",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/AL?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:23:09.040182+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "496",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "9ce454b02b8528dd5d81d71f6f07447679ad687cecb977d7e42b2b8d86868684",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/AL?limit=500&offset=182"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:23:11.027448+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "495",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 217,
+      "sha256": "120ec8e940f5d471ca4aafae346f61d1e70961b777981876ceda07a2b12e9218",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/AR?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:23:12.779987+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "494",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "7dbbba9673c554550963537bfc83386226d1521117c44c80221cd697859ecd44",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/AR?limit=500&offset=217"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:23:14.625718+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "493",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 469,
+      "sha256": "582da47b111aa0c5688111ab4d5d2334b7370bf1941427fb411371be6c78c2f1",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/AZ?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:23:16.414705+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "492",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "485759ad9e23573b76bae1593b58711790b8a3be0831bcc5985d0503a3deb433",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/AZ?limit=500&offset=469"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:23:18.323107+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "491",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 500,
+      "sha256": "79596bf0c1757bee01eb6d297a7487264645d6e5c169febc663fd43775913606",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/CA?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:23:20.161730+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "490",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 500,
+      "sha256": "652d06859ed6536491c2fad565455a7e9d1186d8cd6a6bc205fcae3a2b52e117",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/CA?limit=500&offset=500"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:23:21.937822+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "489",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 149,
+      "sha256": "741f54614cac10ff00f9ec277408bf161b324e79cfc15a46b37322f111939d44",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/CA?limit=500&offset=1000"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:23:23.736070+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "488",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "8f2bd0e793065dd95e88e43d3c269e9de66f2184b4c9839e8abcaa735da11483",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/CA?limit=500&offset=1149"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:23:25.570156+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "487",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 314,
+      "sha256": "3fe4ccd849a07634eb58347e48b61ef3ba7c8d9a82a68487524bc08ff6bc70f6",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/CO?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:23:27.404607+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "486",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "f9625be93e478863e47120c14a2b13b430ed6c8cdd8369d7d14e8767d15df9b6",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/CO?limit=500&offset=314"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:23:29.185187+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "485",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 213,
+      "sha256": "e460945ca50501a181ede75da0e154f39916cb2b92531d4855d024b080c0dd33",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/CT?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:23:30.946183+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "484",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "a33f9dc5eba5f2b31a17504ec95803a61bf52d0c6724abd5a1a4d74ac11db8f3",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/CT?limit=500&offset=213"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:23:32.746028+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "483",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 10,
+      "sha256": "bf570ef40039c0186abd8c1124f4fe154cdd4c6814bdc8afab1f0c8de07f115e",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/DC?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:23:34.511649+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "482",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "25958d0cfe8e98614f0ab48b2c2100fe1ee6e86064c84c9dd1ba91bd344ef944",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/DC?limit=500&offset=10"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:23:36.298688+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "481",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 52,
+      "sha256": "6b576a3096c2c7459502f96d4d5125af7d20e3a134b6ca2f4c522b7ec8549fb6",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/DE?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:23:38.117675+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "480",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "c4f66e655f63e39861f181ece5c182261a78e1bb838b0c2727ded8f26f9aa6cd",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/DE?limit=500&offset=52"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:23:39.990456+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "479",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 500,
+      "sha256": "709378c5e4a48bb70ca2414ac5bc7fd3e563ac4dd0a88ceb0de827aadfe83225",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/FL?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:23:41.894676+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "478",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 500,
+      "sha256": "96ab50b8daba0a3ebcba597a41c138157a546bdc1dbb8ca4ae377d31d4fc5ab4",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/FL?limit=500&offset=500"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:23:43.769488+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "477",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 500,
+      "sha256": "ec8c89bfb10fe3d1377b5b5abc4b1ac60cce5de68cdfab71ede29149d7e4f1a3",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/FL?limit=500&offset=1000"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:23:45.550275+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "476",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 46,
+      "sha256": "4dbbe7f2f471820d49f86c283e65beafa20546517a682662b53cbffaf020bdf6",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/FL?limit=500&offset=1500"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:23:47.422272+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "475",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "32fd2221ac98efac0e87ad0b2e5147acc5fdf0c812e466d88c4cfbfcb8a61e9d",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/FL?limit=500&offset=1546"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:23:49.257694+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "474",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 489,
+      "sha256": "262eeced7a75f01b58036a4eeef58d3a12925ab72629966b203dcaca4c99437a",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/GA?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:23:51.065111+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "473",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "82884a0497b16dada9dead495f3a551a8a9637ee1d08df76386da2ad6eeeb38a",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/GA?limit=500&offset=489"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:23:52.875789+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "472",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 107,
+      "sha256": "451b7ca834adbad8ee8bdd12f9d92b8139d54825eaf25b234ca8a66b0cb94b49",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/HI?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:23:54.663625+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "471",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "f2bf9866d09d8d4b2b033ac78cce43395e236051e7fde1bda301ac7002c6e853",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/HI?limit=500&offset=107"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:23:56.527508+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "470",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 383,
+      "sha256": "24fda06162b3fda9a003c0d4ec2824207f03fe21966a5d7e913c09b1d7703575",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/IA?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:23:58.305568+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "469",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "152a9f095341bcd4489ea6042e6f38833358dd81596b6ba162aa3304e0c60e0c",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/IA?limit=500&offset=383"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:00.063533+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "468",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 139,
+      "sha256": "b4941e2734b27fc27192326ecb8e305a7daea7c897da0372121addedfb76dc71",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/ID?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:01.846326+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "467",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "9bab7632366a5df2608a66b548dea16955af31c3f63894bc362304a62317cd9f",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/ID?limit=500&offset=139"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:03.698086+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "466",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 500,
+      "sha256": "a1e83850dbad028f00953b265117718a972dac1d158d9ae0d66bc0337cbf8596",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/IL?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:05.514515+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "465",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 75,
+      "sha256": "0a92e3e5b2f2a0186a0d5957494135135f39594be50d9cae1ab9106bce0b188f",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/IL?limit=500&offset=500"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:07.292265+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "464",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "9eb18344ca5f6056b7def432b6b1bd488edc6c42500f79e1fceb2dbadeef43e0",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/IL?limit=500&offset=575"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:09.114699+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "463",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 310,
+      "sha256": "57bb4e09a88ca4752596b635c1b0c0035ab113aeab0c7589d1977da6bb639454",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/IN?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:10.873973+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "462",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "76eb40942dab65140cd26fd80f70addb9db59f373f033be7b1ecc8404de84464",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/IN?limit=500&offset=310"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:12.721008+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "461",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 279,
+      "sha256": "491464c415faa58e75318a5c01fa30bf95013206f59001d82a183c1147ca7d99",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/KS?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:14.462497+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "460",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "d711f8d56d89a95c5f40c8b0ea9eb0039d69d550f1960ce9f85831878ccbd197",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/KS?limit=500&offset=279"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:16.227978+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "459",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 185,
+      "sha256": "a6c1fe53b0b0d1253cbc205069495d5a754dbb4912447cf0b70bb6cddc0c6847",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/KY?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:18.005957+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "458",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "8c00d954106420f516bb36b7ab3e1c4064cb72ab19eee74d87eee39d4e2eab2e",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/KY?limit=500&offset=185"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:19.855361+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "457",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 157,
+      "sha256": "83298604c158a59d7885f78b9c149c18f78a892d2a3ea30ff50a06ad7fcb8d8f",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/LA?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:21.690105+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "456",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "421290de514dbae5ec10a7d03d19a1e1231c3665639e72126f5610a0a2fe0b3c",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/LA?limit=500&offset=157"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:23.545059+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "455",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 413,
+      "sha256": "2ed27fced278585a3a77b7a1008b5245c31bd30dfd775c259333daf71c8c6e2f",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/MA?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:25.331363+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "454",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "85934c2295585631eb19cac7749fa2657078c0997396f7cd2525f373c10d2844",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/MA?limit=500&offset=413"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:27.155001+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "453",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 174,
+      "sha256": "dfb3e3fb16731a405aa05179600019e7536a518fdf3a914851c85aa1ae02338f",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/MD?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:28.910723+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "452",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "160469ebe5164946559cee337525189899f53c8a852d97d1597296cee8dc5517",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/MD?limit=500&offset=174"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:30.693314+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "451",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 159,
+      "sha256": "421b83bafe6d122500006c82cd6e7078897642d59d93d894f06200d4aa2c8083",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/ME?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:32.463501+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "450",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "2ab0729df800074f9dd579d580474cf9a3ab60d3977b10ded8de6661077ec935",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/ME?limit=500&offset=159"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:34.345786+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "449",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 500,
+      "sha256": "b84f30c26ba4d3e569e9184ef0fcf20b8e841671bee2f42d0d08994b21caae8d",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/MI?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:36.184445+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "448",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 337,
+      "sha256": "ac0ecdbd840e8935396b783693364da73c5ee82d1e73bdcafee8f40bb27d98b6",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/MI?limit=500&offset=500"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:38.119513+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "447",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "cb086d53c29dee3822ac51f9e7b28d1366850576a92217e9f8a6939d4c2afd50",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/MI?limit=500&offset=837"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:39.947650+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "446",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 361,
+      "sha256": "fd6b2e18b037ce5da7086f2041b72a687e7eb7d783b7af740e6c9f62003482df",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/MN?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:41.719216+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "445",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "95e3e80436bc9255637c930482c709cebc70099dd897ec5daaaf15841179ea00",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/MN?limit=500&offset=361"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:43.529721+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "444",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 275,
+      "sha256": "9cc93385ce16c4f6a0bee65319acd24d15b7367a356d6fb7745a973cbc8caa6a",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/MO?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:45.336455+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "443",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "7c0c4badd7f0c36a25ef41be2dfd822ef67f5e62c88f28ce61f3c818b37aed04",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/MO?limit=500&offset=275"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:47.085069+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "442",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 164,
+      "sha256": "af0371820ed880b7417e6742128cd1e6c182b9660f2968f1e9cacf305b5e0791",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/MS?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:48.874499+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "441",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "588006b7a6101c9b9c36108e37b609b2d045927f78b5af94186f764ec0134cdd",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/MS?limit=500&offset=164"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:50.627865+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "440",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 127,
+      "sha256": "69d6fd2cfd495fabd5ed6eb79b3272401558aabf7cd9435be00338b24aa19a10",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/MT?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:52.376188+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "439",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "a83cf47a062a796d247888da246c39d5fa00d128d06edfa3980b535a993ee466",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/MT?limit=500&offset=127"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:54.222917+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "438",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 500,
+      "sha256": "2fac58b92bf86d7e9a6db4d74a3863f802bdeeebbb53a1d148c244a0da79b46d",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/NC?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:56.029121+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "437",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 130,
+      "sha256": "4ab1dae18d0f2245c1f5ca88fc4f2849f852de8b2cec8840294c6abaac1cfb4e",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/NC?limit=500&offset=500"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:57.773374+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "436",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "48533fb94d561fe0fa10d03d8fc4a69c0b102fad42c6f8f602754b700ef2dba7",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/NC?limit=500&offset=630"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:24:59.515549+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "435",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 82,
+      "sha256": "fcf50d5cba6f10050cf5da82ef3acbf1782f2a782370af4271be5a36d30453d1",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/ND?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:01.261587+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "434",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "b52aaff1024b367f205528d61c2ec0a667a79bf23f075bcac7be3afd72ef77ad",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/ND?limit=500&offset=82"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:03.087901+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "433",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 183,
+      "sha256": "b56363f79d1b9f0825ec07ba7a0b61acf63072718ec87792ec406661b7957f40",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/NE?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:04.864458+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "432",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "b4794e1fdbcf44944bfe154056558ef033e5f855259120b950f7c28b5522e139",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/NE?limit=500&offset=183"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:06.623184+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "431",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 124,
+      "sha256": "8499ba2e03feb9d3e6bf843fbd496b7b905e976e9b6275d80cde2d836eeab0f8",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/NH?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:08.370987+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "430",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "6fd4564f513c57c02f5288fab4d00b4415b147034d6a894d10ceddf70ecf77f1",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/NH?limit=500&offset=124"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:10.255362+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "429",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 364,
+      "sha256": "ab4db44e198323f56a024297d44f616f30cfde2e42fb2d251043d5d588a9f6a5",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/NJ?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:12.046644+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "428",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "61ad30eeec49670afd296b418fbc58246b0813a867faf168d605f5349bf8b310",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/NJ?limit=500&offset=364"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:13.958482+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "427",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 114,
+      "sha256": "ae7e10a429724de756a2806e4f09413b6f8e53aab76fbd68c60860b37226212f",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/NM?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:15.730047+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "426",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "236a25f0435375a4ba15d44ccfb4925281bb556975f8e3b674f80ad41f9dd940",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/NM?limit=500&offset=114"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:17.481044+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "425",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 120,
+      "sha256": "3cb674ee3161077dfb3b5f13269c54a9aec740bc9b9a2223a2dae7d2265ecb99",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/NV?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:19.258423+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "424",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "fc4321fc066fb6d0aa7810c645a2585ad90028ccbef0029e2a34f0e978d25fa4",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/NV?limit=500&offset=120"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:21.107988+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "423",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 500,
+      "sha256": "fb5323d61339e6c6df68202c8c85e281321fc4e0597a43dc72fffa403447493d",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/NY?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:22.968733+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "422",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 500,
+      "sha256": "439ab7bb8eee0189a51bd525e25d7c63b50453f6caeafcf177ee322f543ce366",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/NY?limit=500&offset=500"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:24.805525+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "421",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 22,
+      "sha256": "ff5b8908ee63356711c04cc7de56059f7f3388690f042e06bfe0395950009a60",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/NY?limit=500&offset=1000"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:26.577971+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "420",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "4739904a0f69499d81ffc0c36075cea54b94cda52d6512d7d4c76cc4bf00f862",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/NY?limit=500&offset=1022"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:28.401628+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "419",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 500,
+      "sha256": "450979cf525e1b6de8c783cc2a69ec78b8b534f3da5caa011754469301152018",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/OH?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:30.168279+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "418",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 27,
+      "sha256": "3ad2afb909eddb703d4cd7493c7a2732db80574d96283464adb5907cf19ef273",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/OH?limit=500&offset=500"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:31.929247+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "417",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "663a702633e7c6435aaec8e8ff2639901afb967a0721a777d88b6ae7e8459e8c",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/OH?limit=500&offset=527"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:33.750447+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "416",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 236,
+      "sha256": "13d174e37c132863ff3b7b5deb8a6412520242d7ddca1c534c64f647271a0df9",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/OK?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:35.511436+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "415",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "0c1dd7edcfc4f8de733f5d88c6c5feee0a100d015a48e52a51ec8de3575446e0",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/OK?limit=500&offset=236"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:37.272933+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "414",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 177,
+      "sha256": "26f649deaf0c38d2ec0f157328ba380af93d89ddac90961e906b259343019556",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/OR?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:39.022821+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "413",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "f8d954326c54191b53751ad822608b1cb0b90eb87c0e14a50ddbd7928319e336",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/OR?limit=500&offset=177"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:40.903910+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "412",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 500,
+      "sha256": "bdb645f26929fde4417c56ae2a93b8d7a5e2ccb223ed2cfe78ff037cfd1fb07f",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/PA?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:42.703054+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "411",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 263,
+      "sha256": "0dda8a6bcbd793a3df53a940ae7b49278a38e6c8c491d8f79e9dab454c3d3164",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/PA?limit=500&offset=500"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:44.484657+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "410",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "8b019fee110f170f2e27d75ad8abca7c30e88015a61745fc03a4518b38dcc2b2",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/PA?limit=500&offset=763"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:46.271114+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "409",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 67,
+      "sha256": "de97c1eedbf11be699d4b32b98778721b1d1d18738a34cf840101f11aa5863c1",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/RI?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:48.017031+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "408",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "d85bfc2ab5af7baaeba98356a0e77433af211143259f09619af1e5c833d731e3",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/RI?limit=500&offset=67"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:49.824964+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "407",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 432,
+      "sha256": "e3db434435f3fec5e7b85f0206d77d16af7c1c389e1735fff3e94d252eb0ebf7",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/SC?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:51.638384+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "406",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "324914e0cf948e222079461454e869d2cb2a0073a4123f8f29c52101ec1607c1",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/SC?limit=500&offset=432"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:53.477421+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "405",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 87,
+      "sha256": "8c64ebeebce01fff2e4ffe9e76a4dfcbfac50f407dac0bae93b44636f3e24f0b",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/SD?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:55.316056+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "404",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "7d0b3af687774ce05f0622dbd088e33355de70f42e8a5849db482a528d848c27",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/SD?limit=500&offset=87"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:57.075455+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "403",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 212,
+      "sha256": "67b6581ec688e6de66ae8aff29b4ccedab3cb443b85624c90858a8260fd8cc79",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/TN?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:25:58.855860+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "402",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "cae93dee2657fd684954fa9552057b5b5eb11394df9f0c8a7a31088a5933b0ff",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/TN?limit=500&offset=212"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:26:00.707020+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "401",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 500,
+      "sha256": "93c30df4b7b4237136b6660707dd9f2a2458c68a9842561dbbd15b8e8218bf3e",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/TX?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:26:02.509432+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "400",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 137,
+      "sha256": "2cb5af5aa18207de6c0974913fb29a48623f787b2bf92cff19a28fdb0850677f",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/TX?limit=500&offset=500"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:26:04.331418+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "399",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "be9c6fef112684d395059a6495f90ac744f362ecad73c982b1bde22356b11f01",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/TX?limit=500&offset=637"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:26:06.092326+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "398",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 149,
+      "sha256": "615c36ac3615bf6ffb3b77d2afecfcab9d1bd2399cbe006701e53144f90f3369",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/UT?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:26:07.851944+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "397",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "8027ea8c5b97a7c148ca5ac44c0cacdc6639473bcab0f054939af6b38fa7eece",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/UT?limit=500&offset=149"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:26:09.658004+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "396",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 416,
+      "sha256": "a9ab50f75737ceb931d05f7b79c08ca75b434ba5bc54815d4e57f7b0a27ce510",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/VA?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:26:11.454499+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "395",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "8f91f349ecfa0c0f359a643bdb6cf77aa8ffca6424881595d3ec5d8ace2eb03e",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/VA?limit=500&offset=416"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:26:13.312865+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "394",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 87,
+      "sha256": "317d6ddf41adeb3e4a8cb3497b646a683a29ed85b6472f9526072094a3e77d95",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/VT?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:26:15.051435+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "393",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "7d0b3af687774ce05f0622dbd088e33355de70f42e8a5849db482a528d848c27",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/VT?limit=500&offset=87"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:26:16.874679+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "392",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 361,
+      "sha256": "decf06854b2decf3ba40fa85a327871d0ef4d8704e045d69fa7621f43ad9a05e",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/WA?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:26:18.647363+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "391",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "95e3e80436bc9255637c930482c709cebc70099dd897ec5daaaf15841179ea00",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/WA?limit=500&offset=361"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:26:20.472888+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "390",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 475,
+      "sha256": "86400885227706d8eb8618cc09f333f847ce953a0370b3f49cb447b539a45dd4",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/WI?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:26:22.235880+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "389",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "9bb73473ff4919c1509422d45553ffe9d730e7cfd3acfc40e86f10eec71ebf87",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/WI?limit=500&offset=475"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:26:23.974927+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "388",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 142,
+      "sha256": "b65800a097840b449d8a22caa6038c877d1b42293d9b73f5c29fa681321a0beb",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/WV?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:26:25.759681+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "387",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "bc0bf5962f7629c6ca4815c3d1753dda756cfaf9e77f84a0bcc9db3087a0fd8f",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/WV?limit=500&offset=142"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:26:27.528994+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "386",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 75,
+      "sha256": "508e6ed100a22b4f6db464a32cb2513b236f2b6ca0c578e46129f672c524b51f",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/WY?limit=500&offset=0"
+    },
+    {
+      "fetchedAt": "2026-10-16T23:26:29.332328+00:00",
+      "rateHeaders": {
+        "X-RateLimit-Limit": "500",
+        "X-RateLimit-Remaining": "385",
+        "X-RateLimit-Reset": "2026-10-17T00:00:00Z"
+      },
+      "returned": 0,
+      "sha256": "86aea58e83a0bf52c0700913c7245557cc05e1e73e4a2ffca9817c0223c7a96d",
+      "url": "https://api.opengolfapi.org/api/v1/courses/state/WY?limit=500&offset=75"
+    }
+  ],
+  "stateCount": 51,
+  "states": [
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        31
+      ],
+      "returnedIDs": 31,
+      "state": "AK",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        182
+      ],
+      "returnedIDs": 182,
+      "state": "AL",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        217
+      ],
+      "returnedIDs": 217,
+      "state": "AR",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        469
+      ],
+      "returnedIDs": 469,
+      "state": "AZ",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [
+        {
+          "id": "a66a239e-cf5e-49d5-a97e-a2e48b11e3f7",
+          "reason": "Missing or nonfinite coordinates"
+        }
+      ],
+      "pages": 4,
+      "reportedTotals": [
+        1149
+      ],
+      "returnedIDs": 1149,
+      "state": "CA",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [
+        {
+          "id": "4ccdad04-56d0-4460-bd81-fd442a4027b5",
+          "reason": "Missing or nonfinite coordinates"
+        },
+        {
+          "id": "9c3c147d-8226-4668-a85b-b06087e0b7ee",
+          "reason": "Missing or nonfinite coordinates"
+        },
+        {
+          "id": "9b7d0709-b006-431a-8f88-1c63e7be93df",
+          "reason": "Missing or nonfinite coordinates"
+        },
+        {
+          "id": "5a61647e-0524-4d83-b883-2c393dc4b14c",
+          "reason": "Missing or nonfinite coordinates"
+        }
+      ],
+      "pages": 2,
+      "reportedTotals": [
+        314
+      ],
+      "returnedIDs": 314,
+      "state": "CO",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [
+        {
+          "id": "4d550e51-c6b1-43cf-8479-8b3ab9236e72",
+          "reason": "Missing or nonfinite coordinates"
+        }
+      ],
+      "pages": 2,
+      "reportedTotals": [
+        213
+      ],
+      "returnedIDs": 213,
+      "state": "CT",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [
+        {
+          "id": "91a374f7-28ff-4fc9-afa9-f5936242d87e",
+          "reason": "Missing or nonfinite coordinates"
+        },
+        {
+          "id": "37ce99b3-da2e-4d05-9cb5-c97f7ac40bb2",
+          "reason": "Missing or nonfinite coordinates"
+        }
+      ],
+      "pages": 2,
+      "reportedTotals": [
+        10
+      ],
+      "returnedIDs": 10,
+      "state": "DC",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        52
+      ],
+      "returnedIDs": 52,
+      "state": "DE",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [
+        {
+          "id": "ec45d3ec-9c45-4333-b2d3-158d43712814",
+          "reason": "Missing or nonfinite coordinates"
+        },
+        {
+          "id": "fd2a0a2f-a5f0-4568-814d-1b4f76c4e5a5",
+          "reason": "Missing or nonfinite coordinates"
+        },
+        {
+          "id": "0f5473c1-d88f-4f56-a509-fab3442966b1",
+          "reason": "Missing or nonfinite coordinates"
+        }
+      ],
+      "pages": 5,
+      "reportedTotals": [
+        1546
+      ],
+      "returnedIDs": 1546,
+      "state": "FL",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [
+        {
+          "id": "0b85e0ef-9ee0-47bc-abfc-e7e594d5c2ba",
+          "reason": "Missing or nonfinite coordinates"
+        }
+      ],
+      "pages": 2,
+      "reportedTotals": [
+        489
+      ],
+      "returnedIDs": 489,
+      "state": "GA",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        107
+      ],
+      "returnedIDs": 107,
+      "state": "HI",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        383
+      ],
+      "returnedIDs": 383,
+      "state": "IA",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        139
+      ],
+      "returnedIDs": 139,
+      "state": "ID",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 3,
+      "reportedTotals": [
+        575
+      ],
+      "returnedIDs": 575,
+      "state": "IL",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        310
+      ],
+      "returnedIDs": 310,
+      "state": "IN",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [
+        {
+          "id": "e562669a-adcf-4fc9-9ef7-65f0c60766dc",
+          "reason": "Missing or nonfinite coordinates"
+        },
+        {
+          "id": "c510e32e-1cf7-4c1e-bb7b-688a408b21d6",
+          "reason": "Missing or nonfinite coordinates"
+        }
+      ],
+      "pages": 2,
+      "reportedTotals": [
+        279
+      ],
+      "returnedIDs": 279,
+      "state": "KS",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        185
+      ],
+      "returnedIDs": 185,
+      "state": "KY",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        157
+      ],
+      "returnedIDs": 157,
+      "state": "LA",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [
+        {
+          "id": "cbe672e6-474a-46ef-aaef-9e6e0ffffd92",
+          "reason": "Missing or nonfinite coordinates"
+        },
+        {
+          "id": "ea091bce-1259-4627-9edd-e93f95256fd0",
+          "reason": "Missing or nonfinite coordinates"
+        },
+        {
+          "id": "f6debf05-a5c4-4ce5-b142-757743e49460",
+          "reason": "Missing or nonfinite coordinates"
+        },
+        {
+          "id": "eb6c22de-697f-4d85-9a95-63f6d8f52268",
+          "reason": "Missing or nonfinite coordinates"
+        },
+        {
+          "id": "a0704a8f-4321-4476-88fb-18be6ea925fd",
+          "reason": "Missing or nonfinite coordinates"
+        }
+      ],
+      "pages": 2,
+      "reportedTotals": [
+        413
+      ],
+      "returnedIDs": 413,
+      "state": "MA",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        174
+      ],
+      "returnedIDs": 174,
+      "state": "MD",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [
+        {
+          "id": "39ac6b24-4ad9-46ba-948c-51519f5a1440",
+          "reason": "Missing or nonfinite coordinates"
+        },
+        {
+          "id": "ad3495be-0cc8-4ae2-a624-df43d7349936",
+          "reason": "Missing or nonfinite coordinates"
+        }
+      ],
+      "pages": 2,
+      "reportedTotals": [
+        159
+      ],
+      "returnedIDs": 159,
+      "state": "ME",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 3,
+      "reportedTotals": [
+        837
+      ],
+      "returnedIDs": 837,
+      "state": "MI",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [
+        {
+          "id": "3dfaee69-8338-4b18-9599-51c9c95408a8",
+          "reason": "Missing or nonfinite coordinates"
+        }
+      ],
+      "pages": 2,
+      "reportedTotals": [
+        361
+      ],
+      "returnedIDs": 361,
+      "state": "MN",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        275
+      ],
+      "returnedIDs": 275,
+      "state": "MO",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        164
+      ],
+      "returnedIDs": 164,
+      "state": "MS",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        127
+      ],
+      "returnedIDs": 127,
+      "state": "MT",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 3,
+      "reportedTotals": [
+        630
+      ],
+      "returnedIDs": 630,
+      "state": "NC",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        82
+      ],
+      "returnedIDs": 82,
+      "state": "ND",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        183
+      ],
+      "returnedIDs": 183,
+      "state": "NE",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        124
+      ],
+      "returnedIDs": 124,
+      "state": "NH",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        364
+      ],
+      "returnedIDs": 364,
+      "state": "NJ",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        114
+      ],
+      "returnedIDs": 114,
+      "state": "NM",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        120
+      ],
+      "returnedIDs": 120,
+      "state": "NV",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 4,
+      "reportedTotals": [
+        1022
+      ],
+      "returnedIDs": 1022,
+      "state": "NY",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 3,
+      "reportedTotals": [
+        527
+      ],
+      "returnedIDs": 527,
+      "state": "OH",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        236
+      ],
+      "returnedIDs": 236,
+      "state": "OK",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        177
+      ],
+      "returnedIDs": 177,
+      "state": "OR",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 3,
+      "reportedTotals": [
+        763
+      ],
+      "returnedIDs": 763,
+      "state": "PA",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        67
+      ],
+      "returnedIDs": 67,
+      "state": "RI",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        432
+      ],
+      "returnedIDs": 432,
+      "state": "SC",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        87
+      ],
+      "returnedIDs": 87,
+      "state": "SD",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        212
+      ],
+      "returnedIDs": 212,
+      "state": "TN",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 3,
+      "reportedTotals": [
+        637
+      ],
+      "returnedIDs": 637,
+      "state": "TX",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        149
+      ],
+      "returnedIDs": 149,
+      "state": "UT",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        416
+      ],
+      "returnedIDs": 416,
+      "state": "VA",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        87
+      ],
+      "returnedIDs": 87,
+      "state": "VT",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        361
+      ],
+      "returnedIDs": 361,
+      "state": "WA",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        475
+      ],
+      "returnedIDs": 475,
+      "state": "WI",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [],
+      "pages": 2,
+      "reportedTotals": [
+        142
+      ],
+      "returnedIDs": 142,
+      "state": "WV",
+      "terminalEmptyPage": true
+    },
+    {
+      "errors": [
+        {
+          "id": "e7cd9e71-4cb8-44ff-bd74-19b39c86c588",
+          "reason": "Missing or nonfinite coordinates"
+        }
+      ],
+      "pages": 2,
+      "reportedTotals": [
+        75
+      ],
+      "returnedIDs": 75,
+      "state": "WY",
+      "terminalEmptyPage": true
+    }
+  ],
+  "validUniqueDirectoryEntries": 16776
+}
