@@ -15,4 +15,6 @@ def test_real_resolutions_keep_every_verified_path_and_green():
         resolved,error=separate(p,p['boundaries'],cards)
         assert error is None and resolved['python']['pass'], file.name
         assert check(resolved,resolved['python']['holes'],0) is None,file.name
-        assert resolved['python']['matchedHoles']==fixture['expectedMatches'],file.name
+        # JSON stores coordinate tuples as arrays; compare the serialized form.
+        import json
+        assert json.loads(json.dumps(resolved['python']['matchedHoles']))==fixture['expectedMatches'],file.name
