@@ -18,3 +18,13 @@ def test_real_resolutions_keep_every_verified_path_and_green():
         # JSON stores coordinate tuples as arrays; compare the serialized form.
         import json
         assert json.loads(json.dumps(resolved['python']['matchedHoles']))==fixture['expectedMatches'],file.name
+
+
+def test_repaired_scorecards_do_not_bypass_remaining_geometry_failures():
+    reviewed=read('inputs/reviewed-scorecards.json')
+    for file in Path('tests/fixtures/layouts-withheld').glob('*.json'):
+        fixture=read(file); p=fixture['input']; cid=p['candidate']['id']
+        resolved,error=separate(p,p['boundaries'],facts(reviewed[cid],date(2026,10,16)))
+        if resolved is not None:
+            error=check(resolved,resolved['python']['holes'],0) if resolved['python']['pass'] else resolved['python']['reason']
+        assert error==fixture['expectedReason'],file.name

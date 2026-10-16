@@ -73,6 +73,13 @@ def report():
             original=read('work/layout-evidence/'+cid+'.json')
             write('tests/fixtures/layouts/'+cid+'.json',{'input':original,
                 'expectedMatches':read('work/validation/'+cid+'.json')['python']['matchedHoles']})
+    # Preserve repaired-but-still-excluded courses so future changes cannot
+    # silently bypass the next hole/green failure exposed by a scorecard fix.
+    for cid in ('5b0dfcec-77bf-430e-bbe5-747e0199c565', '2d201c28-68ec-4897-b7b1-8f19c8984d26'):
+        row=next(r for r in resolution['rows'] if r['candidate']['id']==cid)
+        if row['resolutionError']:
+            write('tests/fixtures/layouts-withheld/'+cid+'.json', {
+                'input':read('work/layout-evidence/'+cid+'.json'), 'expectedReason':row['resolutionError']})
     print('ADDITIONAL COURSES',resolution['additionalCourses'])
     print('OFFICIAL SOURCE EVIDENCE',resolution['officialSources'])
 
