@@ -1,0 +1,57 @@
+name: Research green centers and remaining coverage
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: center-research
+  cancel-in-progress: false
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+      actions: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - run: python -m pytest -q
+      - run: python -m pipeline.resolve_layouts verify
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - run: python -m pipeline.center_study verify
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          github-token: ${{ github.token }}
+          run-id: '38976460499'
+          name: layout-audit-evidence
+          path: .
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          github-token: ${{ github.token }}
+          run-id: '38978798804'
+          name: layout-validation-evidence
+          path: .
+      - run: python -m pipeline.center_study
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: center-study-evidence
+          path: |
+            work/center-evidence
+            reports/center-study-*
+          retention-days: 7
+      - name: Record research only; never deploy course changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add reports/center-study-* reports/LATEST-CENTER-STUDY.md
+          git commit -m "Record green-center research $GITHUB_RUN_ID"
+          git pull --rebase origin main
+          git push origin HEAD:main
