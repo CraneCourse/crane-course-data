@@ -1,3 +1,5 @@
+> Superseded: this run received the audit artifact in the wrong directory and processed no layout inputs. Its count is only the unchanged baseline. A complete-input assertion now prevents this outcome.
+
 # Course-layout and scorecard corrections
 
 32 distinct courses pass the full data checks: 0 additional, all 32 earlier courses retained.

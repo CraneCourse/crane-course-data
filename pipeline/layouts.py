@@ -92,3 +92,18 @@ def separate(payload, boundaries, cards=None, required_boundary=None):
                           'pathMarginMeters':margin,'candidates':[{k:v for k,v in b.items() if k not in ('geometry','paths')} ]})
     p['python']=match(cards,selected,(c['lon'],c['lat']))
     return p,None
+
+
+def nearby_boundaries(candidate, areas):
+    from shapely.geometry import Point, mapping
+    c=candidate['center']; origin=(c['lon'],c['lat'])
+    project=Transformer.from_crs('EPSG:4326',f'+proj=aeqd +lat_0={c["lat"]} +lon_0={c["lon"]} +datum=WGS84 +units=m',always_xy=True).transform
+    result=[]
+    for a in areas:
+        b=a['geometry'].bounds
+        if not (b[0]-.02<=origin[0]<=b[2]+.02 and b[1]-.02<=origin[1]<=b[3]+.02): continue
+        area=transform(project,a['geometry']); d=area.distance(Point(0,0))
+        if d<=500:
+            result.append({'id':a['id'],'name':a['name'],'distanceMeters':round(d,1),
+                           'areaMeters2':round(area.area),'geometry':mapping(area)})
+    return result

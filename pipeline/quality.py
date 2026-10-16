@@ -21,6 +21,7 @@ def identity_error(candidate, link):
     return None
 
 def check(payload, holes, watch_bytes):
+    if payload.get("sourceResolutionError"): return payload["sourceResolutionError"]
     error=identity_error(payload['candidate'],payload['association'])
     if error: return error
     if payload['boundary'] is None: return 'No course boundary'

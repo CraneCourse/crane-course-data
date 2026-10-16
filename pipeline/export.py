@@ -73,7 +73,7 @@ def main():
             assert equivalent(py['holes'],ref['holes']), f'{cid}: Swift/Python full Hole mismatch: {first_difference(py["holes"],ref["holes"])}'
         row={'candidate':p['candidate'],'baselineStatus':baseline.get(cid,'control'),'association':p['association'],
              'matching':{k:v for k,v in py.items() if k!='holes'},'swift':{k:v for k,v in ref.items() if k!='holes'},
-             'scorecardSource':p['scorecardSource'],'stateSource':p['source'],'parserErrors':p['parserErrors']}
+             'scorecardSource':p['scorecardSource'],'stateSource':p['source'],'parserErrors':p['parserErrors'], 'layoutResolution':p.get('layoutResolution')}
         if not py['pass']:
             row.update(status='excluded',reason=py['reason'])
         else:
@@ -85,7 +85,7 @@ def main():
                 row.update(status='excluded',reason=error)
             else:
                 seen[key]=cid
-                doc={'candidate':p['candidate'],'holes':ref['holes'],'dataVersion':version,'builtAt':built,'sources':SOURCES,'numbering':'osm-mapped'}
+                doc={'candidate':p['candidate'],'holes':ref['holes'],'dataVersion':version,'builtAt':built,'sources':SOURCES+([p['scorecardSource']['url']] if p['scorecardSource'].get('type')=='reviewed-official-scorecard' else []),'numbering':'osm-mapped'}
                 validate_document(doc,'schemas/course.schema.json')
                 accepted[cid]=doc
                 row.update(status='data-ready',reason='All mapped-hole, schema, identity, geometry, Swift parity and Watch gates pass',watchBytes=ref['watchBytes'])
@@ -93,6 +93,12 @@ def main():
     for c in sample():
         if not state_for(c): rows.append({'candidate':c,'status':'outside-state-scope','reason':'Not a recognized contiguous-US state candidate','baselineStatus':baseline.get(c['id'])})
     assert accepted, 'No courses pass; retain previous dataset for inspection'
+    # Older revalidation workflows cannot silently undo a successful layout fix.
+    floors=[read(p) for p in Path('reports').glob('layout-resolution-*.json') if not read(p).get('research',True)]
+    if floors:
+        latest=max(floors,key=lambda r:r['builtAt'])
+        floor=set(latest['validatedCourseIDs'])
+        assert floor<=set(accepted), 'A validated layout correction regressed; retain existing publication for review'
     Path('dist/courses').mkdir(parents=True,exist_ok=True)
     index=[]
     for cid,doc in sorted(accepted.items(),key=lambda item:item[1]['candidate']['name']):
@@ -111,7 +117,7 @@ def main():
             'inputRun':read('work/input-run.json') if Path('work/input-run.json').exists() else {'id':os.environ['GITHUB_RUN_ID'],'head_sha':os.environ['GITHUB_SHA']},'sampleCount':len(original),'measuredSampleCount':len(expected)-1,'dataReady':len(accepted),'sampleDataReady':len(passed),'additionalControlDataReady':int(KIAWAH in accepted),
             'previouslyUnsupportedNowReady':len(new),'baselineReadyRetained':sum(r['baselineStatus']=='ready' for r in passed),
             'controls':controls,'rows':rows,'counts':dict(Counter(r['status'] for r in original)),
-            'limitations':'Data-ready is not field-verified or an end-to-end app download. Aerial/elevation downloads and app integration are separate. No inferred numbering or changed green centers.'}
+            'limitations':'Data-ready is not field-verified or an end-to-end app download. Aerial/elevation downloads and app integration are separate. Explicit compound OSM refs may be normalized; reviewed official scorecards carry source links. No inferred numbering or changed green centers.'}
     stem=f'build-{built[:10]}-{os.environ["GITHUB_RUN_ID"]}'
     write(f'reports/{stem}.json',report); write('dist/report.json',report)
     lines=[f'# Phase 2 course data — {built[:10]}','',

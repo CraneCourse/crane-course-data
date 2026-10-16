@@ -26,8 +26,11 @@ def prepare():
     research=os.environ.get('PUBLISH')!='true'
     reviewed=read('inputs/reviewed-scorecards.json')
     source_evidence={cid:fetch(r,research=research) for cid,r in reviewed.items()}
+    files=sorted(Path('work/layout-evidence').glob('*.json'))
+    expected={r['candidate']['id'] for r in baseline['rows'] if r['status']!='outside-state-scope'}
+    assert {f.stem for f in files}==expected, 'Missing or unexpected layout audit inputs'
     rows=[]
-    for file in sorted(Path('work/layout-evidence').glob('*.json')):
+    for file in files:
         p=read(file); cid=p['candidate']['id']
         if cid in ready: continue  # Original exports retain their exact fixtures.
         cards=facts(reviewed[cid]) if cid in reviewed else None
@@ -53,7 +56,7 @@ def report():
     assert baseline<=ready, 'Existing verified courses regressed; do not publish'
     added=[r for r in build['rows'] if r['candidate']['id'] in ready-baseline]
     resolution.update(runID=os.environ['GITHUB_RUN_ID'],sourceCommit=os.environ['GITHUB_SHA'],builtAt=now(),
-                      baselineCount=len(baseline),dataReady=len(ready),additionalCourses=[r['candidate'] for r in added],
+                      baselineCount=len(baseline),dataReady=len(ready),validatedCourseIDs=sorted(ready),additionalCourses=[r['candidate'] for r in added],
                       limitations='Data checks only, not field verification or app integration. No estimated yardages or inferred hole numbering. Official source corrections require content hashes and an unexpired review before publication.')
     stem='layout-resolution-'+os.environ['GITHUB_RUN_ID']
     write('reports/'+stem+'.json',resolution)
@@ -65,6 +68,11 @@ def report():
         if row['resolutionError']: lines.append('| '+row['candidate']['name'].replace('|','/')+' | '+row['resolutionError'].replace('|','/')+' |')
     Path('reports/'+stem+'.md').write_text('\n'.join(lines)+'\n')
     Path('reports/LATEST-LAYOUT-RESOLUTION.md').write_text(f'[Latest layout resolution]({stem}.md)\n')
+    for cid in ('9b9891db-3b45-48db-892f-149601b79d52','86620a66-2f67-409e-8aaa-8d503d820631','5b0dfcec-77bf-430e-bbe5-747e0199c565','2d201c28-68ec-4897-b7b1-8f19c8984d26','9379add5-9103-43fb-a659-b6c617b65eb0'):
+        if cid in ready-baseline:
+            original=read('work/layout-evidence/'+cid+'.json')
+            write('tests/fixtures/layouts/'+cid+'.json',{'input':original,
+                'expectedMatches':read('work/validation/'+cid+'.json')['python']['matchedHoles']})
     print('ADDITIONAL COURSES',resolution['additionalCourses'])
     print('OFFICIAL SOURCE EVIDENCE',resolution['officialSources'])
 

@@ -7,6 +7,9 @@ from pipeline.common import cloud_only, read, write, sample, state_for
 from pipeline.extract import GolfHandler, association, measure
 from pipeline.match import valid_way
 from pipeline.full_match import match, geometry
+from pipeline.layouts import separate, nearby_boundaries
+from pipeline.quality import check
+from pipeline.reviewed_cards import facts, fetch
 
 KINDS = {'hole', 'green', 'tee', 'fairway', 'bunker', 'water_hazard', 'lateral_water_hazard'}
 
@@ -19,6 +22,7 @@ def main():
     if state == 'south-carolina':
         candidates.append(read('inputs/kiawah-control.json'))
     rows = []
+    reviewed=read("inputs/reviewed-scorecards.json")
     for c in candidates:
         origin = (c['center']['lon'], c['center']['lat'])
         score = read(f'work/scorecards/{c["id"]}.json')
@@ -36,6 +40,18 @@ def main():
                    'boundary': mapping(boundary) if boundary is not None else None,
                    'state': state, 'source': read(f'work/extracts/{state}/source.json'),
                    'scorecardSource': row['scorecardSource'], 'parserErrors': handler.errors}
+        review=reviewed.get(c['id'])
+        existing_error=check(payload,result['holes'],0) if result['pass'] else result['reason']
+        if review is not None or existing_error:
+            source_evidence=fetch(review) if review is not None else None
+            wide=dict(payload,ways=[w for w in handler.ways if w['tags'].get('golf') in KINDS and valid_way(w,origin)])
+            resolved,error=separate(wide,nearby_boundaries(c,handler.areas),facts(review) if review is not None else None)
+            if resolved is not None:
+                if review is not None: resolved['scorecardSource']=source_evidence
+                payload=resolved
+            elif review is not None:
+                # Never fall back to a known-wrong provider scorecard.
+                payload['sourceResolutionError']=error
         write(f'work/validation/{c["id"]}.json', payload)
         rows.append(row)
         print(c['name'], result['rule'], result['reason'], flush=True)
