@@ -6,7 +6,8 @@ def main():
     run=os.environ['INPUT_RUN']; repo=os.environ['GITHUB_REPOSITORY']
     assert run.isascii() and run.isdigit()
     def get(path):
-        with urllib.request.urlopen('https://api.github.com/repos/'+repo+'/actions/runs/'+run+path,timeout=30) as r: return json.load(r)
+        request=urllib.request.Request('https://api.github.com/repos/'+repo+'/actions/runs/'+run+path, headers={'Authorization':'Bearer '+os.environ['GITHUB_TOKEN'], 'Accept':'application/vnd.github+json', 'User-Agent':'Crane-Course-Data/1.0'})
+        with urllib.request.urlopen(request,timeout=30) as response: return json.load(response)
     meta=get('')
     assert meta['head_repository']['full_name']==repo and meta['head_branch']=='main'
     assert meta['event'] in ('workflow_dispatch','schedule') and meta['status']=='completed'

@@ -27,6 +27,7 @@ jobs:
       - run: python -m pipeline.verify_input_run
         env:
           INPUT_RUN: ${{ inputs.source_run_id }}
+          GITHUB_TOKEN: ${{ github.token }}
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           github-token: ${{ github.token }}
