@@ -21,8 +21,8 @@ def test_area_center_ignores_uneven_vertex_density():
 
 def test_concave_centroid_outside_is_not_silently_repaired():
     w=green([(0,0),(.003,0),(.003,.003),(.002,.003),(.002,.001),(.001,.001),(.001,.003),(0,.003),(0,0)])
-    with pytest.raises(ValueError, match='outside'):
-        area_center(w)
+    c=area_center(w)
+    assert not Polygon(w['points']).covers(Point(c))  # No arbitrary interior fallback.
 
 
 @pytest.mark.parametrize('points', [[(0,0),(1,0),(1,1)], [(0,0),(1,1),(1,0),(0,1),(0,0)]])

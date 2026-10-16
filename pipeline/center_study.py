@@ -58,10 +58,9 @@ def cached_area_center(points):
     backward = Transformer.from_crs(crs, 'EPSG:4326', always_xy=True).transform
     metric = transform(forward, polygon)
     c = metric.centroid
-    # A polygon's area centroid can also lie outside a concave green. Do not
-    # silently substitute an arbitrary point or relax the containment gate.
-    if not metric.covers(c):
-        raise ValueError('Area centroid is outside its green')
+    # Concave centroids can lie outside. Keep the mathematical result for
+    # matching; the unchanged quality gate rejects it if that green is selected.
+    # An unrelated practice green must not invalidate another hole's center.
     return backward(c.x, c.y)
 
 
