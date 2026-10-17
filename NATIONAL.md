@@ -140,7 +140,8 @@ Corrections from `docs/national-survey-independent-review.md` in the private app
   layout details, national validation) now reserves requests in a repository-wide daily
   ledger, `ledger/opengolfapi/<UTC day>.json`, before making any. A reservation is
   committed to `main` first, keyed by workflow/run/attempt, and never refunded, so a
-  failed run still counts. All workflows share 800 requests per UTC day. A caller
+  failed run still counts. All workflows share 500 requests per UTC day: the documented
+  limit is 1,000, but live responses report `X-RateLimit-Limit: 500`. A caller
   without a reservation for the current day refuses to request (fail closed).
   429, `X-RateLimit-Remaining: 0` and the later of Retry-After/reset stop all requests
   and block new reservations until the reset passes. There are no retries around a limit
@@ -166,7 +167,7 @@ Corrections from `docs/national-survey-independent-review.md` in the private app
   provenance and dates (reused cards keep their original dates). Frozen controls, controls
   that fail on current geometry, the candidate-export file count and preliminary
   directory-entry totals (aliases included) are reported separately and labelled.
-- **Multi-day resumes.** At 800 requests per UTC day, scorecards for the 5,957 geometry
+- **Multi-day resumes.** At 500 requests per UTC day, scorecards for the 5,957 geometry
   candidates need several days, longer than the seven-day retention of the survey and
   frozen-baseline artifacts. Each validation run therefore re-uploads both as 30-day
   carry artifacts, and a resume falls back to the previous run's carry copy once an

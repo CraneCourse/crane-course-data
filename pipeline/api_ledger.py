@@ -1,7 +1,9 @@
 """Repository-wide OpenGolfAPI request ledger.
 
-OpenGolfAPI allows 1,000 anonymous requests per day per IP. Every GitHub runner has a
-new IP, so the provider limit alone would never bind; this ledger is the safeguard.
+OpenGolfAPI's documentation states 1,000 anonymous requests per day per IP, but its live
+responses report `X-RateLimit-Limit: 500` (observed in validation run 38987496757, which
+stopped cleanly at remaining=0). The ledger uses the lower, observed limit. Every GitHub
+runner has a new IP, so the provider limit alone would never bind; this ledger is the safeguard.
 
 - A job reserves requests by committing `ledger/opengolfapi/<UTC day>.json` to main
   BEFORE it makes any request. Reservations are keyed by workflow/run/attempt/purpose
@@ -24,7 +26,7 @@ from email.utils import parsedate_to_datetime
 from pathlib import Path
 from pipeline.common import read, write, now
 
-DAILY_LIMIT = 800
+DAILY_LIMIT = 500  # Observed X-RateLimit-Limit; lower than the documented 1,000
 LEDGER = Path('ledger/opengolfapi')
 RESERVATION = Path('work/api-budget/reservation.json')
 USAGE = Path('work/api-budget/usage.json')

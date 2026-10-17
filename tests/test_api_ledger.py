@@ -9,11 +9,11 @@ AT = datetime(2026, 10, 17, 12, tzinfo=timezone.utc)
 
 
 def test_reservations_share_one_daily_limit_and_are_never_refunded():
-    entries, a = plan([], 'validation/1/1/cards', 700, AT)
+    entries, a = plan([], 'validation/1/1/cards', DAILY_LIMIT - 100, AT)
     # A failed run that used nothing still holds its reservation.
     entries[0]['used'] = 0
     entries, b = plan(entries, 'build/2/1/cards', 300, AT)
-    assert (a, b) == (700, DAILY_LIMIT - 700)
+    assert (a, b) == (DAILY_LIMIT - 100, 100)
     entries, c = plan(entries, 'validation/3/1/cards', 50, AT)
     assert c == 0 and sum(e['granted'] for e in entries) == DAILY_LIMIT
 

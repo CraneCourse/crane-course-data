@@ -16,7 +16,7 @@ is not permission to use unrelated sources or to assume a service has an SLA.
   ODbL attribution. Scorecards are `/v1/courses/{id}/holes`. Current service repository:
   https://github.com/opengolfapi/api . Its documented free tier includes a 1,000/day
   request limit per IP. Runners change IP, so every workflow reserves requests in one
-  repository-wide daily ledger (800/day, committed before any request, never refunded)
+  repository-wide daily ledger (500/day, the limit the service's own headers report, committed before any request, never refunded)
   and spends them through one paced client: at most two attempts per request for
   network errors, none after HTTP 429. A 429, `X-RateLimit-Remaining: 0` or Retry-After
   stops all requests and blocks new reservations until the later reset. A 429 or service
