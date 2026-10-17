@@ -1,5 +1,5 @@
 {
-  "dailyLimit": 800,
+  "dailyLimit": 500,
   "day": "2026-10-17",
   "reservations": [
     {
@@ -11,6 +11,12 @@
       "resumeAfterUTC": "2026-10-18T00:00:00+00:00",
       "stopped": "Source rate limit reached; resume only after 2026-10-18T00:00:00+00:00",
       "used": 501
+    },
+    {
+      "granted": 0,
+      "key": "Validate national geometry candidates/38990743533/1/national-validation-cards",
+      "requested": 500,
+      "reservedAt": "2026-10-17T01:27:05.709440+00:00"
     }
   ]
 }
