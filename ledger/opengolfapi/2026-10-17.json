@@ -15,8 +15,11 @@
     {
       "granted": 0,
       "key": "Validate national geometry candidates/38990743533/1/national-validation-cards",
+      "recordedAt": "2026-10-17T01:27:26.244488+00:00",
       "requested": 500,
-      "reservedAt": "2026-10-17T01:27:05.709440+00:00"
+      "reservedAt": "2026-10-17T01:27:05.709440+00:00",
+      "stopped": null,
+      "used": 0
     }
   ]
 }
