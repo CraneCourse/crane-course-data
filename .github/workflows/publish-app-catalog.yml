@@ -1,0 +1,111 @@
+name: Publish approved app catalog
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: course-data-publication
+  cancel-in-progress: false
+jobs:
+  prepare:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Verify the previously deployed baseline
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PYCODE'
+          import json, os, urllib.request
+          repo = os.environ['GITHUB_REPOSITORY']
+          assert repo.lower() == 'cranecourse/crane-course-data'
+          request = urllib.request.Request(
+              f'https://api.github.com/repos/{repo}/actions/runs/38981324295',
+              headers={'Authorization': 'Bearer ' + os.environ['GH_TOKEN'],
+                       'Accept': 'application/vnd.github+json'})
+          with urllib.request.urlopen(request, timeout=30) as response:
+              run = json.load(response)
+          assert run['conclusion'] == 'success' and run['head_branch'] == 'main'
+          assert run['head_sha'] == 'ad8c6ebf5f4042bb471f796a69aa6e1b33fd2ffe'
+          assert run['head_repository']['full_name'].lower() == repo.lower()
+          PYCODE
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          github-token: ${{ github.token }}
+          run-id: '38981324295'
+          name: github-pages
+          path: baseline
+      - name: Add only the approved index and preserve all existing Pages files
+        run: |
+          python3 - <<'PYCODE'
+          import hashlib, json, pathlib, tarfile, urllib.request, urllib.error
+          digest = lambda b: hashlib.sha256(b).hexdigest()
+          approved = pathlib.Path('publication/app-index.json').read_bytes()
+          assert digest(approved) == 'cceb4c6178b07f518620cdc81b14a3be9e48f75138bb37ffaaabfc6475cdd409'
+          new = json.loads(approved)
+          assert new['schemaVersion'] == 1 and len(new['courses']) == 30
+          assert len({c['id'] for c in new['courses']}) == 30
+          dist = pathlib.Path('dist')
+          dist.mkdir()
+          with tarfile.open('baseline/artifact.tar') as archive:
+              for member in archive.getmembers():
+                  name = pathlib.PurePosixPath(member.name)
+                  assert not name.is_absolute() and '..' not in name.parts
+                  assert member.isfile() or member.isdir()
+              archive.extractall(dist, filter='data')
+          baseline = {str(p.relative_to(dist)): digest(p.read_bytes())
+                      for p in dist.rglob('*') if p.is_file()}
+          assert 'app-index.json' not in baseline
+          old_bytes = (dist / 'index.json').read_bytes()
+          old = json.loads(old_bytes)
+          assert len(old['courses']) == 38
+          assert old['dataVersion'] == new['dataVersion'] == '38981324295-ad8c6ebf5f40'
+          assert old['builtAt'] == new['builtAt'] and old['sources'] == new['sources']
+          base_url = 'https://cranecourse.github.io/crane-course-data/'
+          def live(path):
+              req = urllib.request.Request(base_url + path, headers={'Cache-Control': 'no-cache'})
+              with urllib.request.urlopen(req, timeout=40) as response:
+                  assert response.status == 200
+                  return response.read(16_000_001)
+          assert live('index.json') == old_bytes, 'Legacy catalog changed; review a new baseline'
+          try:
+              current = live('app-index.json')
+          except urllib.error.HTTPError as error:
+              if error.code != 404: raise
+          else:
+              assert current == approved, 'A different app catalog is already live'
+          entries = {c['id']: c for c in old['courses']}
+          for course in old['courses']:
+              assert course['file'] == 'courses/' + course['id'] + '.json'
+              assert digest((dist / course['file']).read_bytes()) == course['sha256']
+          for course in new['courses']:
+              assert entries.get(course['id']) == course
+          (dist / 'app-index.json').write_bytes(approved)
+          after = {str(p.relative_to(dist)): digest(p.read_bytes())
+                   for p in dist.rglob('*') if p.is_file()}
+          assert set(after) - set(baseline) == {'app-index.json'}
+          assert all(after[path] == value for path, value in baseline.items())
+          print(f'Preserved {len(baseline)} existing files; added the approved 30-course index.')
+          PYCODE
+      - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b
+        with:
+          path: dist
+          retention-days: 1
+  deploy:
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e
