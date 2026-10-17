@@ -114,3 +114,17 @@ def test_daily_resume_continues_latest_run_and_stops_when_it_should(tmp_path):
     values,reason=scheduled_inputs(tmp_path,run_conclusion=lambda run:'success',at=at)
     assert values['proceed']=='false' and 'completed' in reason
     assert scheduled_inputs(tmp_path/'empty')[0]=={'proceed':'false'}
+
+
+def test_resume_chain_accepts_manual_and_scheduled_predecessors_only():
+    from pipeline.national_validation import check_previous
+    def meta(**kw):
+        m={'head_repository':{'full_name':'CraneCourse/crane-course-data'},'head_branch':'main','event':'workflow_dispatch',
+           'status':'completed','path':'.github/workflows/national-validation.yml'}
+        m.update(kw); return m
+    for event in ('workflow_dispatch','schedule'):      # manual -> scheduled -> scheduled
+        check_previous(meta(event=event),'CraneCourse/crane-course-data')
+    for bad in (meta(event='push'), meta(event='pull_request'), meta(status='in_progress'), meta(head_branch='dev'),
+                meta(path='.github/workflows/build.yml'), meta(head_repository={'full_name':'someone/fork'})):
+        with pytest.raises(AssertionError):
+            check_previous(bad,'CraneCourse/crane-course-data')

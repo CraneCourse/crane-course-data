@@ -1,8 +1,9 @@
 name: Build validated course data
 on:
+  # Manual only. The weekly schedule is paused: it rebuilds just the frozen catalog and,
+  # while national validation runs, would compete for the shared 500/day request budget.
+  # Re-enable only with catalog-aware revalidation (see NATIONAL.md).
   workflow_dispatch:
-  schedule:
-    - cron: '23 6 * * 1'
 permissions:
   contents: read
 concurrency:

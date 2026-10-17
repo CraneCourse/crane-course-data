@@ -45,12 +45,20 @@ def verify():
     if latest:
         assert previous==latest, f'Resume the latest recorded run {latest} for this geometry survey so its saved cards are reused'
     if previous:
-        meta=get(previous)
-        assert meta['head_repository']['full_name']==os.environ['GITHUB_REPOSITORY'] and meta['head_branch']=='main'
-        assert meta['event']=='workflow_dispatch' and meta['status']=='completed'
-        assert meta['path']=='.github/workflows/national-validation.yml'
+        meta=get(previous); check_previous(meta,os.environ['GITHUB_REPOSITORY'])
         records['previous']={k:meta[k] for k in ('id','head_sha','created_at','html_url','path')}
     write(ROOT/'inputs.json',records)
+
+
+RESUMABLE_EVENTS=('workflow_dispatch','schedule')
+
+
+def check_previous(meta, repository):
+    """A resumable predecessor: this workflow on main, finished, started by hand or by the daily schedule."""
+    assert meta['head_repository']['full_name']==repository and meta['head_branch']=='main', 'Previous run is from another repository or branch'
+    assert meta['event'] in RESUMABLE_EVENTS, f"Previous run event {meta['event']} cannot be resumed"
+    assert meta['status']=='completed', 'Previous run has not finished'
+    assert meta['path']=='.github/workflows/national-validation.yml', 'Previous run is a different workflow'
 
 
 def latest_prior_run(geometry_run, reports=Path('reports')):

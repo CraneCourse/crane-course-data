@@ -11,7 +11,8 @@ runner has a new IP, so the provider limit alone would never bind; this ledger i
 - All reservations for one UTC day share DAILY_LIMIT.
 - Every caller uses Budget, which fails closed without a reservation for the current
   UTC day, never exceeds its granted count and paces requests.
-- HTTP 429, `X-RateLimit-Remaining: 0` and Retry-After stop every further request.
+- HTTP 429, any error with Retry-After (e.g. 503) and `X-RateLimit-Remaining: 0` stop
+  every further request; the stop is committed at once and other active holders see it.
   `record` writes the later reset time into the ledger, and later reservations are
   granted nothing until it passes. There are no retries around a limit and no IP rotation.
 - Concurrent writers use fetch/update/commit/push with retries, so two jobs cannot
@@ -80,17 +81,33 @@ def reset_after(headers, current):
     return max(targets) if targets else (current + timedelta(days=1)).replace(hour=0, minute=0, second=0, microsecond=0)
 
 
-class Budget:
-    """The only way to spend OpenGolfAPI requests. Fails closed without a reservation."""
+SHARED_CHECK_EVERY = 25   # requests between checks for a stop recorded by another job
 
-    def __init__(self, reservation=None, pause=time.sleep, clock=utc_now, usage_path=USAGE):
-        if reservation is None:
+
+class Budget:
+    """The only way to spend OpenGolfAPI requests. Fails closed without a reservation.
+
+    Several processes in one job (e.g. scorecards then controls) share one reservation:
+    each resumes the recorded use and stop, so the grant is never spent twice. A stop
+    is committed to the ledger at once, and active holders check the ledger every
+    SHARED_CHECK_EVERY requests, so one job's stop halts the others.
+    """
+
+    def __init__(self, reservation=None, pause=time.sleep, clock=utc_now, usage_path=USAGE, shared_stop=None, publish=None):
+        production = reservation is None
+        if production:
             if not RESERVATION.exists():
                 raise RuntimeError('No OpenGolfAPI reservation for this job; refusing requests (fail closed)')
             reservation = read(RESERVATION)
         self.day = reservation['day']; self.budget = int(reservation['granted']); self.key = reservation['key']
         self.pause = pause; self.clock = clock; self.usage_path = usage_path
+        self.shared_stop = shared_stop if shared_stop is not None else (ledger_stop if production else None)
+        self.publish = production if publish is None else publish
         self.requests = 0; self.stopped = None; self.resume_after = None
+        if usage_path and Path(usage_path).exists():
+            used = read(usage_path)
+            if used.get('key') == self.key and used.get('day') == self.day:
+                self.requests = int(used.get('used', 0)); self.stopped = used.get('stopped'); self.resume_after = used.get('resumeAfterUTC')
 
     def consume(self):
         if self.stopped:
@@ -99,6 +116,13 @@ class Budget:
             raise RuntimeError(f'Reservation is for UTC day {self.day}; reserve again for the current day')
         if self.requests >= self.budget:
             raise RuntimeError(f'Reserved request budget exhausted ({self.budget})')
+        if self.shared_stop and self.requests % SHARED_CHECK_EVERY == 0:
+            until = self.shared_stop(self.clock())
+            if until:
+                self.resume_after = until
+                self.stopped = 'Another job recorded a source stop; resume only after ' + until
+                self.save()
+                raise RuntimeError(self.stopped)
         self.pause(PACE_SECONDS)
         self.requests += 1
         self.save()
@@ -107,19 +131,57 @@ class Budget:
         self.resume_after = reset_after(headers or {}, self.clock()).isoformat()
         self.stopped = 'Source rate limit reached; resume only after ' + self.resume_after
         self.save()
+        if self.publish:
+            try:
+                publish_stop(self.key, self.day, self.resume_after, self.stopped)
+            except Exception as exc:  # The local stop still holds; record retries at job end.
+                print('Could not publish stop to ledger yet:', exc, flush=True)
 
     def observe(self, headers):
         if headers is not None and headers.get('X-RateLimit-Remaining') == '0':
             self.rate_stop(headers)
 
     def http_error(self, exc):
-        if getattr(exc, 'code', None) == 429:
-            self.rate_stop(exc.headers)
+        """429, or any error carrying Retry-After (e.g. 503), stops every further request."""
+        headers = getattr(exc, 'headers', None)
+        if getattr(exc, 'code', None) == 429 or (headers is not None and headers.get('Retry-After')):
+            self.rate_stop(headers)
 
     def save(self):
         if self.usage_path:
             write(self.usage_path, {'key': self.key, 'day': self.day, 'granted': self.budget, 'used': self.requests,
                                     'stopped': self.stopped, 'resumeAfterUTC': self.resume_after, 'updatedAt': now()})
+
+
+def unexpired_stop(ledgers, at):
+    """Latest resumeAfterUTC still in the future across all ledger days, or None."""
+    stops = [e['resumeAfterUTC'] for data in ledgers for e in data.get('reservations', []) if e.get('resumeAfterUTC')]
+    future = [s for s in stops if datetime.fromisoformat(s) > at]
+    return max(future, key=datetime.fromisoformat) if future else None
+
+
+def ledger_stop(at):
+    """Read every ledger day on origin/main; an infrastructure error never invents a stop."""
+    try:
+        git('fetch', '--quiet', 'origin', 'main')
+        import json
+        names = git('ls-tree', '--name-only', 'FETCH_HEAD', str(LEDGER) + '/').stdout.split()
+        ledgers = [json.loads(git('show', f'FETCH_HEAD:{name}').stdout) for name in names if name.endswith('.json')]
+    except Exception as exc:
+        print('Ledger stop check unavailable:', exc, flush=True)
+        return None
+    return unexpired_stop(ledgers, at)
+
+
+def publish_stop(key, day, resume_after, stopped):
+    def apply(root):
+        path = root / LEDGER / f'{day}.json'
+        data = read(path)
+        for entry in data['reservations']:
+            if entry['key'] == key:
+                entry.update(resumeAfterUTC=resume_after, stopped=stopped)
+        write(path, data)
+    commit_files(apply, f'Record OpenGolfAPI source stop for {key}')
 
 
 def git(*args, check=True):
@@ -160,13 +222,13 @@ def job_key(purpose):
 
 def reserve(requested, purpose):
     at = utc_now(); day = at.date().isoformat(); key = job_key(purpose)
-    previous_day = (at - timedelta(days=1)).date().isoformat()
 
     def apply(root):
         path = root / LEDGER / f'{day}.json'
         entries = read(path)['reservations'] if path.exists() else []
-        earlier = root / LEDGER / f'{previous_day}.json'
-        earlier_entries = read(earlier)['reservations'] if earlier.exists() else []
+        # A stop recorded on any earlier day still applies until its reset passes.
+        earlier_entries = [e for other in (root / LEDGER).glob('*.json') if other.name != f'{day}.json'
+                           for e in read(other)['reservations']]
         entries, granted = plan(entries, key, requested, at, earlier_entries)
         write(path, {'day': day, 'dailyLimit': DAILY_LIMIT, 'reservations': entries})
         return granted

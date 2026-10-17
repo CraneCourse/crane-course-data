@@ -143,12 +143,21 @@ Corrections from `docs/national-survey-independent-review.md` in the private app
   failed run still counts. All workflows share 500 requests per UTC day: the documented
   limit is 1,000, but live responses report `X-RateLimit-Limit: 500`. A caller
   without a reservation for the current day refuses to request (fail closed).
-  429, `X-RateLimit-Remaining: 0` and the later of Retry-After/reset stop all requests
-  and block new reservations until the reset passes. There are no retries around a limit
-  and no IP rotation.
-- **Weekly refresh behavior.** The Monday `build.yml` run now reserves only the cards its
+  429, any error carrying Retry-After (e.g. 503), `X-RateLimit-Remaining: 0` and the later
+  of Retry-After/reset stop all requests and block new reservations until the reset passes,
+  however many days away it is. A stop is committed to the ledger at once; other active
+  jobs check the ledger every 25 requests and stop too. Processes in one job (scorecards,
+  then controls) resume the same recorded usage, so a grant is never spent twice. There
+  are no retries around a limit and no IP rotation.
+- **Daily resume chain.** Each 00:20 UTC run resumes the latest manual or scheduled
+  validation run; runs from other workflows, branches or repositories are refused.
+- **Weekly build paused.** `build.yml` runs on manual dispatch only. Its old Monday
+  schedule rebuilt only the frozen catalog and would share the daily budget with national
+  validation. Re-enable it only with catalog-aware revalidation that covers newly
+  approved courses and the three published par conflicts.
+- **Build refresh behavior.** A `build.yml` run reserves only the cards its
   daily cache lacks, tries a card at most twice on network errors and never after 429.
-  If the ledger or source limit stops it, the weekly build fails visibly. It never
+  If the ledger or source limit stops it, the build fails visibly. It never
   publishes empty or stale-as-new scorecards. Published files stay as they are until a
   later run succeeds.
 - **Preserved acquisition evidence.** Validation commits

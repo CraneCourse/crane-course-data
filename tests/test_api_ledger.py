@@ -3,7 +3,7 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 import re
 import pytest
-from pipeline.api_ledger import plan, Budget, DAILY_LIMIT, reset_after
+from pipeline.api_ledger import plan, Budget, DAILY_LIMIT, reset_after, unexpired_stop
 
 AT = datetime(2026, 10, 17, 12, tzinfo=timezone.utc)
 
@@ -53,6 +53,69 @@ def test_budget_is_limited_to_its_day_and_count_and_records_usage(tmp_path):
                   clock=lambda: AT + timedelta(days=1), usage_path=None)
     with pytest.raises(RuntimeError, match='reserve again'):
         late.consume()
+
+
+R = {'day': '2026-10-17', 'granted': 3, 'key': 'k'}
+
+
+def quiet(reservation=R, **kw):
+    return Budget(reservation, pause=lambda _: None, clock=lambda: AT, **kw)
+
+
+def test_processes_in_one_job_share_one_grant(tmp_path):
+    usage = tmp_path / 'usage.json'
+    quiet(usage_path=usage).consume()
+    second = quiet(usage_path=usage)          # e.g. controls after scorecards
+    assert second.requests == 1
+    second.consume(); second.consume()
+    with pytest.raises(RuntimeError, match='exhausted'):
+        quiet(usage_path=usage).consume()
+    other = quiet({**R, 'key': 'another-job'}, usage_path=usage)   # a different reservation starts fresh
+    assert other.requests == 0
+
+
+def test_stop_carries_to_the_next_process(tmp_path):
+    usage = tmp_path / 'usage.json'
+    quiet(usage_path=usage).rate_stop({'Retry-After': '3600'})
+    later = quiet(usage_path=usage)
+    assert later.resume_after == (AT + timedelta(hours=1)).isoformat()
+    with pytest.raises(RuntimeError, match='rate limit'):
+        later.consume()
+
+
+class Err(Exception):
+    def __init__(self, code, headers):
+        self.code = code; self.headers = headers
+
+
+def test_retry_after_on_any_error_stops_but_plain_errors_do_not():
+    plain = quiet(usage_path=None); plain.http_error(Err(500, {}))
+    assert plain.stopped is None
+    busy = quiet(usage_path=None); busy.http_error(Err(503, {'Retry-After': '120'}))
+    assert busy.stopped and busy.resume_after == (AT + timedelta(minutes=2)).isoformat()
+    limited = quiet(usage_path=None); limited.http_error(Err(429, {}))
+    assert limited.stopped
+
+
+def test_a_stop_from_another_job_halts_active_holders():
+    seen = []
+    def shared(at):
+        seen.append(at); return '2026-10-18T00:00:00+00:00' if len(seen) > 1 else None
+    b = quiet({**R, 'granted': 100}, usage_path=None, shared_stop=shared)
+    for _ in range(25):
+        b.consume()
+    with pytest.raises(RuntimeError, match='Another job'):
+        b.consume()
+    assert b.requests == 25 and b.resume_after == '2026-10-18T00:00:00+00:00'
+
+
+def test_unexpired_stops_are_found_on_any_ledger_day():
+    old = {'reservations': [{'key': 'a', 'resumeAfterUTC': '2026-10-25T00:00:00+00:00'}]}
+    past = {'reservations': [{'key': 'b', 'resumeAfterUTC': '2026-10-17T00:00:00+00:00'}, {'key': 'c'}]}
+    assert unexpired_stop([past, old], AT) == '2026-10-25T00:00:00+00:00'
+    assert unexpired_stop([past], AT) is None
+    entries = [e for d in (past, old) for e in d['reservations']]
+    assert plan([], 'new', 10, AT, earlier_entries=entries)[1] == 0
 
 
 def test_reset_uses_the_later_header_and_defaults_to_next_utc_midnight():

@@ -34,7 +34,7 @@ A manually triggered GitHub Actions workflow:
 
 All processing and tests run in GitHub Actions. Entry points refuse local execution.
 There are no app telemetry inputs, player locations, rounds, credentials, paid services,
-Overpass queries, external vendors, in the measurement workflow. The phase-two build runs weekly. Standard public runners are
+Overpass queries, external vendors, in the measurement workflow. The phase-two build runs on manual dispatch only (its weekly schedule is paused). Standard public runners are
 used; no larger runners or paid storage are enabled. Only the report job has write
 permission through the default short-lived GITHUB_TOKEN.
 
