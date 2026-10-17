@@ -15,8 +15,11 @@ is not permission to use unrelated sources or to assume a service has an SLA.
   https://www.opengolfapi.org/docs/ — free, keyless directory and scorecards, with
   ODbL attribution. Scorecards are `/v1/courses/{id}/holes`. Current service repository:
   https://github.com/opengolfapi/api . Its documented free tier includes a 1,000/day
-  request limit; this 207-candidate run uses one sequential client and bounded retries
-  (at most four requests per eligible course), plus a daily cache. A 429 or service
+  request limit per IP. Runners change IP, so every workflow reserves requests in one
+  repository-wide daily ledger (800/day, committed before any request, never refunded)
+  and spends them through one paced client: at most two attempts per request for
+  network errors, none after HTTP 429. A 429, `X-RateLimit-Remaining: 0` or Retry-After
+  stops all requests and blocks new reservations until the later reset. A 429 or service
   outage is an operational failure, never an empty scorecard. No promise of availability.
 - **GitHub Actions:** https://docs.github.com/en/billing/concepts/product-billing/github-actions
   — standard hosted runners are free for public repositories, subject to platform

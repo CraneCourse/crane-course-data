@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
-      contents: read
+      contents: write  # Commits the OpenGolfAPI ledger reservation before requests.
       actions: read
     outputs:
       states: ${{ steps.selection.outputs.states }}
@@ -35,7 +35,12 @@ jobs:
           pattern: result-*
           merge-multiple: true
           path: work
+      - name: Reserve OpenGolfAPI requests in the repository-wide daily ledger
+        run: python -m pipeline.api_ledger reserve "$(python -m pipeline.api_ledger need layout-details)" layout-details
       - run: python -m pipeline.layout_audit details
+      - name: Record OpenGolfAPI use against the reservation (never refunded)
+        if: always()
+        run: python -m pipeline.api_ledger record
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: layout-inputs

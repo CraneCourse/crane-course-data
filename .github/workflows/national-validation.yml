@@ -15,7 +15,7 @@ on:
         required: false
         type: string
       request_budget:
-        description: Shared acquisition budget (1..800), capped again per UTC day across resumes
+        description: Most scorecard requests to reserve (1..800) from the repository-wide daily ledger
         default: '800'
         type: string
 permissions:
@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 180
     permissions:
-      contents: read
+      contents: write  # Ledger reservation and acquisition summary only; never course data.
       actions: read
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
@@ -64,7 +64,17 @@ jobs:
           run-id: ${{ inputs.previous_run }}
           name: national-acquisition
           path: work/previous
+      - name: Classify border-clipped search areas from official extract extents
+        run: python -m pipeline.national_border
+      - name: Reserve OpenGolfAPI requests in the repository-wide daily ledger
+        run: python -m pipeline.api_ledger reserve "$(python -m pipeline.national_validation need)" national-validation-cards
       - run: python -m pipeline.national_validation acquire
+      - name: Record OpenGolfAPI use against the reservation (never refunded)
+        if: always()
+        run: python -m pipeline.api_ledger record
+      - name: Commit acquisition counts and remaining IDs before matching can fail
+        if: always()
+        run: python -m pipeline.national_validation summarize
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         if: always()
         with:

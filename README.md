@@ -18,8 +18,10 @@ courses and regions; they are not collected from app users.
 A manually triggered GitHub Actions workflow:
 
 1. Tests the diagnostic code on a standard hosted runner.
-2. Fetches OpenGolfAPI scorecards sequentially, at most one request every 1.3 seconds,
-   with bounded retries and a daily response cache.
+2. Reserves OpenGolfAPI requests in the repository-wide daily ledger
+   (`ledger/opengolfapi/`, see `pipeline/api_ledger.py`), then fetches scorecards
+   sequentially, at most one request every 1.5 seconds, with at most two attempts for
+   network errors, none after HTTP 429, and a daily response cache.
 3. Downloads Geofabrik extracts for every recognized contiguous-US state represented
    in the sample, plus New York and South Carolina. Three state jobs run at once.
 4. Filters golf features and course areas with osmium, preserving referenced nodes.

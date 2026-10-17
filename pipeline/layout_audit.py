@@ -33,17 +33,20 @@ class AuditHandler(GolfHandler):
 
 
 def details():
-    cloud_only()
+    """Course details through the repository-wide ledger; no retries after HTTP 429."""
+    from pipeline.api_ledger import Budget
+    cloud_only(); budget=Budget()
     baseline=read('reports/build-2026-10-16-38973050174.json')
     for row in baseline['rows']:
         if row['status'] in ('data-ready','outside-state-scope'): continue
         c=row['candidate']; url='https://api.opengolfapi.org/v1/courses/'+c['id']
         result={'url':url,'fetchedAt':now()}
-        for attempt in range(3):
-            time.sleep(1.3)
+        for attempt in range(2):
+            budget.consume()
             try:
                 req=urllib.request.Request(url,headers={'User-Agent':'Crane-Course-Data/1.0','Accept':'application/json'})
                 with urllib.request.urlopen(req,timeout=30) as response:
+                    budget.observe(response.headers)
                     body=response.read(5_000_001)
                 if len(body)>5_000_000: raise ValueError('Response exceeds limit')
                 data=json.loads(body)
@@ -51,9 +54,11 @@ def details():
                 allowed={'id','course_name','name','city','state','latitude','longitude','lat','lon','holes','scorecard','tees','tee_boxes','hole_count','num_holes','par','par_total','total_yardage','osm_id','osm_type','source','sources','provenance','updated_at'}
                 result.update(response={k:v for k,v in data.items() if k in allowed},responseKeys=sorted(data),sha256=hashlib.sha256(body).hexdigest())
                 break
+            except urllib.error.HTTPError as exc:
+                result['error']=f'HTTP {exc.code}; no retries'; budget.http_error(exc); break
             except (urllib.error.URLError,ValueError,TimeoutError) as exc:
                 result['error']=str(exc)
-                if attempt<2: time.sleep(5*2**attempt)
+                if attempt==0: time.sleep(5)
         if 'response' in result: result.pop('error',None)
         write('work/details/'+c['id']+'.json',result)
         print('DETAIL',c['name'],'received' if 'response' in result else result['error'],flush=True)

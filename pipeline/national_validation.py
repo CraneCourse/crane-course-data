@@ -6,9 +6,7 @@ import json
 import os
 import shutil
 import sys
-import time
-from datetime import datetime, timezone, timedelta
-from email.utils import parsedate_to_datetime
+from datetime import datetime, timezone
 import urllib.error
 import urllib.request
 from pipeline.common import cloud_only, read, write, now
@@ -16,6 +14,8 @@ from pipeline.layouts import separate
 from pipeline.quality import check, equivalent
 from pipeline.export import validate_document, validate_controls, SOURCES, export_order
 from pipeline.reviewed_cards import facts, fetch
+from pipeline.api_ledger import Budget, commit_files
+from pipeline.national_border import REASONS as BORDER_REASON
 
 BASELINE_RUN='38981324295'
 BASELINE_SHA='ad8c6ebf5f4042bb471f796a69aa6e1b33fd2ffe'
@@ -41,11 +41,9 @@ def verify():
         assert meta['path']==path and meta['head_sha']==sha
         records[name]={k:meta[k] for k in ('id','head_sha','created_at','html_url','path')}
     previous=os.environ.get('PREVIOUS_RUN','').strip()
-    prior_reports=[read(p) for p in Path('reports').glob('national-validation-*.json')]
-    prior_reports=[r for r in prior_reports if str(r['inputs']['geometry']['id'])==os.environ['GEOMETRY_RUN']]
-    if prior_reports:
-        latest=max(prior_reports,key=lambda r:r['builtAt'])
-        assert previous==str(latest['runID']), 'Resume the latest recorded validation run; a fresh dispatch cannot reset the request ledger'
+    latest=latest_prior_run(os.environ['GEOMETRY_RUN'])
+    if latest:
+        assert previous==latest, f'Resume the latest recorded run {latest} for this geometry survey so its saved cards are reused'
     if previous:
         meta=get(previous)
         assert meta['head_repository']['full_name']==os.environ['GITHUB_REPOSITORY'] and meta['head_branch']=='main'
@@ -53,6 +51,26 @@ def verify():
         assert meta['path']=='.github/workflows/national-validation.yml'
         records['previous']={k:meta[k] for k in ('id','head_sha','created_at','html_url','path')}
     write(ROOT/'inputs.json',records)
+
+
+def latest_prior_run(geometry_run, reports=Path('reports')):
+    """Latest run for this geometry survey, from finished reports OR acquisition summaries.
+
+    Acquisition summaries are committed right after scorecard acquisition, so a run whose
+    matching or report step later failed is still found. The request budget itself is
+    enforced separately by the repository-wide ledger (pipeline/api_ledger.py).
+    """
+    runs=[]
+    for pattern in ('national-validation-*.json','national-acquisition-*.json'):
+        for path in reports.glob(pattern):
+            r=read(path)
+            if str(r['inputs']['geometry']['id'])==str(geometry_run): runs.append(int(r['runID']))
+    return str(max(runs)) if runs else None
+
+
+def border_status():
+    """Border classification from pipeline.national_border, keyed by candidate ID."""
+    return read(ROOT/'border.json')['rows']
 
 
 def geometry_inputs():
@@ -76,40 +94,18 @@ def baseline_ids():
 
 
 class Client:
-    """One run-wide budget includes official checks; no retry multiplication."""
-    def __init__(self,budget,pause=time.sleep,usage=None):
-        assert 1<=budget<=800
-        self.budget=budget; self.requests=0; self.pause=pause; self.stopped=None
-        self.usage=dict(usage or {}); self.resume_after=None
+    """OpenGolfAPI scorecards through the repository-wide ledger budget; no retries."""
+    def __init__(self,budget):
+        self.budget=budget
 
-    def rate_stop(self,headers):
-        headers={k.lower():v for k,v in headers.items()}
-        reset=headers.get('x-ratelimit-reset'); retry=headers.get('retry-after')
-        current=datetime.now(timezone.utc); targets=[]
-        if reset:
-            try:
-                targets.append(datetime.fromtimestamp(float(reset),timezone.utc))
-            except (ValueError,TypeError,OverflowError,OSError):
-                try:
-                    parsed=datetime.fromisoformat(reset.replace('Z','+00:00'))
-                    targets.append(parsed if parsed.tzinfo else parsed.replace(tzinfo=timezone.utc))
-                except (ValueError,TypeError): pass
-        if retry:
-            try:
-                parsed=current+timedelta(seconds=int(retry)) if retry.isdigit() else parsedate_to_datetime(retry)
-                targets.append(parsed if parsed.tzinfo else parsed.replace(tzinfo=timezone.utc))
-            except (ValueError,TypeError,OverflowError): pass
-        # Respect both headers when present; never choose the shorter wait.
-        target=max(targets) if targets else (current+timedelta(days=1)).replace(hour=0,minute=0,second=0,microsecond=0)
-        self.resume_after=target.isoformat()
-        self.stopped='Source rate limit reached; resume only after '+self.resume_after
+    @property
+    def requests(self): return self.budget.requests
+    @property
+    def stopped(self): return self.budget.stopped
+    @property
+    def resume_after(self): return self.budget.resume_after
 
-    def consume(self):
-        if self.stopped: raise RuntimeError(self.stopped)
-        if self.requests>=self.budget: raise RuntimeError('Shared request budget exhausted')
-        day=datetime.now(timezone.utc).date().isoformat()
-        if self.usage.get(day,0)>=800: raise RuntimeError('Shared UTC-day budget exhausted; wait for next source reset')
-        self.pause(1.5); self.requests+=1; self.usage[day]=self.usage.get(day,0)+1
+    def consume(self): self.budget.consume()
 
     def card(self,cid):
         self.consume()
@@ -120,13 +116,13 @@ class Client:
             with urllib.request.urlopen(req,timeout=45) as response:
                 body=response.read(5_000_001)
                 metadata['rateHeaders']={k:v for k,v in response.headers.items() if 'ratelimit' in k.lower() or k.lower()=='retry-after'}
-                if response.headers.get('X-RateLimit-Remaining')=='0': self.rate_stop(response.headers)
+                self.budget.observe(response.headers)
             if len(body)>5_000_000: raise ValueError('Response exceeds safety limit')
             data=json.loads(body)
             if not isinstance(data,dict) or not isinstance(data.get('holes'),list): raise ValueError('Missing holes array')
             metadata.update(response={'holes':data['holes']},sha256=hashlib.sha256(body).hexdigest())
         except urllib.error.HTTPError as exc:
-            if exc.code==429: self.rate_stop(exc.headers)
+            self.budget.http_error(exc)
             metadata['error']=f'HTTP {exc.code}; no retries'
         except (urllib.error.URLError,TimeoutError,ValueError) as exc: metadata['error']=str(exc)
         return metadata
@@ -140,16 +136,15 @@ def acquire():
     (ROOT/'baseline').mkdir(parents=True,exist_ok=True)
     for cid in floor: shutil.copyfile(frozen/f'{cid}.json',ROOT/'baseline'/f'{cid}.json')
     for path in frozen.glob('control-*.json'): shutil.copyfile(path,ROOT/'baseline'/path.name)
-    previous={}; usage={}; prior=Path('work/previous')
+    previous={}; prior=Path('work/previous'); border=border_status()
     if os.environ.get('PREVIOUS_RUN','').strip():
         prior_inputs=read(prior/'inputs.json'); current_inputs=read(ROOT/'inputs.json')
         assert prior_inputs['geometry']==current_inputs['geometry'] and prior_inputs['baseline']==current_inputs['baseline']
         prior_acquisition=read(prior/'acquisition.json'); previous={r['candidate']['id']:r for r in prior_acquisition['rows']}
         assert set(previous)==set(files)
-        usage=prior_acquisition['utcDayUsage']
         resume_after=prior_acquisition.get('resumeAfterUTC')
         if resume_after: assert datetime.now(timezone.utc)>=datetime.fromisoformat(resume_after), 'Source Retry-After/reset not reached'
-    reviewed=read('inputs/reviewed-scorecards.json'); client=Client(int(os.environ.get('REQUEST_BUDGET','800')),usage=usage)
+    reviewed=read('inputs/reviewed-scorecards.json'); client=Client(Budget())
     rows=[]; cached=0; resumed=0; official={}
     # One sequential client for every state. Stable ordering favors existing IDs;
     # remaining IDs are round-robin by state for bounded-run geographic coverage.
@@ -163,6 +158,10 @@ def acquire():
     for cid in order:
         candidate=read(files[cid])['candidate']; row={'candidate':candidate}
         record={}
+        if border[cid]!='inside':
+            # A possibly clipped search area cannot prove a complete layout; spend nothing.
+            row.update(status='border-unresolved',reason=BORDER_REASON[border[cid]]); rows.append(row)
+            print(cid,row['status'],flush=True); continue
         try:
             if previous.get(cid,{}).get('status')=='scorecard-acquired':
                 record=read(prior/'scorecards'/f'{cid}.json'); assert 'response' in record
@@ -181,14 +180,45 @@ def acquire():
             row.update(status='scorecard-acquired',source={k:v for k,v in record.items() if k!='response'})
             write(ROOT/'scorecards'/f'{cid}.json',record)
         except Exception as exc:
-            if isinstance(exc,urllib.error.HTTPError) and exc.code==429: client.rate_stop(exc.headers)
+            if isinstance(exc,urllib.error.HTTPError): client.budget.http_error(exc)
             row.update(status='incomplete',reason=f'{type(exc).__name__}: {exc}',source={k:v for k,v in record.items() if k!='response'})
         rows.append(row)
-        write(ROOT/'acquisition.json',{'rows':rows,'complete':False,'requests':client.requests,'budget':client.budget,'stopped':client.stopped,'cachedCards':cached,'resumedCards':resumed,'utcDayUsage':client.usage,'resumeAfterUTC':client.resume_after,'officialSources':official})
+        write(ROOT/'acquisition.json',acquisition_state(rows,False,client,cached,resumed,official))
         print(cid,row['status'],flush=True)
     assert {r['candidate']['id'] for r in rows}==set(files)
-    write(ROOT/'acquisition.json',{'rows':rows,'complete':all(r['status']=='scorecard-acquired' for r in rows),
-        'requests':client.requests,'budget':client.budget,'stopped':client.stopped,'cachedCards':cached,'resumedCards':resumed,'utcDayUsage':client.usage,'resumeAfterUTC':client.resume_after,'officialSources':official})
+    write(ROOT/'acquisition.json',acquisition_state(rows,all(r['status'] in ('scorecard-acquired','border-unresolved') for r in rows),client,cached,resumed,official))
+
+
+def need():
+    """Requests acquisition can make: unresolved-free candidates without a saved, reused or prior card."""
+    report,files=geometry_inputs(); border=border_status(); frozen=Path('work/frozen/work/validation')
+    previous={}
+    if os.environ.get('PREVIOUS_RUN','').strip():
+        previous={r['candidate']['id']:r for r in read(Path('work/previous')/'acquisition.json')['rows']}
+    reviewed=read('inputs/reviewed-scorecards.json')
+    count=sum(1 for cid in files if border[cid]=='inside' and previous.get(cid,{}).get('status')!='scorecard-acquired'
+              and (cid in reviewed or not (frozen/f'{cid}.json').exists()))
+    return min(count,int(os.environ.get('REQUEST_BUDGET','800')))
+
+
+def acquisition_state(rows,complete,client,cached,resumed,official):
+    b=client.budget
+    return {'rows':rows,'complete':complete,'requests':client.requests,'budget':b.budget,'reservation':{'key':b.key,'day':b.day,'granted':b.budget},
+            'stopped':client.stopped,'cachedCards':cached,'resumedCards':resumed,'resumeAfterUTC':client.resume_after,'officialSources':official}
+
+
+def summarize():
+    """Commit counts and remaining IDs right after acquisition, before matching can fail."""
+    if not (ROOT/'acquisition.json').exists():
+        print('No acquisition state to summarize',flush=True); return
+    a=read(ROOT/'acquisition.json')
+    summary={'runID':os.environ['GITHUB_RUN_ID'],'sourceCommit':os.environ['GITHUB_SHA'],'builtAt':now(),'inputs':read(ROOT/'inputs.json'),
+        'complete':a['complete'],'counts':dict(Counter(r['status'] for r in a['rows'])),'requests':a['requests'],'reservation':a['reservation'],
+        'stopped':a['stopped'],'resumeAfterUTC':a.get('resumeAfterUTC'),'cachedCards':a['cachedCards'],'resumedCards':a['resumedCards'],
+        'remainingIDs':sorted(r['candidate']['id'] for r in a['rows'] if r['status']=='incomplete'),
+        'note':'Scorecard bodies remain in the national-acquisition artifact; resume with previous_run set to this run.'}
+    name=f'reports/national-acquisition-{os.environ["GITHUB_RUN_ID"]}.json'
+    commit_files(lambda root: write(root/name,summary),f'Record national scorecard acquisition {os.environ["GITHUB_RUN_ID"]}')
 
 
 def prepare_payload(p,score):
@@ -212,6 +242,8 @@ def prepare_shard(shard):
         if int(cid.replace('-',''),16)%SHARDS!=shard: continue
         source=sources[cid]
         row={'candidate':source['candidate']}
+        if source['status']=='border-unresolved':
+            rows.append(dict(row,status='border-unresolved',reason=source['reason'])); continue
         if source['status']!='scorecard-acquired':
             rows.append(dict(row,status='incomplete',reason=source['reason'])); continue
         try:
@@ -290,39 +322,83 @@ def finish():
             dataVersion=version,builtAt=built,file=f'courses/{cid}.json',sha256=hashlib.sha256(path.read_bytes()).hexdigest()))
     manifest={'dataVersion':version,'builtAt':built,'courses':index,'sources':SOURCES}
     validate_document(manifest,'schemas/index.schema.json'); write(ROOT/'candidate-export'/'index.json',manifest)
-    by_id={r['candidate']['id']:r for r in rows}
+    by_id={r['candidate']['id']:r for r in rows}; border=border_status()
     for row in report['rows']:
         cid=row['candidate']['id']
         row['geometryStage']=row['status']
         if cid in by_id: row.update(by_id[cid])
+        elif row['status']=='geometry-withheld' and border.get(cid) in BORDER_REASON:
+            # A possibly clipped search is unresolved, not evidence of absent mapping.
+            row.update(status='border-unresolved',reason=BORDER_REASON[border[cid]])
+        row['border']=border.get(cid)
     complete=acquisition['complete'] and not any(r['status']=='incomplete' for r in rows)
+    provenance=scorecard_provenance(fresh_ready,acquisition)
+    facilities=sorted({read(f'work/validation/{cid}.json')['layoutResolution']['boundaryID'] for cid in fresh_ready})
     result={'runID':os.environ['GITHUB_RUN_ID'],'sourceCommit':os.environ['GITHUB_SHA'],'builtAt':built,'complete':complete,
         'inputs':read(ROOT/'inputs.json'),'geometryCounts':report['counts'],'counts':dict(Counter(r['status'] for r in report['rows'])),
-        'requestCount':acquisition['requests'],'requestBudget':acquisition['budget'],'cachedCards':acquisition['cachedCards'],'resumedCards':acquisition['resumedCards'],'utcDayUsage':acquisition['utcDayUsage'],'resumeAfterUTC':acquisition.get('resumeAfterUTC'),
-        'freshGeometryFullDataPassCount':len(fresh_ready),'frozenPublishedControlsPassCount':len(floor),
+        'requestCount':acquisition['requests'],'requestBudget':acquisition['budget'],'cachedCards':acquisition['cachedCards'],'resumedCards':acquisition['resumedCards'],'reservation':acquisition['reservation'],'resumeAfterUTC':acquisition.get('resumeAfterUTC'),
+        'freshGeometryFullDataPassCount':len(fresh_ready),'freshPassDistinctBoundaryCount':len(facilities),'freshPassScorecardProvenance':provenance,
+        'frozenPublishedControlsPassCount':len(floor),'borderUnresolvedCount':sum(r['status']=='border-unresolved' for r in report['rows']),
+        'geometryCandidateDirectoryEntries':report['counts'].get('geometry-candidate',0),
+        'geometryCandidateDistinctBoundaries':len({r['boundaryID'] for r in report['rows'] if r.get('geometryStage')=='geometry-candidate' and r.get('boundaryID')}),
         'combinedDistinctCandidateCount':len(docs),'newDistinctValidatedCount':len(set(docs)-floor),
         'existingPublishedIDs':sorted(floor),'candidateValidatedIDs':sorted(docs),'freshPassedIDs':sorted(fresh_ready),
         'existingPublishedFreshGeometryNotPassed':sorted(floor-fresh_ready),'fieldVerifiedCount':0,
         'stateCounts':{s:dict(Counter(r['status'] for r in report['rows'] if r['candidate']['state']==s)) for s in sorted(report['stateCounts'])},
         'controls':controls,'errors':global_errors,'rows':report['rows'],'limitations':LIMITATIONS}
     stem='national-validation-'+os.environ['GITHUB_RUN_ID']; write('reports/'+stem+'.json',result)
-    lines=['# National course data validation','',LIMITATIONS,'',
-        f"Complete validation of screened candidates: **{complete}**. Fresh geometry inputs passing every data gate (recorded scorecards may be reused): **{len(fresh_ready)}**. Frozen published controls retained: **38/38**. Combined distinct reviewable candidate exports: **{len(docs)}** (**{len(set(docs)-floor)} new**). Published catalog remains **38**.",'',
-        f"Requests: {acquisition['requests']}/{acquisition['budget']}; {acquisition['cachedCards']} existing public cards reused. Field-verified count added by this work: **0**.",'',
-        f"Run: https://github.com/CraneCourse/crane-course-data/actions/runs/{os.environ['GITHUB_RUN_ID']}",'',
-        'Frozen controls retain their recorded source dates. New geometry refresh failures do not replace earlier published data and are explicit in the JSON report. These totals cannot promise national field accuracy or imagery coverage.','',
-        '| State | Directory | Full gates passed (fresh) | Other / withheld | Incomplete |','|---|---:|---:|---:|---:|']
+    lines=report_lines(result,complete,acquisition)
     for s,counts in result['stateCounts'].items():
-        lines.append(f"| {s} | {sum(counts.values())} | {counts.get('full-data-gates-passed',0)} | {sum(counts.values())-counts.get('full-data-gates-passed',0)-counts.get('incomplete',0)} | {counts.get('incomplete',0)} |")
+        lines.append(f"| {s} | {sum(counts.values())} | {counts.get('full-data-gates-passed',0)} | {counts.get('border-unresolved',0)} | {sum(counts.values())-counts.get('full-data-gates-passed',0)-counts.get('incomplete',0)-counts.get('border-unresolved',0)} | {counts.get('incomplete',0)} |")
     Path('reports/'+stem+'.md').write_text('\n'.join(lines)+'\n')
     Path('reports/LATEST-NATIONAL-VALIDATION.md').write_text(f'[Latest national validation]({stem}.md)\n')
     assert not global_errors, 'Validation execution/parity errors retained in report'
+
+
+def scorecard_provenance(ids,acquisition):
+    """How each fresh pass got its card, with source-date ranges: reused cards keep old dates."""
+    groups={}
+    for row in acquisition['rows']:
+        if row['candidate']['id'] not in ids: continue
+        source=row.get('source',{})
+        kind='reused-published-card' if source.get('reusedFromRun') else 'reviewed-official-card' if source.get('type')=='reviewed-official-scorecard' else 'fetched-or-resumed'
+        g=groups.setdefault(kind,{'count':0,'earliestFetchedAt':None,'latestFetchedAt':None}); g['count']+=1
+        date=source.get('fetchedAt')
+        if date:
+            g['earliestFetchedAt']=min(filter(None,[g['earliestFetchedAt'],date]))
+            g['latestFetchedAt']=max(filter(None,[g['latestFetchedAt'],date]))
+    return groups
+
+
+def report_lines(result,complete,acquisition):
+    fresh=result['freshGeometryFullDataPassCount']; boundaries=result['freshPassDistinctBoundaryCount']
+    stale=result['existingPublishedFreshGeometryNotPassed']; remaining=result['counts'].get('incomplete',0)
+    provenance='; '.join(f"{k}: {v['count']} (card dates {(v['earliestFetchedAt'] or '?')[:10]} to {(v['latestFetchedAt'] or '?')[:10]})"
+                         for k,v in sorted(result['freshPassScorecardProvenance'].items())) or 'none'
+    return ['# National course data validation','',
+        f"**Newly surveyed geometry passing every data gate: {fresh} layouts** ({boundaries} distinct course boundaries). "
+        'Layouts are not necessarily facilities: 27-hole combinations and alias listings can share a boundary.','',
+        f"Scorecards behind those passes: {provenance}. Reused cards keep their original source dates.",'',
+        f"Validation complete: **{complete}**. Still incomplete: **{remaining}** directory entries"
+        +(f"; source rate limit until {result['resumeAfterUTC']}" if result.get('resumeAfterUTC') else '')+'. '
+        f"Border-unresolved (search area may be clipped by its state extract; not absent mapping): **{result['borderUnresolvedCount']}**.",'',
+        f"Separately: the frozen published controls retained {result['frozenPublishedControlsPassCount']}/38 on their recorded inputs; "
+        f"{len(stale)} of them did not pass on current geometry ({', '.join(stale) or 'none'}). "
+        f"The candidate export folder holds {result['combinedDistinctCandidateCount']} files (fresh passes plus frozen controls); it is not a supported-course count. Published catalog remains **38**.",'',
+        f"Preliminary geometry candidates counted {result['geometryCandidateDirectoryEntries']} directory entries (aliases counted separately) "
+        f"across {result['geometryCandidateDistinctBoundaries']} distinct boundaries.",'',
+        f"Requests this run: {acquisition['requests']}/{acquisition['budget']} reserved in ledger entry `{acquisition['reservation']['key']}`. "
+        f"Field-verified courses added: **0**. Data gates do not establish imagery availability or on-course accuracy.",'',
+        f"Run: https://github.com/CraneCourse/crane-course-data/actions/runs/{os.environ['GITHUB_RUN_ID']}",'',LIMITATIONS,'',
+        '| State | Directory | Full gates passed (fresh) | Border-unresolved | Other / withheld | Incomplete |','|---|---:|---:|---:|---:|---:|']
 
 
 def main():
     cloud_only(); command=sys.argv[1]
     if command=='verify': verify()
     elif command=='acquire': acquire()
+    elif command=='summarize': summarize()
+    elif command=='need': print(need())
     elif command=='finish': finish()
     elif command=='controls':
         Path('work/validation').mkdir(parents=True,exist_ok=True)

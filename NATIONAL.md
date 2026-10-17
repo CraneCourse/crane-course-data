@@ -131,3 +131,39 @@ was inspected as a possible efficient source. Its April 2026 public release carr
 per-hole pars/handicaps and explicitly excludes per-tee yardages, which these quality
 gates require. Total course yardage cannot substitute for hole/tee yardage. No bulk
 adapter, invented yardages or weakened gate was introduced.
+
+## Request ledger, border accounting and report labels (Claude, October 17, 2026)
+
+Corrections from `docs/national-survey-independent-review.md` in the private app repo:
+
+- **Durable request budget.** Every OpenGolfAPI caller (inventory, scorecards, controls,
+  layout details, national validation) now reserves requests in a repository-wide daily
+  ledger, `ledger/opengolfapi/<UTC day>.json`, before making any. A reservation is
+  committed to `main` first, keyed by workflow/run/attempt, and never refunded, so a
+  failed run still counts. All workflows share 800 requests per UTC day. A caller
+  without a reservation for the current day refuses to request (fail closed).
+  429, `X-RateLimit-Remaining: 0` and the later of Retry-After/reset stop all requests
+  and block new reservations until the reset passes. There are no retries around a limit
+  and no IP rotation.
+- **Weekly refresh behavior.** The Monday `build.yml` run now reserves only the cards its
+  daily cache lacks, tries a card at most twice on network errors and never after 429.
+  If the ledger or source limit stops it, the weekly build fails visibly. It never
+  publishes empty or stale-as-new scorecards. Published files stay as they are until a
+  later run succeeds.
+- **Preserved acquisition evidence.** Validation commits
+  `reports/national-acquisition-<run>.json` (counts, remaining IDs, reset time) right after
+  scorecard acquisition, before matching can fail. A later dispatch must resume the latest
+  run found in either acquisition summaries or validation reports.
+- **Border accounting.** Before acquisition, `pipeline/national_border.py` fetches each
+  extract's official Geofabrik `.poly`, records its hash, and tests a conservative envelope
+  around every directory center's 3.5 km search area. If the envelope is not fully inside
+  the assigned extract, the entry is `border-unresolved`; if the center is outside it, the
+  entry is `outside-extract`. Neither is absent mapping. Border-unresolved geometry
+  candidates are not sent through acceptance and spend no requests. All 16,776 IDs keep an
+  entry.
+- **Report labels.** Validation reports lead with full-gate passes on newly surveyed
+  geometry. They count layouts and distinct course boundaries, and state each scorecard's
+  provenance and dates (reused cards keep their original dates). Frozen controls, controls
+  that fail on current geometry, the candidate-export file count and preliminary
+  directory-entry totals (aliases included) are reported separately and labelled.
+

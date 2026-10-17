@@ -12,6 +12,8 @@ jobs:
   prepare:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    permissions:
+      contents: write  # Commits the OpenGolfAPI ledger reservation before requests.
     outputs:
       states: ${{ steps.selection.outputs.states }}
     steps:
@@ -29,8 +31,13 @@ jobs:
         with:
           path: work/scorecards
           key: scorecards-v1-${{ steps.date.outputs.day }}-${{ hashFiles('inputs/sample.json') }}
+      - name: Reserve OpenGolfAPI requests in the repository-wide daily ledger
+        run: python -m pipeline.api_ledger reserve "$(( $(python -m pipeline.api_ledger need scorecards) + $(python -m pipeline.api_ledger need controls) ))" build-cards
       - run: python -m pipeline.scorecards
       - run: python -m pipeline.controls
+      - name: Record OpenGolfAPI use against the reservation (never refunded)
+        if: always()
+        run: python -m pipeline.api_ledger record
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: scorecards

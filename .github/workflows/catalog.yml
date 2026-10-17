@@ -19,7 +19,12 @@ jobs:
           python-version: '3.12'
       - run: pip install -r requirements.txt
       - run: python -m pytest -q
+      - name: Reserve OpenGolfAPI requests in the repository-wide daily ledger
+        run: python -m pipeline.api_ledger reserve "$(python -m pipeline.api_ledger need catalog)" directory-inventory
       - run: python -m pipeline.catalog_inventory
+      - name: Record OpenGolfAPI use against the reservation (never refunded)
+        if: always()
+        run: python -m pipeline.api_ledger record
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: national-directory-inventory

@@ -50,7 +50,8 @@ def accept_page(data, seen):
 
 
 def main():
-    cloud_only()
+    from pipeline.api_ledger import Budget
+    cloud_only(); budget = Budget()  # Repository-wide ledger; fails closed without a reservation.
     requests = 0; stop = False; all_candidates = {}; state_reports=[]; evidence=[]
     for state in STATES:
         seen=set(); offset=0; errors=[]; metadata_totals=[]; page_count=0; complete=False
@@ -58,13 +59,17 @@ def main():
             if requests >= MAX_REQUESTS:
                 errors.append('Shared run request budget exhausted'); stop=True; break
             url=f'https://api.opengolfapi.org/api/v1/courses/state/{state}?limit={LIMIT}&offset={offset}'
-            requests+=1; time.sleep(1.5)
+            try: budget.consume()
+            except RuntimeError as exc:
+                errors.append(str(exc)); stop=True; break
+            requests+=1
             try:
                 req=urllib.request.Request(url,headers={'User-Agent':'Crane-Course-Data/1.0','Accept':'application/json'})
                 with urllib.request.urlopen(req,timeout=45) as response:
                     body=response.read(10_000_001)
                     if len(body)>10_000_000: raise ValueError('Page exceeds response size limit')
                     rate={k:v for k,v in response.headers.items() if 'ratelimit' in k.lower() or k.lower()=='retry-after'}
+                    budget.observe(response.headers)
                 data=json.loads(body); rows=accept_page(data,seen)
                 evidence.append({'url':url,'fetchedAt':now(),'sha256':hashlib.sha256(body).hexdigest(),'returned':len(rows),'rateHeaders':rate})
                 page_count+=1
@@ -85,6 +90,7 @@ def main():
                 offset+=len(rows)  # Honor server clamping; require an empty terminal page.
             except urllib.error.HTTPError as exc:
                 errors.append(f'HTTP {exc.code}; no automatic retries in inventory')
+                budget.http_error(exc)
                 if exc.code==429: stop=True
                 break
             except (urllib.error.URLError,TimeoutError,ValueError) as exc:
