@@ -1,0 +1,12 @@
+{
+  "dailyLimit": 800,
+  "day": "2026-10-17",
+  "reservations": [
+    {
+      "granted": 800,
+      "key": "Validate national geometry candidates/38987496757/1/national-validation-cards",
+      "requested": 800,
+      "reservedAt": "2026-10-17T00:42:41.809334+00:00"
+    }
+  ]
+}
