@@ -45,18 +45,52 @@ jobs:
       - run: python -m pipeline.national_validation verify
         env:
           GITHUB_TOKEN: ${{ github.token }}
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+      # Source artifacts expire after seven days; a multi-day resume chain carries
+      # verified copies forward from the previous run of this workflow.
+      - id: geometry
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        continue-on-error: true
         with:
           github-token: ${{ github.token }}
           run-id: ${{ inputs.geometry_run }}
           name: national-geometry-evidence
           path: .
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+      - if: steps.geometry.outcome != 'success' && inputs.previous_run != ''
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.previous_run }}
+          name: national-geometry-carry
+          path: .
+      - id: frozen
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        continue-on-error: true
         with:
           github-token: ${{ github.token }}
           run-id: '38981324295'
           name: layout-validation-evidence
           path: work/frozen
+      - if: steps.frozen.outcome != 'success' && inputs.previous_run != ''
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.previous_run }}
+          name: national-frozen-carry
+          path: work/frozen
+      - name: Carry geometry evidence forward for resumes (identity is rechecked on use)
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: national-geometry-carry
+          path: |
+            reports/national-geometry-${{ inputs.geometry_run }}.json
+            work/national
+          retention-days: 30
+      - name: Carry the frozen 38-course baseline forward for resumes
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: national-frozen-carry
+          path: work/frozen
+          retention-days: 30
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         if: inputs.previous_run != ''
         with:
@@ -80,7 +114,7 @@ jobs:
         with:
           name: national-acquisition
           path: work/national-validation
-          retention-days: 7
+          retention-days: 30
   match:
     needs: scorecards
     runs-on: ubuntu-latest
@@ -101,9 +135,7 @@ jobs:
       - run: pip install -r requirements.txt
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
-          github-token: ${{ github.token }}
-          run-id: ${{ inputs.geometry_run }}
-          name: national-geometry-evidence
+          name: national-geometry-carry
           path: .
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
@@ -136,9 +168,7 @@ jobs:
       - run: pip install -r requirements.txt
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
-          github-token: ${{ github.token }}
-          run-id: ${{ inputs.geometry_run }}
-          name: national-geometry-evidence
+          name: national-geometry-carry
           path: .
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:

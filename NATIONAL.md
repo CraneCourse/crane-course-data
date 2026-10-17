@@ -166,4 +166,9 @@ Corrections from `docs/national-survey-independent-review.md` in the private app
   provenance and dates (reused cards keep their original dates). Frozen controls, controls
   that fail on current geometry, the candidate-export file count and preliminary
   directory-entry totals (aliases included) are reported separately and labelled.
+- **Multi-day resumes.** At 800 requests per UTC day, scorecards for the 5,957 geometry
+  candidates need several days, longer than the seven-day retention of the survey and
+  frozen-baseline artifacts. Each validation run therefore re-uploads both as 30-day
+  carry artifacts, and a resume falls back to the previous run's carry copy once an
+  original expires. Identity checks (`geometry_inputs`, `baseline_ids`) still run on every use.
 
