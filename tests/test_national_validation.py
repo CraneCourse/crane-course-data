@@ -95,3 +95,22 @@ def test_actual_output_parity_and_watch_gates_remain_mandatory():
     changed=dict(ref,holes=[dict(p['python']['holes'][0],par=6)]+p['python']['holes'][1:],watchBytes=100)
     with pytest.raises(AssertionError,match='full Hole mismatch'):
         full_gate(p,changed,'2026-10-16T23:00:00+00:00','test')
+
+
+def test_daily_resume_continues_latest_run_and_stops_when_it_should(tmp_path):
+    from pipeline.common import write
+    from pipeline.national_validation import scheduled_inputs
+    at=datetime(2026,10,18,0,20,tzinfo=timezone.utc)
+    geometry={'geometry':{'id':38983094457,'head_sha':'ab99'}}
+    write(tmp_path/'national-validation-100.json',{'runID':'100','inputs':geometry,'complete':False,'resumeAfterUTC':'2026-10-17T00:00:00+00:00'})
+    write(tmp_path/'national-acquisition-100.json',{'runID':'100','inputs':geometry,'resumeAfterUTC':'2026-10-17T00:00:00+00:00'})
+    write(tmp_path/'national-acquisition-200.json',{'runID':'200','inputs':geometry,'resumeAfterUTC':'2026-10-18T00:00:00+00:00'})
+    write(tmp_path/'national-validation-200.json',{'runID':'200','inputs':geometry,'complete':False,'resumeAfterUTC':'2026-10-18T00:00:00+00:00'})
+    values,reason=scheduled_inputs(tmp_path,run_conclusion=lambda run:'success',at=at)
+    assert values=={'proceed':'true','geometry_run':'38983094457','geometry_sha':'ab99','previous_run':'200','request_budget':'500'}, reason
+    assert scheduled_inputs(tmp_path,run_conclusion=lambda run:'failure',at=at)[0]['proceed']=='false'
+    assert scheduled_inputs(tmp_path,run_conclusion=lambda run:'success',at=at-timedelta(hours=1))[0]['proceed']=='false'
+    write(tmp_path/'national-validation-200.json',{'runID':'200','inputs':geometry,'complete':True})
+    values,reason=scheduled_inputs(tmp_path,run_conclusion=lambda run:'success',at=at)
+    assert values['proceed']=='false' and 'completed' in reason
+    assert scheduled_inputs(tmp_path/'empty')[0]=={'proceed':'false'}

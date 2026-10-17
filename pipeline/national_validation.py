@@ -68,6 +68,47 @@ def latest_prior_run(geometry_run, reports=Path('reports')):
     return str(max(runs)) if runs else None
 
 
+def scheduled_inputs(reports=Path('reports'), run_conclusion=None, at=None):
+    """Inputs for the daily resume: continue the latest recorded run, or stop.
+
+    Stops once that run's validation is complete, while its source reset is still in the
+    future, or when that run did not succeed (a person should look before spending more).
+    """
+    records=[]
+    for prefix in ('national-validation-','national-acquisition-'):
+        for path in reports.glob(prefix+'*.json'):
+            r=read(path); records.append((int(r['runID']),prefix,r))
+    if not records: return {'proceed':'false'},'No recorded validation run to resume'
+    latest=max(run for run,_,_ in records)
+    mine={prefix:r for run,prefix,r in records if run==latest}
+    record=next(iter(mine.values())); geometry=record['inputs']['geometry']
+    values={'proceed':'false','geometry_run':str(geometry['id']),'geometry_sha':geometry['head_sha'],
+            'previous_run':str(latest),'request_budget':'500'}
+    validation=mine.get('national-validation-')
+    if validation and validation['complete']: return values,f'Run {latest} completed validation; nothing to resume'
+    reset=(validation or record).get('resumeAfterUTC')
+    if reset and datetime.fromisoformat(reset)>(at or datetime.now(timezone.utc)): return values,f'Source reset {reset} not reached'
+    conclusion=run_conclusion(latest) if run_conclusion else None
+    if conclusion!='success': return values,f'Run {latest} concluded {conclusion}; review before resuming'
+    return dict(values,proceed='true'),f'Resuming run {latest}'
+
+
+def resolve():
+    if os.environ.get('GITHUB_EVENT_NAME')=='workflow_dispatch':
+        values={'proceed':'true','geometry_run':os.environ['INPUT_GEOMETRY_RUN'],'geometry_sha':os.environ['INPUT_GEOMETRY_SHA'],
+                'previous_run':os.environ.get('INPUT_PREVIOUS_RUN',''),'request_budget':os.environ.get('INPUT_REQUEST_BUDGET') or '500'}
+        reason='Manual dispatch'
+    else:
+        def conclusion(run):
+            req=urllib.request.Request(f'https://api.github.com/repos/{os.environ["GITHUB_REPOSITORY"]}/actions/runs/{run}',headers={
+                'Authorization':'Bearer '+os.environ['GITHUB_TOKEN'],'Accept':'application/vnd.github+json','User-Agent':'Crane-Course-Data/1.0'})
+            with urllib.request.urlopen(req,timeout=30) as response: return json.load(response)['conclusion']
+        values,reason=scheduled_inputs(run_conclusion=conclusion)
+    print(reason,values,flush=True)
+    with open(os.environ['GITHUB_OUTPUT'],'a') as output:
+        for k,v in values.items(): output.write(f'{k}={v}\n')
+
+
 def border_status():
     """Border classification from pipeline.national_border, keyed by candidate ID."""
     return read(ROOT/'border.json')['rows']
@@ -198,7 +239,7 @@ def need():
     reviewed=read('inputs/reviewed-scorecards.json')
     count=sum(1 for cid in files if border[cid]=='inside' and previous.get(cid,{}).get('status')!='scorecard-acquired'
               and (cid in reviewed or not (frozen/f'{cid}.json').exists()))
-    return min(count,int(os.environ.get('REQUEST_BUDGET','800')))
+    return min(count,int(os.environ.get('REQUEST_BUDGET') or '500'))
 
 
 def acquisition_state(rows,complete,client,cached,resumed,official):
@@ -398,6 +439,7 @@ def main():
     if command=='verify': verify()
     elif command=='acquire': acquire()
     elif command=='summarize': summarize()
+    elif command=='resolve': resolve()
     elif command=='need': print(need())
     elif command=='finish': finish()
     elif command=='controls':

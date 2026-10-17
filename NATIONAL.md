@@ -172,4 +172,9 @@ Corrections from `docs/national-survey-independent-review.md` in the private app
   frozen-baseline artifacts. Each validation run therefore re-uploads both as 30-day
   carry artifacts, and a resume falls back to the previous run's carry copy once an
   original expires. Identity checks (`geometry_inputs`, `baseline_ids`) still run on every use.
+- **Daily resume.** `national-validation.yml` also runs at 00:20 UTC. A `resolve` job
+  continues the latest recorded run (from acquisition summaries or reports) with up to 500
+  requests. It does nothing when that run completed validation, when its recorded source
+  reset is still in the future, or when that run did not succeed, so a failure waits for
+  a person instead of repeating daily. Manual dispatch inputs work as before.
 

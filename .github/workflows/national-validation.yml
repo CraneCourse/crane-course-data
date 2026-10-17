@@ -1,5 +1,9 @@
 name: Validate national geometry candidates
 on:
+  # Daily resume after the source's UTC reset. It continues the latest recorded run and
+  # does nothing once validation is complete or if that run failed (see `resolve`).
+  schedule:
+    - cron: '20 0 * * *'
   workflow_dispatch:
     inputs:
       geometry_run:
@@ -15,23 +19,51 @@ on:
         required: false
         type: string
       request_budget:
-        description: Most scorecard requests to reserve (1..800) from the repository-wide daily ledger
-        default: '800'
+        description: Most scorecard requests to reserve (1..500) from the repository-wide daily ledger
+        default: '500'
         type: string
 permissions:
   contents: read
 concurrency:
   group: national-scorecard-validation
   cancel-in-progress: false
-env:
-  GEOMETRY_RUN: ${{ inputs.geometry_run }}
-  GEOMETRY_SHA: ${{ inputs.geometry_sha }}
-  PREVIOUS_RUN: ${{ inputs.previous_run }}
-  REQUEST_BUDGET: ${{ inputs.request_budget }}
 jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      proceed: ${{ steps.resolve.outputs.proceed }}
+      geometry_run: ${{ steps.resolve.outputs.geometry_run }}
+      geometry_sha: ${{ steps.resolve.outputs.geometry_sha }}
+      previous_run: ${{ steps.resolve.outputs.previous_run }}
+      request_budget: ${{ steps.resolve.outputs.request_budget }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - id: resolve
+        run: python -m pipeline.national_validation resolve
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          INPUT_GEOMETRY_RUN: ${{ inputs.geometry_run }}
+          INPUT_GEOMETRY_SHA: ${{ inputs.geometry_sha }}
+          INPUT_PREVIOUS_RUN: ${{ inputs.previous_run }}
+          INPUT_REQUEST_BUDGET: ${{ inputs.request_budget }}
   scorecards:
+    needs: resolve
+    if: needs.resolve.outputs.proceed == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 180
+    env:
+      GEOMETRY_RUN: ${{ needs.resolve.outputs.geometry_run }}
+      GEOMETRY_SHA: ${{ needs.resolve.outputs.geometry_sha }}
+      PREVIOUS_RUN: ${{ needs.resolve.outputs.previous_run }}
+      REQUEST_BUDGET: ${{ needs.resolve.outputs.request_budget }}
     permissions:
       contents: write  # Ledger reservation and acquisition summary only; never course data.
       actions: read
@@ -52,14 +84,14 @@ jobs:
         continue-on-error: true
         with:
           github-token: ${{ github.token }}
-          run-id: ${{ inputs.geometry_run }}
+          run-id: ${{ needs.resolve.outputs.geometry_run }}
           name: national-geometry-evidence
           path: .
-      - if: steps.geometry.outcome != 'success' && inputs.previous_run != ''
+      - if: steps.geometry.outcome != 'success' && needs.resolve.outputs.previous_run != ''
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           github-token: ${{ github.token }}
-          run-id: ${{ inputs.previous_run }}
+          run-id: ${{ needs.resolve.outputs.previous_run }}
           name: national-geometry-carry
           path: .
       - id: frozen
@@ -70,11 +102,11 @@ jobs:
           run-id: '38981324295'
           name: layout-validation-evidence
           path: work/frozen
-      - if: steps.frozen.outcome != 'success' && inputs.previous_run != ''
+      - if: steps.frozen.outcome != 'success' && needs.resolve.outputs.previous_run != ''
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           github-token: ${{ github.token }}
-          run-id: ${{ inputs.previous_run }}
+          run-id: ${{ needs.resolve.outputs.previous_run }}
           name: national-frozen-carry
           path: work/frozen
       - name: Carry geometry evidence forward for resumes (identity is rechecked on use)
@@ -82,7 +114,7 @@ jobs:
         with:
           name: national-geometry-carry
           path: |
-            reports/national-geometry-${{ inputs.geometry_run }}.json
+            reports/national-geometry-${{ needs.resolve.outputs.geometry_run }}.json
             work/national
           retention-days: 30
       - name: Carry the frozen 38-course baseline forward for resumes
@@ -92,10 +124,10 @@ jobs:
           path: work/frozen
           retention-days: 30
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
-        if: inputs.previous_run != ''
+        if: needs.resolve.outputs.previous_run != ''
         with:
           github-token: ${{ github.token }}
-          run-id: ${{ inputs.previous_run }}
+          run-id: ${{ needs.resolve.outputs.previous_run }}
           name: national-acquisition
           path: work/previous
       - name: Classify border-clipped search areas from official extract extents
@@ -116,9 +148,14 @@ jobs:
           path: work/national-validation
           retention-days: 30
   match:
-    needs: scorecards
+    needs: [resolve, scorecards]
     runs-on: ubuntu-latest
     timeout-minutes: 120
+    env:
+      GEOMETRY_RUN: ${{ needs.resolve.outputs.geometry_run }}
+      GEOMETRY_SHA: ${{ needs.resolve.outputs.geometry_sha }}
+      PREVIOUS_RUN: ${{ needs.resolve.outputs.previous_run }}
+      REQUEST_BUDGET: ${{ needs.resolve.outputs.request_budget }}
     permissions:
       contents: read
       actions: read
@@ -154,9 +191,14 @@ jobs:
           retention-days: 7
   validate:
     if: always() && needs.scorecards.result == 'success'
-    needs: [scorecards, match]
+    needs: [resolve, scorecards, match]
     runs-on: macos-14
     timeout-minutes: 180
+    env:
+      GEOMETRY_RUN: ${{ needs.resolve.outputs.geometry_run }}
+      GEOMETRY_SHA: ${{ needs.resolve.outputs.geometry_sha }}
+      PREVIOUS_RUN: ${{ needs.resolve.outputs.previous_run }}
+      REQUEST_BUDGET: ${{ needs.resolve.outputs.request_budget }}
     permissions:
       contents: write
       actions: read
