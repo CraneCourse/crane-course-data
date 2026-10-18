@@ -33,3 +33,13 @@ permissions and writes no commits, so Claude's main-branch validation can contin
 Tests and live processing run only in GitHub Actions. Reports deliberately distinguish
 smoke passes, visual-review warnings, and incomplete transfers. They do not certify
 on-course accuracy or ongoing image availability.
+
+
+October 18 continuation: retain the 28 actually attempted results from run
+39132428260 (23 downloads, five blank Colorado images), then attempt only the 259
+untested IDs. Verify the prior run's exact identity/source and artifact row membership.
+Preserve prior provenance; cumulative ceiling stays 574 USDA requests across both
+runs. A valid JPEG that is uniformly blank is an `imagery-rejected` course, not a
+network failure: do not let five blank courses masquerade as a service outage.
+Transport failures still trip the five-consecutive-failure circuit; HTTP
+403/429/503 still stop immediately. No blank course is retried or promoted.

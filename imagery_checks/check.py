@@ -4,6 +4,7 @@ import io
 import json
 import math
 import os
+import shutil
 from pathlib import Path
 import time
 import urllib.error
@@ -19,6 +20,8 @@ SHA = '672c8df11aa0b0b3e163800ae8696505e8030e16'
 BASE_RUN = '38987496757'
 BASE_SHA = '91ff2944dc3f22d1a7161ca5987b97022063f919'
 EXPECTED_NEW = 287
+RESUME_RUN = '39132428260'
+RESUME_SHA = '7db1d6eb69a6a9da2efacb3a5e0710470117c588'
 HOST = 'apps.geo.fpac.usda.gov'
 ENDPOINT = f'https://{HOST}/geo-imagery/rest/services/naip/conus_naip/ImageServer/exportImage'
 OUT = Path('work/imagery-checks')
@@ -52,6 +55,14 @@ def verify_run():
         assert str(d['id'])==run and d['head_sha']==sha and d['path']=='.github/workflows/national-validation.yml'
         evidence.append({k:d[k] for k in ('id','head_sha','html_url','created_at','path')})
     write(OUT/'input-run.json', {'current':evidence[0], 'baseline':evidence[1]})
+    req=urllib.request.Request(f'https://api.github.com/repos/{repo}/actions/runs/{RESUME_RUN}', headers={
+        'Authorization':'Bearer '+os.environ['GITHUB_TOKEN'],'Accept':'application/vnd.github+json'})
+    with urllib.request.urlopen(req,timeout=30) as r: d=json.load(r)
+    assert d['head_repository']['full_name']==repo and d['head_branch']=='codex/imagery-download-checks'
+    assert str(d['id'])==RESUME_RUN and d['head_sha']==RESUME_SHA and d['event']=='push'
+    assert d['status']=='completed' and d['conclusion']=='success' and d['path']=='.github/workflows/imagery-smoke.yml'
+    write(OUT/'resume-run.json',{k:d[k] for k in ('id','head_sha','html_url','created_at','path')})
+
 
 
 def passed_ids(report, run, sha):
@@ -122,11 +133,11 @@ class SameHostRedirect(urllib.request.HTTPRedirectHandler):
 
 
 class Client:
-    def __init__(self, pause=time.sleep):
-        self.pause=pause; self.requests=0; self.stop_reason=None
+    def __init__(self, pause=time.sleep, maximum_requests=2*EXPECTED_NEW):
+        self.pause=pause; self.requests=0; self.stop_reason=None; self.maximum_requests=maximum_requests
     def get(self, opener, url, maximum):
         if self.stop_reason: raise RuntimeError(self.stop_reason)
-        assert self.requests<2*EXPECTED_NEW, 'Hard global request ceiling exceeded'
+        assert self.requests<self.maximum_requests, 'Hard global request ceiling exceeded'
         self.pause(1.5); self.requests+=1
         req=urllib.request.Request(checked_url(url),headers={
             'User-Agent':'Crane-Course-Imagery-Research/1.0',
@@ -160,6 +171,10 @@ def pixel(p,b,size):
     return ((p['lon']-b[0])/(b[2]-b[0])*(size[0]-1), (b[3]-p['lat'])/(b[3]-b[1])*(size[1]-1))
 
 
+class UniformImageError(ValueError):
+    pass
+
+
 def inspect_image(raw, doc, bounds, metadata):
     if len(raw)>LIMIT: raise ValueError('Image exceeds app transfer limit')
     with Image.open(io.BytesIO(raw)) as im:
@@ -168,7 +183,7 @@ def inspect_image(raw, doc, bounds, metadata):
         im.load(); rgb=im.convert('RGB')
     sample=rgb.resize((64,64),Image.Resampling.BILINEAR)
     extrema=sample.getextrema()
-    if all(lo==hi for lo,hi in extrema): raise ValueError('Uniform image: obvious no-data result')
+    if all(lo==hi for lo,hi in extrema): raise UniformImageError('Uniform image: obvious no-data result')
     small=rgb.resize((256,256),Image.Resampling.BILINEAR)
     dark=sum(max(p)<=8 for p in small.getdata())/(256*256)
     white=sum(min(p)>=247 for p in small.getdata())/(256*256)
@@ -209,9 +224,36 @@ def thumbnail(rgb, doc, bounds, target):
     target.parent.mkdir(parents=True,exist_ok=True); im.save(target)
 
 
-def run():
-    docs=inputs(); rows=[]; client=Client(); consecutive=0; represented=set()
+def retained_results(report, docs):
+    assert str(report['runID'])==RESUME_RUN and report['sourceCommit']==RESUME_SHA
+    assert report['inputRun']['current']['head_sha']==SHA and str(report['inputRun']['current']['id'])==RUN
+    assert report['inputRun']['baseline']['head_sha']==BASE_SHA and str(report['inputRun']['baseline']['id'])==BASE_RUN
+    assert report['candidateCount']==len(docs)==EXPECTED_NEW
+    indexed={r['candidate']['id']:r for r in report['rows']}
+    assert len(indexed)==len(report['rows']) and set(indexed)=={d['candidate']['id'] for d in docs}
+    retained={}
     for doc in docs:
+        cid=doc['candidate']['id']; row=indexed[cid]
+        assert row['candidate']==doc['candidate']
+        if 'requestedBounds' not in row:
+            assert row['status']=='incomplete' and row['error']=='RuntimeError: '+report['stopReason']
+            continue
+        row=dict(row, evidenceRun=RESUME_RUN)
+        if row.get('error')=='ValueError: Uniform image: obvious no-data result':
+            assert row['metadataResponse']['status']==200
+            row.update(originalStatus=row['status'],status='imagery-rejected')
+        retained[cid]=row
+    assert len(retained)==28 and report['requestCount']==56
+    return retained
+
+
+def run():
+    docs=inputs(); prior=read('prior/report.json'); retained=retained_results(prior,docs)
+    if Path('prior/previews').exists(): shutil.copytree('prior/previews',OUT/'previews',dirs_exist_ok=True)
+    rows=[]; client=Client(maximum_requests=2*EXPECTED_NEW-prior['requestCount']); consecutive=0; represented=set()
+    for doc in docs:
+        if doc['candidate']['id'] in retained:
+            rows.append(retained[doc['candidate']['id']]); continue
         c=doc['candidate']; row={'candidate':c,'startedAt':stamp(),'status':'incomplete'}; start=time.monotonic()
         try:
             if client.stop_reason: raise RuntimeError(client.stop_reason)
@@ -240,7 +282,11 @@ def run():
             (root/'course.json').unlink(); (root/'aerial.jpg').unlink()
             consecutive=0
         except Exception as exc:
-            row['error']=f'{type(exc).__name__}: {exc}'[:800]; consecutive+=1
+            row['error']=f'{type(exc).__name__}: {exc}'[:800]
+            if isinstance(exc,UniformImageError):
+                row['status']='imagery-rejected'; consecutive=0
+            else:
+                consecutive+=1
             if consecutive>=5 and not client.stop_reason: client.stop_reason='Five consecutive failures; inspect service/input before more requests'
         row['seconds']=round(time.monotonic()-start,3); rows.append(row)
         write(OUT/'progress.json',{'rows':rows,'requestCount':client.requests,'stopReason':client.stop_reason})
@@ -248,11 +294,13 @@ def run():
     assert len(rows)==EXPECTED_NEW and {r['candidate']['id'] for r in rows}=={d['candidate']['id'] for d in docs}
     result={'builtAt':stamp(),'runID':os.environ['GITHUB_RUN_ID'],'sourceCommit':os.environ['GITHUB_SHA'],
             'inputRun':read(OUT/'input-run.json'),'candidateCount':len(rows),'counts':dict(Counter(r['status'] for r in rows)),
-            'requestCount':client.requests,'stopReason':client.stop_reason,'scope':CAVEAT,'rows':rows}
+            'requestCount':prior['requestCount']+client.requests,'requestsThisRun':client.requests,
+            'resumeRun':read(OUT/'resume-run.json'),'retainedCount':len(retained),
+            'stopReason':client.stop_reason,'scope':CAVEAT,'rows':rows}
     write(OUT/'report.json',result)
     lines=['# Validated-course imagery/download smoke test','',CAVEAT,'',
            f"{EXPECTED_NEW} new current-geometry passes accounted for. Results: `{json.dumps(result['counts'],sort_keys=True)}`.",
-           f"USDA HTTP requests: {client.requests}; OpenGolfAPI requests: **0**.",'',
+           f"USDA HTTP requests this run: {client.requests}; cumulative: {result['requestCount']}; OpenGolfAPI requests: **0**.",'',
            'Returned EPSG:4326 extents are retained and used for all point checks and preview overlays. '
            'Each export and its image use one private cookie session. There are no automatic retries. '
            'File round-trip means JSON/JPEG reopen in this cloud harness, not the app CourseCache or airplane-mode verification.','',
