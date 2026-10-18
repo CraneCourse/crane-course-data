@@ -59,3 +59,20 @@ def test_urls_fail_closed_and_rate_limit_stops_following_requests():
     with pytest.raises(HTTPError): c.get(Blocked(),'https://'+HOST+'/a',100)
     with pytest.raises(RuntimeError): c.get(Blocked(),'https://'+HOST+'/a',100)
     assert c.requests==1
+
+
+def test_delta_excludes_old_passes_and_frozen_controls_and_rejects_drift():
+    from imagery_checks.check import new_passes, RUN, SHA, BASE_RUN, BASE_SHA
+    def report(ids, run, sha):
+        return {'runID':run,'sourceCommit':sha,'freshPassedIDs':ids,
+                'rows':[{'candidate':{'id':i},'status':'full-data-gates-passed'} for i in ids]
+                    +[{'candidate':{'id':'frozen-control'},'status':'data-withheld'}]}
+    current=report(list(range(603)),RUN,SHA)
+    baseline=report(list(range(316)),BASE_RUN,BASE_SHA)
+    assert new_passes(current,baseline)==set(range(316,603))
+    current['rows'].append(current['rows'][0])
+    with pytest.raises(AssertionError): new_passes(current,baseline)
+    current=report(list(range(1,604)),RUN,SHA)
+    with pytest.raises(AssertionError): new_passes(current,baseline)
+    current=report(list(range(603)),RUN,'wrong-sha')
+    with pytest.raises(AssertionError): new_passes(current,baseline)

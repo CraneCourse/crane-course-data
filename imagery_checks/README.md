@@ -1,7 +1,11 @@
 # Imagery/download research (separate from national scorecard work)
 
-Pinned input: national validation run 38987496757, source 91ff2944dc3f22d1a7161ca5987b97022063f919.
-Only its 316 current-geometry full-gate passes are tested, not three older frozen controls.
+Pinned input: national validation run 39085031615, source 672c8df11aa0b0b3e163800ae8696505e8030e16.
+Compare with run 38987496757, source 91ff2944dc3f22d1a7161ca5987b97022063f919.
+Only the 287 new full-gate passes (603 minus the original 316) are tested.
+Both successful run identities/events and artifact report provenance are checked.
+Fail closed on missing earlier passes, duplicate IDs or unexpected counts.
+Frozen controls are never added to the selection.
 The candidate manifest SHA-256 is checked before using each exported course.
 
 This independent cloud harness follows the app's documented request shape: USDA NAIP
@@ -18,7 +22,7 @@ Watch connectivity or elevation downloads. Those need separate integration/devic
 The future public course-file HTTP endpoint is not deployed; artifact retrieval/hash
 validation does not establish that future app endpoint's behavior.
 
-One sequential client, 1.5 seconds between HTTP requests, no retries, at most 632 USDA
+One sequential client, 1.5 seconds between HTTP requests, no retries, at most 574 USDA
 requests. HTTP 403/429/503 or five consecutive failures stop further requests, leaving
 untested courses incomplete. No OpenGolfAPI requests, scorecard ledger writes, app
 source uploads, course publishing, or local course processing. Full images are transient;

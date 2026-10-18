@@ -14,8 +14,11 @@ from collections import Counter
 from PIL import Image, ImageDraw
 from jsonschema import Draft202012Validator, FormatChecker
 
-RUN = '38987496757'
-SHA = '91ff2944dc3f22d1a7161ca5987b97022063f919'
+RUN = '39085031615'
+SHA = '672c8df11aa0b0b3e163800ae8696505e8030e16'
+BASE_RUN = '38987496757'
+BASE_SHA = '91ff2944dc3f22d1a7161ca5987b97022063f919'
+EXPECTED_NEW = 287
 HOST = 'apps.geo.fpac.usda.gov'
 ENDPOINT = f'https://{HOST}/geo-imagery/rest/services/naip/conus_naip/ImageServer/exportImage'
 OUT = Path('work/imagery-checks')
@@ -39,20 +42,41 @@ def stamp():
 def verify_run():
     repo = os.environ['GITHUB_REPOSITORY']
     assert repo == 'CraneCourse/crane-course-data'
-    req = urllib.request.Request(f'https://api.github.com/repos/{repo}/actions/runs/{RUN}', headers={
-        'Authorization': 'Bearer '+os.environ['GITHUB_TOKEN'], 'Accept': 'application/vnd.github+json'})
-    with urllib.request.urlopen(req, timeout=30) as r: d=json.load(r)
-    assert d['head_repository']['full_name']==repo and d['head_branch']=='main'
-    assert d['status']=='completed' and d['conclusion']=='success' and d['event']=='workflow_dispatch'
-    assert d['head_sha']==SHA and d['path']=='.github/workflows/national-validation.yml'
-    write(OUT/'input-run.json', {k:d[k] for k in ('id','head_sha','html_url','created_at','path')})
+    evidence=[]
+    for run, sha, event in ((RUN, SHA, 'schedule'), (BASE_RUN, BASE_SHA, 'workflow_dispatch')):
+        req = urllib.request.Request(f'https://api.github.com/repos/{repo}/actions/runs/{run}', headers={
+            'Authorization': 'Bearer '+os.environ['GITHUB_TOKEN'], 'Accept': 'application/vnd.github+json'})
+        with urllib.request.urlopen(req, timeout=30) as r: d=json.load(r)
+        assert d['head_repository']['full_name']==repo and d['head_branch']=='main'
+        assert d['status']=='completed' and d['conclusion']=='success' and d['event']==event
+        assert str(d['id'])==run and d['head_sha']==sha and d['path']=='.github/workflows/national-validation.yml'
+        evidence.append({k:d[k] for k in ('id','head_sha','html_url','created_at','path')})
+    write(OUT/'input-run.json', {'current':evidence[0], 'baseline':evidence[1]})
+
+
+def passed_ids(report, run, sha):
+    assert report['sourceCommit']==sha and str(report['runID'])==run
+    rows=[r['candidate']['id'] for r in report['rows'] if r['status']=='full-data-gates-passed']
+    ids=set(rows)
+    assert len(ids)==len(rows) and ids==set(report['freshPassedIDs'])
+    return ids
+
+
+def new_passes(current, baseline):
+    ids=passed_ids(current,RUN,SHA)
+    old=passed_ids(baseline,BASE_RUN,BASE_SHA)
+    assert len(ids)==603 and len(old)==316
+    assert old<=ids, 'Earlier passes disappeared; inspect before running downloads'
+    selected=ids-old
+    assert len(selected)==EXPECTED_NEW
+    return selected
 
 
 def inputs():
     report = read(f'reports/national-validation-{RUN}.json')
-    assert report['sourceCommit']==SHA and str(report['runID'])==RUN
-    ids = {r['candidate']['id'] for r in report['rows'] if r['status']=='full-data-gates-passed'}
-    assert len(ids)==316 and ids==set(report['freshPassedIDs'])
+    baseline = read(f'baseline/reports/national-validation-{BASE_RUN}.json')
+    ids = new_passes(report,baseline)
+    write(OUT/'selected-ids.json', {'currentRun':RUN,'baselineRun':BASE_RUN,'count':len(ids),'ids':sorted(ids)})
     root=Path('work/national-validation/candidate-export')
     index=read(root/'index.json'); entries={e['id']:e for e in index['courses']}
     assert len(entries)==len(index['courses']) and ids<=entries.keys()
@@ -102,7 +126,7 @@ class Client:
         self.pause=pause; self.requests=0; self.stop_reason=None
     def get(self, opener, url, maximum):
         if self.stop_reason: raise RuntimeError(self.stop_reason)
-        assert self.requests<2*316, 'Hard global request ceiling exceeded'
+        assert self.requests<2*EXPECTED_NEW, 'Hard global request ceiling exceeded'
         self.pause(1.5); self.requests+=1
         req=urllib.request.Request(checked_url(url),headers={
             'User-Agent':'Crane-Course-Imagery-Research/1.0',
@@ -221,13 +245,13 @@ def run():
         row['seconds']=round(time.monotonic()-start,3); rows.append(row)
         write(OUT/'progress.json',{'rows':rows,'requestCount':client.requests,'stopReason':client.stop_reason})
         print(c['state'],c['name'],row['status'],row['seconds'],flush=True)
-    assert len(rows)==316 and {r['candidate']['id'] for r in rows}=={d['candidate']['id'] for d in docs}
+    assert len(rows)==EXPECTED_NEW and {r['candidate']['id'] for r in rows}=={d['candidate']['id'] for d in docs}
     result={'builtAt':stamp(),'runID':os.environ['GITHUB_RUN_ID'],'sourceCommit':os.environ['GITHUB_SHA'],
             'inputRun':read(OUT/'input-run.json'),'candidateCount':len(rows),'counts':dict(Counter(r['status'] for r in rows)),
             'requestCount':client.requests,'stopReason':client.stop_reason,'scope':CAVEAT,'rows':rows}
     write(OUT/'report.json',result)
     lines=['# Validated-course imagery/download smoke test','',CAVEAT,'',
-           f"316 current-geometry passes accounted for. Results: `{json.dumps(result['counts'],sort_keys=True)}`.",
+           f"{EXPECTED_NEW} new current-geometry passes accounted for. Results: `{json.dumps(result['counts'],sort_keys=True)}`.",
            f"USDA HTTP requests: {client.requests}; OpenGolfAPI requests: **0**.",'',
            'Returned EPSG:4326 extents are retained and used for all point checks and preview overlays. '
            'Each export and its image use one private cookie session. There are no automatic retries. '
