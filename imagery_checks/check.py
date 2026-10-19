@@ -15,13 +15,11 @@ from collections import Counter
 from PIL import Image, ImageDraw
 from jsonschema import Draft202012Validator, FormatChecker
 
-RUN = '39085031615'
-SHA = '672c8df11aa0b0b3e163800ae8696505e8030e16'
-BASE_RUN = '38987496757'
-BASE_SHA = '91ff2944dc3f22d1a7161ca5987b97022063f919'
-EXPECTED_NEW = 287
-RESUME_RUN = '39132428260'
-RESUME_SHA = '7db1d6eb69a6a9da2efacb3a5e0710470117c588'
+RUN = '39187270851'
+SHA = '0c8896aedb9daaaab90d22bfd86779679ebefd51'
+BASE_RUN = '39085031615'
+BASE_SHA = '672c8df11aa0b0b3e163800ae8696505e8030e16'
+EXPECTED_NEW = 295
 HOST = 'apps.geo.fpac.usda.gov'
 ENDPOINT = f'https://{HOST}/geo-imagery/rest/services/naip/conus_naip/ImageServer/exportImage'
 OUT = Path('work/imagery-checks')
@@ -46,7 +44,7 @@ def verify_run():
     repo = os.environ['GITHUB_REPOSITORY']
     assert repo == 'CraneCourse/crane-course-data'
     evidence=[]
-    for run, sha, event in ((RUN, SHA, 'schedule'), (BASE_RUN, BASE_SHA, 'workflow_dispatch')):
+    for run, sha, event in ((RUN, SHA, 'workflow_dispatch'), (BASE_RUN, BASE_SHA, 'schedule')):
         req = urllib.request.Request(f'https://api.github.com/repos/{repo}/actions/runs/{run}', headers={
             'Authorization': 'Bearer '+os.environ['GITHUB_TOKEN'], 'Accept': 'application/vnd.github+json'})
         with urllib.request.urlopen(req, timeout=30) as r: d=json.load(r)
@@ -55,15 +53,6 @@ def verify_run():
         assert str(d['id'])==run and d['head_sha']==sha and d['path']=='.github/workflows/national-validation.yml'
         evidence.append({k:d[k] for k in ('id','head_sha','html_url','created_at','path')})
     write(OUT/'input-run.json', {'current':evidence[0], 'baseline':evidence[1]})
-    req=urllib.request.Request(f'https://api.github.com/repos/{repo}/actions/runs/{RESUME_RUN}', headers={
-        'Authorization':'Bearer '+os.environ['GITHUB_TOKEN'],'Accept':'application/vnd.github+json'})
-    with urllib.request.urlopen(req,timeout=30) as r: d=json.load(r)
-    assert d['head_repository']['full_name']==repo and d['head_branch']=='codex/imagery-download-checks'
-    assert str(d['id'])==RESUME_RUN and d['head_sha']==RESUME_SHA and d['event']=='push'
-    assert d['status']=='completed' and d['conclusion']=='success' and d['path']=='.github/workflows/imagery-smoke.yml'
-    write(OUT/'resume-run.json',{k:d[k] for k in ('id','head_sha','html_url','created_at','path')})
-
-
 
 def passed_ids(report, run, sha):
     assert report['sourceCommit']==sha and str(report['runID'])==run
@@ -76,7 +65,7 @@ def passed_ids(report, run, sha):
 def new_passes(current, baseline):
     ids=passed_ids(current,RUN,SHA)
     old=passed_ids(baseline,BASE_RUN,BASE_SHA)
-    assert len(ids)==603 and len(old)==316
+    assert len(ids)==898 and len(old)==603
     assert old<=ids, 'Earlier passes disappeared; inspect before running downloads'
     selected=ids-old
     assert len(selected)==EXPECTED_NEW
@@ -224,36 +213,10 @@ def thumbnail(rgb, doc, bounds, target):
     target.parent.mkdir(parents=True,exist_ok=True); im.save(target)
 
 
-def retained_results(report, docs):
-    assert str(report['runID'])==RESUME_RUN and report['sourceCommit']==RESUME_SHA
-    assert report['inputRun']['current']['head_sha']==SHA and str(report['inputRun']['current']['id'])==RUN
-    assert report['inputRun']['baseline']['head_sha']==BASE_SHA and str(report['inputRun']['baseline']['id'])==BASE_RUN
-    assert report['candidateCount']==len(docs)==EXPECTED_NEW
-    indexed={r['candidate']['id']:r for r in report['rows']}
-    assert len(indexed)==len(report['rows']) and set(indexed)=={d['candidate']['id'] for d in docs}
-    retained={}
-    for doc in docs:
-        cid=doc['candidate']['id']; row=indexed[cid]
-        assert row['candidate']==doc['candidate']
-        if 'requestedBounds' not in row:
-            assert row['status']=='incomplete' and row['error']=='RuntimeError: '+report['stopReason']
-            continue
-        row=dict(row, evidenceRun=RESUME_RUN)
-        if row.get('error')=='ValueError: Uniform image: obvious no-data result':
-            assert row['metadataResponse']['status']==200
-            row.update(originalStatus=row['status'],status='imagery-rejected')
-        retained[cid]=row
-    assert len(retained)==28 and report['requestCount']==56
-    return retained
-
-
 def run():
-    docs=inputs(); prior=read('prior/report.json'); retained=retained_results(prior,docs)
-    if Path('prior/previews').exists(): shutil.copytree('prior/previews',OUT/'previews',dirs_exist_ok=True)
-    rows=[]; client=Client(maximum_requests=2*EXPECTED_NEW-prior['requestCount']); consecutive=0; represented=set()
+    docs=inputs()
+    rows=[]; client=Client(); consecutive=0; represented=set()
     for doc in docs:
-        if doc['candidate']['id'] in retained:
-            rows.append(retained[doc['candidate']['id']]); continue
         c=doc['candidate']; row={'candidate':c,'startedAt':stamp(),'status':'incomplete'}; start=time.monotonic()
         try:
             if client.stop_reason: raise RuntimeError(client.stop_reason)
@@ -294,8 +257,7 @@ def run():
     assert len(rows)==EXPECTED_NEW and {r['candidate']['id'] for r in rows}=={d['candidate']['id'] for d in docs}
     result={'builtAt':stamp(),'runID':os.environ['GITHUB_RUN_ID'],'sourceCommit':os.environ['GITHUB_SHA'],
             'inputRun':read(OUT/'input-run.json'),'candidateCount':len(rows),'counts':dict(Counter(r['status'] for r in rows)),
-            'requestCount':prior['requestCount']+client.requests,'requestsThisRun':client.requests,
-            'resumeRun':read(OUT/'resume-run.json'),'retainedCount':len(retained),
+            'requestCount':client.requests,'requestsThisRun':client.requests,
             'stopReason':client.stop_reason,'scope':CAVEAT,'rows':rows}
     write(OUT/'report.json',result)
     lines=['# Validated-course imagery/download smoke test','',CAVEAT,'',

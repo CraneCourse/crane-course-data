@@ -67,29 +67,15 @@ def test_delta_excludes_old_passes_and_frozen_controls_and_rejects_drift():
         return {'runID':run,'sourceCommit':sha,'freshPassedIDs':ids,
                 'rows':[{'candidate':{'id':i},'status':'full-data-gates-passed'} for i in ids]
                     +[{'candidate':{'id':'frozen-control'},'status':'data-withheld'}]}
-    current=report(list(range(603)),RUN,SHA)
-    baseline=report(list(range(316)),BASE_RUN,BASE_SHA)
-    assert new_passes(current,baseline)==set(range(316,603))
+    current=report(list(range(898)),RUN,SHA)
+    baseline=report(list(range(603)),BASE_RUN,BASE_SHA)
+    assert new_passes(current,baseline)==set(range(603,898))
     current['rows'].append(current['rows'][0])
     with pytest.raises(AssertionError): new_passes(current,baseline)
-    current=report(list(range(1,604)),RUN,SHA)
+    current=report(list(range(1,899)),RUN,SHA)
     with pytest.raises(AssertionError): new_passes(current,baseline)
-    current=report(list(range(603)),RUN,'wrong-sha')
+    current=report(list(range(898)),RUN,'wrong-sha')
     with pytest.raises(AssertionError): new_passes(current,baseline)
-
-
-def test_resume_keeps_attempted_results_and_rejects_wrong_provenance():
-    from imagery_checks.check import retained_results, RESUME_RUN, RESUME_SHA, RUN, SHA, BASE_RUN, BASE_SHA
-    docs=[{'candidate':{'id':i}} for i in range(287)]
-    rows=[{'candidate':d['candidate'],'status':'incomplete','error':'RuntimeError: stop'} for d in docs]
-    for row in rows[:28]: row.update(requestedBounds=[0,0,1,1],status='download-smoke-passed')
-    rows[27].update(status='incomplete',error='ValueError: Uniform image: obvious no-data result',metadataResponse={'status':200})
-    report={'runID':RESUME_RUN,'sourceCommit':RESUME_SHA,'candidateCount':287,'rows':rows,'requestCount':56,'stopReason':'stop',
-            'inputRun':{'current':{'id':RUN,'head_sha':SHA},'baseline':{'id':BASE_RUN,'head_sha':BASE_SHA}}}
-    kept=retained_results(report,docs)
-    assert len(kept)==28 and kept[27]['status']=='imagery-rejected' and kept[0]['evidenceRun']==RESUME_RUN
-    report['sourceCommit']='wrong'
-    with pytest.raises(AssertionError): retained_results(report,docs)
 
 
 def test_blank_image_is_a_specific_content_failure_not_a_transport_failure():

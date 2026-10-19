@@ -27,21 +27,15 @@ jobs:
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           github-token: ${{ github.token }}
-          run-id: '39085031615'
+          run-id: '39187270851'
           name: national-validation-evidence
           path: .
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           github-token: ${{ github.token }}
-          run-id: '38987496757'
+          run-id: '39085031615'
           name: national-validation-evidence
           path: baseline
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
-        with:
-          github-token: ${{ github.token }}
-          run-id: '39132428260'
-          name: imagery-smoke-evidence
-          path: prior
       - name: Sequential USDA downloads and saved-file reopen checks
         run: python -m imagery_checks.check
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
