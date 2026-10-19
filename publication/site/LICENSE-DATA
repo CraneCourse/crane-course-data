@@ -1,0 +1,13 @@
+SPDX-License-Identifier: ODbL-1.0
+
+The database, public input sample, and source-derived data/reports in this repository
+are made available under the Open Data Commons Open Database License (ODbL) v1.0.
+
+Full binding license text:
+https://opendatacommons.org/licenses/odbl/1-0/
+
+© OpenStreetMap contributors. https://www.openstreetmap.org/copyright
+OSM extracts provided by Geofabrik. https://download.geofabrik.de/
+Directory and scorecards provided by OpenGolfAPI. https://www.opengolfapi.org/attribution/
+
+Pipeline source code is separately licensed under MIT (see LICENSE).

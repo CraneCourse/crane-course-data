@@ -1,0 +1,18 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://cranecourse.github.io/crane-course-data/schemas/course.schema.json",
+  "type":"object", "additionalProperties":false,
+  "required":["candidate","holes","dataVersion","builtAt","sources","numbering"],
+  "properties":{
+    "candidate":{"$ref":"#/$defs/candidate"},
+    "holes":{"type":"array","oneOf":[{"minItems":9,"maxItems":9},{"minItems":18,"maxItems":18}],"items":{"$ref":"#/$defs/hole"}},
+    "dataVersion":{"type":"string","minLength":1},"builtAt":{"type":"string","format":"date-time"},
+    "numbering":{"const":"osm-mapped"},"sources":{"type":"array","minItems":3,"items":{"type":"string","minLength":1}}
+  },
+  "$defs":{
+    "point":{"type":"object","additionalProperties":false,"required":["lat","lon"],"properties":{"lat":{"type":"number","minimum":24,"maximum":50},"lon":{"type":"number","minimum":-125,"maximum":-66}}},
+    "candidate":{"type":"object","additionalProperties":false,"required":["id","name","city","state","center"],"properties":{"id":{"type":"string","format":"uuid"},"name":{"type":"string","minLength":1},"city":{"type":"string"},"state":{"type":"string"},"center":{"$ref":"#/$defs/point"}}},
+    "feature":{"type":"object","additionalProperties":false,"required":["kind","points"],"properties":{"kind":{"enum":["green","tee","fairway","bunker","water_hazard","lateral_water_hazard"]},"points":{"type":"array","minItems":4,"items":{"$ref":"#/$defs/point"}},"interiorRings":{"type":"array","items":{"type":"array","minItems":4,"items":{"$ref":"#/$defs/point"}}}}},
+    "hole":{"type":"object","additionalProperties":false,"required":["number","par","teeYardages","tee","front","center","back","path","features"],"properties":{"number":{"type":"integer","minimum":1,"maximum":18},"par":{"type":"integer","minimum":3,"maximum":6},"teeYardages":{"type":"object","minProperties":1,"propertyNames":{"minLength":1},"additionalProperties":{"type":"integer","minimum":30,"maximum":900}},"tee":{"$ref":"#/$defs/point"},"front":{"$ref":"#/$defs/point"},"center":{"$ref":"#/$defs/point"},"back":{"$ref":"#/$defs/point"},"path":{"type":"array","minItems":2,"items":{"$ref":"#/$defs/point"}},"features":{"type":"array","items":{"$ref":"#/$defs/feature"}}}}
+  }
+}
