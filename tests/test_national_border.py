@@ -1,7 +1,10 @@
 """Border accounting: possibly clipped search areas are unresolved, never absent or complete."""
 from pyproj import Geod
 from shapely.geometry import Point
-from pipeline.national_border import parse_poly, search_envelope, classify, classify_all, SEARCH_METERS
+import io
+import urllib.error
+import pytest
+from pipeline.national_border import parse_poly, search_envelope, classify, classify_all, fetch, SEARCH_METERS, BACKOFF_SECONDS
 
 POLY = """state
 1
@@ -50,3 +53,37 @@ def test_every_row_keeps_an_entry_and_prior_exclusions_stay():
                                     fetcher=lambda e: (f'https://example.org/{e}.poly', POLY.encode()))
     assert result == {'0': 'inside', '1': 'border-unresolved', '2': 'not-screened', '3': 'not-screened'}
     assert set(evidence) == {'south-carolina', 'district-of-columbia'} and all(len(e['sha256']) == 64 for e in evidence.values())
+
+
+class _Opener:
+    """Fails with each queued error in turn, then serves the body."""
+    def __init__(self, *errors):
+        self.errors = list(errors); self.calls = 0
+    def __call__(self, request, timeout):
+        self.calls += 1
+        if self.errors:
+            raise self.errors.pop(0)
+        return io.BytesIO(POLY.encode())
+
+
+def _http(code):
+    return urllib.error.HTTPError('https://x', code, 'error', {}, None)
+
+
+def test_fetch_retries_transient_failures_with_backoff():
+    pauses = []
+    opener = _Opener(TimeoutError('The read operation timed out'), urllib.error.URLError('reset'), _http(503))
+    url, body = fetch('new-york', opener=opener, pause=pauses.append)
+    assert url.endswith('/us/new-york.poly') and body == POLY.encode()
+    assert opener.calls == 4 and pauses == list(BACKOFF_SECONDS)
+
+
+def test_fetch_gives_up_after_the_last_attempt_and_never_retries_404():
+    pauses = []
+    with pytest.raises(TimeoutError):
+        fetch('ohio', opener=_Opener(*[TimeoutError()] * 4), pause=pauses.append)
+    assert pauses == list(BACKOFF_SECONDS)
+    opener = _Opener(_http(404))
+    with pytest.raises(urllib.error.HTTPError):
+        fetch('ohio', opener=opener, pause=pauses.append)
+    assert opener.calls == 1

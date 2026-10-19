@@ -14,6 +14,8 @@ the whole geodesic disc. Classifications:
 """
 import hashlib
 import math
+import time
+import urllib.error
 import urllib.request
 from pyproj import Geod
 from shapely.geometry import Point, Polygon, MultiPolygon, box
@@ -68,11 +70,27 @@ def classify(candidate, area):
     return 'inside' if area.covers(search_envelope(lon, lat)) else 'border-unresolved'
 
 
-def fetch(extract):
+BACKOFF_SECONDS = (5, 15, 45)   # pauses between the 4 attempts
+
+
+def fetch(extract, opener=urllib.request.urlopen, pause=time.sleep):
+    """Transient failures (timeouts, resets, 429 and 5xx) are retried with backoff; other
+    HTTP errors such as 404 fail at once. The response is still read and hashed whole."""
     url = BASE + extract + '.poly'
     request = urllib.request.Request(url, headers={'User-Agent': 'Crane-Course-Data/1.0'})
-    with urllib.request.urlopen(request, timeout=45) as response:
-        body = response.read(5_000_001)
+    for attempt in range(len(BACKOFF_SECONDS) + 1):
+        try:
+            with opener(request, timeout=45) as response:
+                body = response.read(5_000_001)
+            break
+        except urllib.error.HTTPError as error:
+            if error.code != 429 and error.code < 500 or attempt == len(BACKOFF_SECONDS):
+                raise
+        except OSError:   # URLError, TimeoutError, connection resets
+            if attempt == len(BACKOFF_SECONDS):
+                raise
+        print(f'Retrying {url} after attempt {attempt + 1}', flush=True)
+        pause(BACKOFF_SECONDS[attempt])
     assert len(body) <= 5_000_000
     return url, body
 
