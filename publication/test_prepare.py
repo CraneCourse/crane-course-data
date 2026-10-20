@@ -1,5 +1,6 @@
 import copy, importlib.util, json, tempfile, unittest
 from pathlib import Path
+from unittest.mock import patch
 spec=importlib.util.spec_from_file_location('publication_prepare',Path(__file__).with_name('prepare.py'))
 module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
 class PublicationTests(unittest.TestCase):
@@ -35,4 +36,18 @@ class PublicationTests(unittest.TestCase):
     def test_symlink(self):
         (self.root/'site/link').symlink_to(self.root/'app-index.json')
         with self.assertRaises(AssertionError):module.verify_source(self.root,self.manifest)
+class LiveSnapshotTests(unittest.TestCase):
+    def setUp(self):
+        self.before = {'app-index.json':b'unchanged catalog','index.html':b'old page','report.json':b'old report'}
+        self.after = dict(self.before, **{'index.html':b'new page','report.json':b'new notice'})
+        self.manifests = [{'files':{n:module.digest(b) for n,b in files.items()}} for files in (self.before,self.after)]
+    def check(self, live):
+        with patch.object(module,'fetch',side_effect=lambda n:live[n]), patch.object(module.time,'sleep'):
+            module.check_live(*self.manifests)
+    def test_static_cleanup_before(self): self.check(self.before)
+    def test_static_cleanup_after_repeat(self): self.check(self.after)
+    def test_static_cleanup_mixture_rejected(self):
+        with self.assertRaises(AssertionError): self.check(dict(self.before, **{'index.html':self.after['index.html']}))
+    def test_unapproved_index_rejected(self):
+        with self.assertRaises(AssertionError): self.check(dict(self.before, **{'app-index.json':b'unknown catalog'}))
 if __name__=='__main__':unittest.main()

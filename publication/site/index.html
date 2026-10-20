@@ -1,1 +1,66 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Crane Course — Course data and licenses</title><style>body{font:17px system-ui;max-width:850px;margin:3rem auto;padding:0 1rem;line-height:1.6;background:#f5f8f5;color:#163d2c}a{color:#216047}</style></head><body><h1>Course data and licenses</h1><p>Crane Course's current app catalog contains <strong>817 courses</strong>. Download a supported course in the app before playing offline.</p><p>Course data has passed automated data and download checks. Coverage and accuracy vary; green centers are not live pin locations.</p><h2>Sources and license</h2><ul><li>© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> — ODbL 1.0</li><li>OpenStreetMap extracts by <a href="https://download.geofabrik.de/">Geofabrik</a></li><li>Directory and scorecards via <a href="https://www.opengolfapi.org/attribution/">OpenGolfAPI</a></li></ul><p><a href="LICENSE-DATA">Course database license notice</a> · <a href="https://opendatacommons.org/licenses/odbl/1-0/">ODbL 1.0 license</a> · <a href="app-index.json">Course database</a></p><p><a href="https://cranecourse.github.io/crane-course-support/">Crane Course support</a></p></body></html>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Crane Course — Course data and licenses</title>
+<style>
+*{box-sizing:border-box}body{font:17px system-ui;max-width:850px;margin:3rem auto;padding:0 1.25rem;line-height:1.6;background:#f5f8f5;color:#163d2c}h1,h2{line-height:1.2}h2{margin-top:2.5rem}a{color:#216047}label{display:block;font-weight:650;margin-bottom:.5rem}input{width:100%;font:inherit;padding:.75rem;border:1px solid #709583;border-radius:.5rem;background:white;color:#163d2c}input:focus{outline:3px solid #b9d6c6;outline-offset:2px}#course-list{list-style:none;padding:0;max-height:32rem;overflow-y:auto;border:1px solid #d0dfd4;border-radius:.5rem;background:white}#course-list li{padding:.8rem 1rem;border-bottom:1px solid #e1e9e4}#course-list li:last-child{border-bottom:0}#course-list span{display:block;color:#4b6558;font-size:.95rem}.note{font-size:.95rem;color:#4b6558}button{font:inherit;padding:.5rem .8rem;color:#163d2c;border:1px solid #709583;border-radius:.4rem;background:white;cursor:pointer}
+</style></head><body>
+<h1>Course data and licenses</h1>
+<p>Crane Course supports <strong>817 courses</strong> across the contiguous United States. Check your course below before purchasing, then download it in the app before playing offline.</p>
+<p>Coverage does not include every course, and mapping may differ from conditions on the ground. Green centers are not live pin locations.</p>
+<section id="courses" aria-labelledby="courses-heading"><h2 id="courses-heading">Find your course</h2>
+<label for="course-search">Course name, city or state</label>
+<input id="course-search" type="search" placeholder="Try Seneca Falls or Arizona" autocomplete="off" maxlength="200" disabled>
+<p id="course-status" role="status" aria-live="polite">Loading the course list…</p>
+<button id="retry" type="button" hidden>Try again</button>
+<ul id="course-list" aria-label="Supported courses"></ul>
+<noscript><p>Turn on JavaScript to search here, or view the supported-course list in the app.</p></noscript>
+<p class="note">Filtering happens in your browser. Your search text is not sent to us or to a search provider. This list shows course availability; it does not provide live course conditions.</p></section>
+<h2>Sources and license</h2><ul>
+<li>© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> — ODbL 1.0</li>
+<li>OpenStreetMap extracts by <a href="https://download.geofabrik.de/">Geofabrik</a></li>
+<li>Directory and scorecards via <a href="https://www.opengolfapi.org/attribution/">OpenGolfAPI</a></li></ul>
+<p><a href="LICENSE-DATA">Course database license notice</a> · <a href="https://opendatacommons.org/licenses/odbl/1-0/">ODbL 1.0 license</a> · <a href="app-index.json">Download course data</a></p>
+<p><a href="https://cranecourse.github.io/crane-course-support/">Crane Course support</a> · <a href="https://cranecourse.github.io/crane-course-support/privacy.html">Privacy policy</a></p>
+<script>
+(() => {
+  const search = document.getElementById('course-search');
+  const status = document.getElementById('course-status');
+  const list = document.getElementById('course-list');
+  const retry = document.getElementById('retry');
+  const states = {AL:'Alabama',AZ:'Arizona',AR:'Arkansas',CA:'California',CO:'Colorado',CT:'Connecticut',DE:'Delaware',FL:'Florida',GA:'Georgia',ID:'Idaho',IL:'Illinois',IN:'Indiana',IA:'Iowa',KS:'Kansas',KY:'Kentucky',LA:'Louisiana',ME:'Maine',MD:'Maryland',MA:'Massachusetts',MI:'Michigan',MN:'Minnesota',MS:'Mississippi',MO:'Missouri',MT:'Montana',NE:'Nebraska',NV:'Nevada',NH:'New Hampshire',NJ:'New Jersey',NM:'New Mexico',NY:'New York',NC:'North Carolina',ND:'North Dakota',OH:'Ohio',OK:'Oklahoma',OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',SD:'South Dakota',TN:'Tennessee',TX:'Texas',UT:'Utah',VT:'Vermont',VA:'Virginia',WA:'Washington',WV:'West Virginia',WI:'Wisconsin',WY:'Wyoming',DC:'District of Columbia'};
+  let courses = [];
+  function render() {
+    const terms = search.value.toLocaleLowerCase().trim().split(/\s+/).filter(Boolean);
+    const matches = courses.filter(c => terms.every(t => c.searchText.includes(t)));
+    const fragment = document.createDocumentFragment();
+    for (const c of matches) {
+      const row = document.createElement('li');
+      const name = document.createElement('strong'); name.textContent = c.name;
+      const location = document.createElement('span'); location.textContent = [c.city, states[c.state] || c.state].filter(Boolean).join(', ');
+      row.append(name, location); fragment.append(row);
+    }
+    list.replaceChildren(fragment);
+    list.hidden = matches.length === 0;
+    status.textContent = matches.length === 0 ? 'No matching courses. Try another name or nearby town.' : `${matches.length} of ${courses.length} supported courses`;
+  }
+  async function load() {
+    retry.hidden = true; search.disabled = true; status.textContent = 'Loading the course list…';
+    try {
+      const response = await fetch('app-index.json');
+      if (!response.ok) throw new Error('unavailable');
+      const catalog = await response.json();
+      if (!Array.isArray(catalog.courses) || catalog.courses.length === 0) throw new Error('unavailable');
+      courses = catalog.courses.map(c => {
+        if (typeof c.name !== 'string' || typeof c.city !== 'string' || typeof c.state !== 'string') throw new Error('unavailable');
+        return {name:c.name, city:c.city, state:c.state, searchText:[c.name,c.city,c.state,states[c.state] || ''].join(' ').toLocaleLowerCase()};
+      }).sort((a,b) => a.name.localeCompare(b.name) || a.state.localeCompare(b.state) || a.city.localeCompare(b.city));
+      search.disabled = false; render();
+    } catch {
+      courses = []; list.replaceChildren(); list.hidden = true;
+      status.textContent = 'The course list is temporarily unavailable. Please try again before purchasing.';
+      retry.hidden = false;
+    }
+  }
+  search.addEventListener('input', render); retry.addEventListener('click', load); load();
+})();
+</script></body></html>

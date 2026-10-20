@@ -57,13 +57,16 @@ def fetch(name):
 
 def check_live(before, approved):
     current = digest(fetch('app-index.json'))
-    if current == before['files']['app-index.json']: expected = before['files']
-    else:
-        assert current == approved['files']['app-index.json'], 'Live catalog changed; review before deploying'
-        expected = approved['files']
-    for name, sha in expected.items():
+    candidates = [m['files'] for m in (before, approved)
+                  if current == m['files']['app-index.json']]
+    assert candidates, 'Live catalog changed; review before deploying'
+    # A static-page cleanup can keep the same catalog hash. Require every file
+    # to match one complete approved snapshot, rather than accepting a mixture.
+    for name in sorted(set().union(*(set(c) for c in candidates))):
         if name == '.nojekyll': continue  # GitHub Pages does not serve dotfiles.
-        assert digest(fetch(name)) == sha, f'Live file changed: {name}'
+        actual = current if name == 'app-index.json' else digest(fetch(name))
+        candidates = [c for c in candidates if c.get(name) == actual]
+        assert candidates, f'Live file changed or mixed deployment: {name}'
         time.sleep(.1)
 
 def main():
