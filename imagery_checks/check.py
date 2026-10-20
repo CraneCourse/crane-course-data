@@ -15,11 +15,11 @@ from collections import Counter
 from PIL import Image, ImageDraw
 from jsonschema import Draft202012Validator, FormatChecker
 
-RUN = '39187270851'
-SHA = '0c8896aedb9daaaab90d22bfd86779679ebefd51'
-BASE_RUN = '39085031615'
-BASE_SHA = '672c8df11aa0b0b3e163800ae8696505e8030e16'
-EXPECTED_NEW = 295
+RUN = '39351583195'
+SHA = 'e06f26043a6aa2d3d0d730726e22ded6e9fd94d4'
+BASE_RUN = '39187270851'
+BASE_SHA = '0c8896aedb9daaaab90d22bfd86779679ebefd51'
+EXPECTED_NEW = 274
 HOST = 'apps.geo.fpac.usda.gov'
 ENDPOINT = f'https://{HOST}/geo-imagery/rest/services/naip/conus_naip/ImageServer/exportImage'
 OUT = Path('work/imagery-checks')
@@ -44,7 +44,7 @@ def verify_run():
     repo = os.environ['GITHUB_REPOSITORY']
     assert repo == 'CraneCourse/crane-course-data'
     evidence=[]
-    for run, sha, event in ((RUN, SHA, 'workflow_dispatch'), (BASE_RUN, BASE_SHA, 'schedule')):
+    for run, sha, event in ((RUN, SHA, 'schedule'), (BASE_RUN, BASE_SHA, 'workflow_dispatch')):
         req = urllib.request.Request(f'https://api.github.com/repos/{repo}/actions/runs/{run}', headers={
             'Authorization': 'Bearer '+os.environ['GITHUB_TOKEN'], 'Accept': 'application/vnd.github+json'})
         with urllib.request.urlopen(req, timeout=30) as r: d=json.load(r)
@@ -65,7 +65,7 @@ def passed_ids(report, run, sha):
 def new_passes(current, baseline):
     ids=passed_ids(current,RUN,SHA)
     old=passed_ids(baseline,BASE_RUN,BASE_SHA)
-    assert len(ids)==898 and len(old)==603
+    assert len(ids)==1172 and len(old)==898
     assert old<=ids, 'Earlier passes disappeared; inspect before running downloads'
     selected=ids-old
     assert len(selected)==EXPECTED_NEW
