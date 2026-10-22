@@ -67,14 +67,14 @@ def test_delta_excludes_old_passes_and_frozen_controls_and_rejects_drift():
         return {'runID':run,'sourceCommit':sha,'freshPassedIDs':ids,
                 'rows':[{'candidate':{'id':i},'status':'full-data-gates-passed'} for i in ids]
                     +[{'candidate':{'id':'frozen-control'},'status':'data-withheld'}]}
-    current=report(list(range(1432)),RUN,SHA)
-    baseline=report(list(range(1172)),BASE_RUN,BASE_SHA)
-    assert new_passes(current,baseline)==set(range(1172,1432))
+    current=report(list(range(1717)),RUN,SHA)
+    baseline=report(list(range(1432)),BASE_RUN,BASE_SHA)
+    assert new_passes(current,baseline)==set(range(1432,1717))
     current['rows'].append(current['rows'][0])
     with pytest.raises(AssertionError): new_passes(current,baseline)
-    current=report(list(range(1,1433)),RUN,SHA)
+    current=report(list(range(1,1718)),RUN,SHA)
     with pytest.raises(AssertionError): new_passes(current,baseline)
-    current=report(list(range(1432)),RUN,'wrong-sha')
+    current=report(list(range(1717)),RUN,'wrong-sha')
     with pytest.raises(AssertionError): new_passes(current,baseline)
 
 
