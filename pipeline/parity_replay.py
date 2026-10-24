@@ -8,6 +8,7 @@ import urllib.request
 from concurrent.futures import ProcessPoolExecutor
 from pipeline.common import cloud_only, read, write
 from pipeline.national_validation import full_gate
+from pipeline.export import validate_controls
 
 OZAUKEE = 'bc3df947-b18d-4684-9316-a9f0181fff19'
 
@@ -54,8 +55,9 @@ def replay(run_id):
     assert original['sourceCommit'] == source['sourceCommit']
     assert original['errors'] == [{'id': OZAUKEE, 'reason': 'AssertionError: Swift/Python full Hole mismatch'}]
     swift = read(root / 'work/swift.json')
-    files = sorted((root / 'work/validation').glob('*.json'))
-    assert len(files) == len(swift) and {p.stem for p in files} == set(swift)
+    all_files = sorted((root / 'work/validation').glob('*.json'))
+    assert len(all_files) == len(swift) and {p.stem for p in all_files} == set(swift)
+    files = [p for p in all_files if not p.stem.startswith('control-')]
     with ProcessPoolExecutor(max_workers=2) as pool:
         results = list(pool.map(evaluate, ((p, swift[p.stem]) for p in files), chunksize=8))
     by_id = {r['id']: r for r in results}
@@ -70,13 +72,14 @@ def replay(run_id):
     print(json.dumps({k:v for k,v in summary.items() if k != 'results'}), flush=True)
     assert unchanged and not errors
     assert not oz['pass'] and oz['reason'] == 'Swift/Python feature assignment differs; course withheld'
-    # All 38 frozen published controls must still pass; negative controls remain rejected.
+    # All 38 frozen published controls and the original API controls retain their gates.
     baseline = root / 'work/national-validation/baseline'
     baseline_ids = {p.stem for p in baseline.glob('*.json') if not p.stem.startswith('control-')}
     assert len(baseline_ids) == 38
     assert all(by_id['baseline-' + cid]['pass'] for cid in baseline_ids)
-    assert not by_id['control-24925661-c5ad-4a89-87f2-b97a8f77fe83']['pass']
-    assert not by_id['control-2f8238b3-85d2-4d54-b1af-779dec846381']['pass']
+    controls = {cid: swift['baseline-' + cid] for cid in baseline_ids}
+    controls.update({key: value for key, value in swift.items() if key.startswith('control-')})
+    validate_controls(controls, {cid: read(baseline / f'{cid}.json') for cid in baseline_ids})
 
 
 if __name__ == '__main__':
