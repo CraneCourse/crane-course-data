@@ -5,10 +5,12 @@
     {
       "granted": 500,
       "key": "Validate national geometry candidates/40063763126/1/national-validation-cards",
+      "recordedAt": "2026-10-24T05:15:02.366797+00:00",
       "requested": 500,
       "reservedAt": "2026-10-24T04:51:40.542332+00:00",
       "resumeAfterUTC": "2026-10-25T00:00:00+00:00",
-      "stopped": "Source rate limit reached; resume only after 2026-10-25T00:00:00+00:00"
+      "stopped": "Source rate limit reached; resume only after 2026-10-25T00:00:00+00:00",
+      "used": 500
     }
   ]
 }
