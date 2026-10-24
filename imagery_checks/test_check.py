@@ -67,14 +67,14 @@ def test_delta_excludes_old_passes_and_frozen_controls_and_rejects_drift():
         return {'runID':run,'sourceCommit':sha,'freshPassedIDs':ids,
                 'rows':[{'candidate':{'id':i},'status':'full-data-gates-passed'} for i in ids]
                     +[{'candidate':{'id':'frozen-control'},'status':'data-withheld'}]}
-    current=report(list(range(1992)),RUN,SHA)
-    baseline=report(list(range(1717)),BASE_RUN,BASE_SHA)
-    assert new_passes(current,baseline)==set(range(1717,1992))
+    current=report(list(range(2244)),RUN,SHA)
+    baseline=report(list(range(1992)),BASE_RUN,BASE_SHA)
+    assert new_passes(current,baseline)==set(range(1992,2244))
     current['rows'].append(current['rows'][0])
     with pytest.raises(AssertionError): new_passes(current,baseline)
-    current=report(list(range(1,1993)),RUN,SHA)
+    current=report(list(range(1,2245)),RUN,SHA)
     with pytest.raises(AssertionError): new_passes(current,baseline)
-    current=report(list(range(1992)),RUN,'wrong-sha')
+    current=report(list(range(2244)),RUN,'wrong-sha')
     with pytest.raises(AssertionError): new_passes(current,baseline)
 
 
@@ -82,3 +82,24 @@ def test_blank_image_is_a_specific_content_failure_not_a_transport_failure():
     from imagery_checks.check import UniformImageError
     with pytest.raises(UniformImageError):
         inspect_image(image_bytes(True),doc(),[-75.55,40.45,-75.45,40.55],{'width':2048,'height':2048})
+
+
+def test_failed_source_requires_successful_exact_recovery_and_keeps_ozaukee_out():
+    from copy import deepcopy
+    from imagery_checks.check import verify_recovered_passes, RUN, SHA, OZAUKEE
+    ids=list(range(2244))
+    report={'errors':[{'id':OZAUKEE,'reason':'AssertionError: Swift/Python full Hole mismatch'}], 'freshPassedIDs':ids}
+    oz={'id':OZAUKEE,'pass':False,'reason':'Swift/Python feature assignment differs; course withheld'}
+    replay={'run':RUN,'sourceCommit':SHA,'originalFreshPasses':2244,'originalFreshPassesPreserved':True,
+            'executionErrors':[],'requests':0,'published':False,'ozaukee':oz,
+            'results':[{'id':i,'pass':True} for i in ids]+[oz], 'replayed':2245}
+    verify_recovered_passes(report,replay,set(ids[1992:]))
+    for field,value in [('sourceCommit','wrong'),('executionErrors',[{'reason':'other error'}]),
+                        ('originalFreshPassesPreserved',False),('originalFreshPasses',2243)]:
+        changed=deepcopy(replay);changed[field]=value
+        with pytest.raises(AssertionError):verify_recovered_passes(report,changed,set(ids[1992:]))
+    changed=deepcopy(replay);changed['results'][2000]['pass']=False
+    with pytest.raises(AssertionError):verify_recovered_passes(report,changed,set(ids[1992:]))
+    with pytest.raises(AssertionError):verify_recovered_passes(report,replay,{OZAUKEE})
+    changed=deepcopy(report);changed['errors'].append({'id':'other','reason':'unreviewed mismatch'})
+    with pytest.raises(AssertionError):verify_recovered_passes(changed,replay,set(ids[1992:]))

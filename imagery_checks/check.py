@@ -15,11 +15,14 @@ from collections import Counter
 from PIL import Image, ImageDraw
 from jsonschema import Draft202012Validator, FormatChecker
 
-RUN = '39903637565'
-SHA = 'c75f9b6f51a709f45a3a7ce70b8c7526c8a8431b'
-BASE_RUN = '39706691352'
-BASE_SHA = 'c9e7f291717ff58a5cd4d787b66e7000d7333600'
-EXPECTED_NEW = 275
+RUN = '40063763126'
+SHA = 'a4d71b4bc7d9eace954f2fcec0d0cdf721c75aa3'
+BASE_RUN = '39903637565'
+BASE_SHA = 'c75f9b6f51a709f45a3a7ce70b8c7526c8a8431b'
+EXPECTED_NEW = 252
+REPLAY_RUN = '40098946399'
+REPLAY_SHA = '94df77a5acb48bee806423be080ab392071d7663'
+OZAUKEE = 'bc3df947-b18d-4684-9316-a9f0181fff19'
 HOST = 'apps.geo.fpac.usda.gov'
 ENDPOINT = f'https://{HOST}/geo-imagery/rest/services/naip/conus_naip/ImageServer/exportImage'
 OUT = Path('work/imagery-checks')
@@ -44,15 +47,23 @@ def verify_run():
     repo = os.environ['GITHUB_REPOSITORY']
     assert repo == 'CraneCourse/crane-course-data'
     evidence=[]
-    for run, sha, event in ((RUN, SHA, 'schedule'), (BASE_RUN, BASE_SHA, 'workflow_dispatch')):
+    for run, sha, event, outcome in ((RUN, SHA, 'schedule', 'failure'), (BASE_RUN, BASE_SHA, 'schedule', 'success')):
         req = urllib.request.Request(f'https://api.github.com/repos/{repo}/actions/runs/{run}', headers={
             'Authorization': 'Bearer '+os.environ['GITHUB_TOKEN'], 'Accept': 'application/vnd.github+json'})
         with urllib.request.urlopen(req, timeout=30) as r: d=json.load(r)
         assert d['head_repository']['full_name']==repo and d['head_branch']=='main'
-        assert d['status']=='completed' and d['conclusion']=='success' and d['event']==event
+        assert d['status']=='completed' and d['conclusion']==outcome and d['event']==event
         assert str(d['id'])==run and d['head_sha']==sha and d['path']=='.github/workflows/national-validation.yml'
         evidence.append({k:d[k] for k in ('id','head_sha','html_url','created_at','path')})
-    write(OUT/'input-run.json', {'current':evidence[0], 'baseline':evidence[1]})
+    req = urllib.request.Request(f'https://api.github.com/repos/{repo}/actions/runs/{REPLAY_RUN}', headers={
+        'Authorization': 'Bearer '+os.environ['GITHUB_TOKEN'], 'Accept': 'application/vnd.github+json'})
+    with urllib.request.urlopen(req, timeout=30) as r: replay=json.load(r)
+    assert replay['head_repository']['full_name']==repo and replay['head_branch']=='codex/ozaukee-parity-fix'
+    assert str(replay['id'])==REPLAY_RUN and replay['head_sha']==REPLAY_SHA
+    assert replay['path']=='.github/workflows/tests.yml' and replay['event']=='workflow_dispatch'
+    assert replay['status']=='completed' and replay['conclusion']=='success'
+    write(OUT/'input-run.json', {'current':evidence[0], 'baseline':evidence[1],
+          'recoveryReplay':{k:replay[k] for k in ('id','head_sha','html_url','created_at','path')}})
 
 def passed_ids(report, run, sha):
     assert report['sourceCommit']==sha and str(report['runID'])==run
@@ -65,17 +76,38 @@ def passed_ids(report, run, sha):
 def new_passes(current, baseline):
     ids=passed_ids(current,RUN,SHA)
     old=passed_ids(baseline,BASE_RUN,BASE_SHA)
-    assert len(ids)==1992 and len(old)==1717
+    assert len(ids)==2244 and len(old)==1992
     assert old<=ids, 'Earlier passes disappeared; inspect before running downloads'
     selected=ids-old
     assert len(selected)==EXPECTED_NEW
     return selected
 
 
+def verify_recovered_passes(report, replay, selected):
+    """The failed source is usable only with this exact independently verified replay.
+
+    No source error is ignored or admitted. The replay used unchanged full gates,
+    retained all prior passes, and withheld Ozaukee; this task tests only those passes.
+    """
+    assert report['errors']==[{'id':OZAUKEE,'reason':'AssertionError: Swift/Python full Hole mismatch'}]
+    assert replay['run']==RUN and replay['sourceCommit']==SHA
+    assert replay['originalFreshPasses']==2244 and replay['originalFreshPassesPreserved'] is True
+    assert replay['executionErrors']==[] and replay['requests']==0 and replay['published'] is False
+    assert replay['ozaukee']=={'id':OZAUKEE,'pass':False,
+                            'reason':'Swift/Python feature assignment differs; course withheld'}
+    rows=replay['results']; by_id={r['id']:r for r in rows}
+    assert len(by_id)==len(rows)==replay['replayed']
+    accepted=set(report['freshPassedIDs'])
+    assert OZAUKEE not in accepted and OZAUKEE not in selected
+    assert all(by_id[cid]['pass'] is True for cid in accepted)
+    assert selected<=accepted
+
+
 def inputs():
     report = read(f'reports/national-validation-{RUN}.json')
     baseline = read(f'baseline/reports/national-validation-{BASE_RUN}.json')
     ids = new_passes(report,baseline)
+    verify_recovered_passes(report,read('recovery/results.json'),ids)
     write(OUT/'selected-ids.json', {'currentRun':RUN,'baselineRun':BASE_RUN,'count':len(ids),'ids':sorted(ids)})
     root=Path('work/national-validation/candidate-export')
     index=read(root/'index.json'); entries={e['id']:e for e in index['courses']}
