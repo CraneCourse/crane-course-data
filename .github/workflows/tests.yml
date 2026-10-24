@@ -9,6 +9,10 @@ on:
         description: Run macOS feature-distance regression against Core Location
         type: boolean
         default: false
+      parity_replay_run:
+        description: Saved failed national run to replay without acquiring data or publishing
+        type: string
+        default: ''
 permissions:
   contents: read
 jobs:
@@ -33,3 +37,35 @@ jobs:
           python-version: '3.12'
       - run: pip install -r requirements.txt
       - run: python -m pytest -q -s tests/test_feature_parity.py
+  saved-parity:
+    if: github.event_name == 'workflow_dispatch' && inputs.parity_replay_run != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      actions: read
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - run: python -m pipeline.parity_replay verify "$SOURCE_RUN"
+        env:
+          SOURCE_RUN: ${{ inputs.parity_replay_run }}
+          GITHUB_TOKEN: ${{ github.token }}
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+        with:
+          github-token: ${{ github.token }}
+          run-id: ${{ inputs.parity_replay_run }}
+          name: national-validation-evidence
+          path: work/saved-parity
+      - run: python -m pipeline.parity_replay replay "$SOURCE_RUN"
+        env:
+          SOURCE_RUN: ${{ inputs.parity_replay_run }}
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: parity-replay
+          path: work/parity-replay
+          retention-days: 7
