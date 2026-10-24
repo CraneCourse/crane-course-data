@@ -307,11 +307,40 @@ def prepare_shard(shard):
     write(ROOT/'shards'/f'{shard}.json',{'shard':shard,'rows':rows})
 
 
+def feature_partition_differs(a, b):
+    """Recognize only a repartition of unchanged optional feature geometry.
+
+    This changes failure classification, never acceptance: a recognized course is
+    withheld. Missing/changed features, hole fields, numbering and scorecards still
+    raise the existing execution/parity error. Frozen controls still must pass.
+    """
+    if not isinstance(a, list) or not isinstance(b, list) or not a or len(a) != len(b):
+        return False
+    if not all(isinstance(h, dict) and isinstance(h.get('features'), list) for h in a + b):
+        return False
+    core = lambda holes: [{k: v for k, v in h.items() if k != 'features'} for h in holes]
+    if not equivalent(core(a), core(b)):
+        return False
+    def feature_keys(holes):
+        # The reference omits nil optional rings, as equivalent() already allows.
+        return [json.dumps({k: v for k, v in f.items()
+                            if not (k == 'interiorRings' and v is None)}, sort_keys=True)
+                for h in holes for f in h['features']]
+    # Exact source vertices and all attributes must survive, with multiplicity.
+    return sorted(feature_keys(a)) == sorted(feature_keys(b))
+
+
 def full_gate(payload,ref,built,version):
     py=payload['python']
     assert py['pass']==ref['pass'], 'Swift/Python decision mismatch'
     if not py['pass']: return None,py['reason']
-    assert equivalent(py['holes'],ref['holes']), 'Swift/Python full Hole mismatch'
+    if not equivalent(py['holes'],ref['holes']):
+        if feature_partition_differs(py['holes'], ref['holes']):
+            # Both implementations retained identical holes and feature geometry,
+            # but assigned a feature to different holes. Reject this course; do
+            # not choose either result or relax the full-Hole parity requirement.
+            return None, 'Swift/Python feature assignment differs; course withheld'
+        raise AssertionError('Swift/Python full Hole mismatch')
     error=check(payload,ref['holes'],ref['watchBytes'])
     if error: return None,error
     doc={'candidate':payload['candidate'],'holes':ref['holes'],'dataVersion':version,'builtAt':built,
