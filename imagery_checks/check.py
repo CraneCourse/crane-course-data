@@ -15,11 +15,11 @@ from collections import Counter
 from PIL import Image, ImageDraw
 from jsonschema import Draft202012Validator, FormatChecker
 
-RUN = '40063763126'
-SHA = 'a4d71b4bc7d9eace954f2fcec0d0cdf721c75aa3'
-BASE_RUN = '39903637565'
-BASE_SHA = 'c75f9b6f51a709f45a3a7ce70b8c7526c8a8431b'
-EXPECTED_NEW = 252
+RUN = '40151531579'
+SHA = 'cbc87e90d75b2d834dc0a1c7df2b4fd166cb1a70'
+BASE_RUN = '40063763126'
+BASE_SHA = 'a4d71b4bc7d9eace954f2fcec0d0cdf721c75aa3'
+EXPECTED_NEW = 266
 REPLAY_RUN = '40098946399'
 REPLAY_SHA = '94df77a5acb48bee806423be080ab392071d7663'
 OZAUKEE = 'bc3df947-b18d-4684-9316-a9f0181fff19'
@@ -47,7 +47,7 @@ def verify_run():
     repo = os.environ['GITHUB_REPOSITORY']
     assert repo == 'CraneCourse/crane-course-data'
     evidence=[]
-    for run, sha, event, outcome in ((RUN, SHA, 'schedule', 'failure'), (BASE_RUN, BASE_SHA, 'schedule', 'success')):
+    for run, sha, event, outcome in ((RUN, SHA, 'workflow_dispatch', 'success'), (BASE_RUN, BASE_SHA, 'schedule', 'failure')):
         req = urllib.request.Request(f'https://api.github.com/repos/{repo}/actions/runs/{run}', headers={
             'Authorization': 'Bearer '+os.environ['GITHUB_TOKEN'], 'Accept': 'application/vnd.github+json'})
         with urllib.request.urlopen(req, timeout=30) as r: d=json.load(r)
@@ -76,7 +76,8 @@ def passed_ids(report, run, sha):
 def new_passes(current, baseline):
     ids=passed_ids(current,RUN,SHA)
     old=passed_ids(baseline,BASE_RUN,BASE_SHA)
-    assert len(ids)==2244 and len(old)==1992
+    assert len(ids)==2510 and len(old)==2244
+    assert current['errors']==[], 'Current source has unreviewed execution errors'
     assert old<=ids, 'Earlier passes disappeared; inspect before running downloads'
     selected=ids-old
     assert len(selected)==EXPECTED_NEW
@@ -90,7 +91,7 @@ def verify_recovered_passes(report, replay, selected):
     retained all prior passes, and withheld Ozaukee; this task tests only those passes.
     """
     assert report['errors']==[{'id':OZAUKEE,'reason':'AssertionError: Swift/Python full Hole mismatch'}]
-    assert replay['run']==RUN and replay['sourceCommit']==SHA
+    assert replay['run']==BASE_RUN and replay['sourceCommit']==BASE_SHA
     assert replay['originalFreshPasses']==2244 and replay['originalFreshPassesPreserved'] is True
     assert replay['executionErrors']==[] and replay['requests']==0 and replay['published'] is False
     assert replay['ozaukee']=={'id':OZAUKEE,'pass':False,
@@ -107,7 +108,10 @@ def inputs():
     report = read(f'reports/national-validation-{RUN}.json')
     baseline = read(f'baseline/reports/national-validation-{BASE_RUN}.json')
     ids = new_passes(report,baseline)
-    verify_recovered_passes(report,read('recovery/results.json'),ids)
+    verify_recovered_passes(baseline,read('recovery/results.json'),set(baseline['freshPassedIDs']))
+    assert OZAUKEE not in ids
+    oz=next(r for r in report['rows'] if r['candidate']['id']==OZAUKEE)
+    assert oz['status']=='data-withheld' and oz['reason']=='Swift/Python feature assignment differs; course withheld'
     write(OUT/'selected-ids.json', {'currentRun':RUN,'baselineRun':BASE_RUN,'count':len(ids),'ids':sorted(ids)})
     root=Path('work/national-validation/candidate-export')
     index=read(root/'index.json'); entries={e['id']:e for e in index['courses']}
