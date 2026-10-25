@@ -4,7 +4,7 @@ This directory retains the explicitly approved data snapshot. Nightly survey out
 is never promoted automatically. Run `Publish approved app catalog` manually on
 main only after approval and native consumer validation.
 
-The October 24 catalog contains 1,782 app courses. The 38-entry legacy index remains
+The October 25 catalog contains 2,042 app courses. The 38-entry legacy index remains
 available, and all existing course IDs and content are preserved. Every course and
 both indexes share a publication version/timestamp because existing consumers
 require this. Repackaging changed only the course envelope version/timestamp; it

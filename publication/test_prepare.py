@@ -1,4 +1,4 @@
-import copy, importlib.util, json, tempfile, unittest
+import copy, importlib.util, json, tempfile, unittest, os
 from pathlib import Path
 from unittest.mock import patch
 spec=importlib.util.spec_from_file_location('publication_prepare',Path(__file__).with_name('prepare.py'))
@@ -18,6 +18,22 @@ class PublicationTests(unittest.TestCase):
             path=self.root/name if name=='app-index.json' else self.root/'site'/name
             self.manifest['files'][name]=module.digest(path.read_bytes())
     def test_valid_snapshot(self): self.assertEqual(len(module.verify_source(self.root,self.manifest)),3)
+    def verify_with_course_size(self, size):
+        original=Path.stat
+        course=self.root/'site/courses/example.json'
+        def override(path,*args,**kwargs):
+            stat=original(path,*args,**kwargs)
+            if path==course:
+                fields=list(stat); fields[6]=size; return os.stat_result(fields)
+            return stat
+        with patch.object(Path,'stat',override):
+            return module.verify_source(self.root,self.manifest)
+    def test_publication_packaging_accepts_reviewed_300mb_snapshot(self):
+        self.assertEqual(module.MAX_SNAPSHOT_BYTES,350_000_000)
+        self.assertEqual(len(self.verify_with_course_size(300_000_000)),3)
+    def test_publication_packaging_rejects_350mb_snapshot(self):
+        with self.assertRaisesRegex(AssertionError,'packaging limit'):
+            self.verify_with_course_size(350_000_000)
     def test_corrupted_course(self):
         (self.root/'site/courses/example.json').write_text('{}')
         with self.assertRaises(AssertionError):module.verify_source(self.root,self.manifest)

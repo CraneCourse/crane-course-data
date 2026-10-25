@@ -3,6 +3,8 @@ from pathlib import Path, PurePosixPath
 import argparse, hashlib, json, shutil, time, urllib.request
 
 BASE = 'https://cranecourse.github.io/crane-course-data/'
+# Bounded static packaging size; GitHub Pages allows 1 GB. Course-admission rules are separate.
+MAX_SNAPSHOT_BYTES = 350_000_000
 def digest(data): return hashlib.sha256(data).hexdigest()
 def safe_path(value):
     p = PurePosixPath(value)
@@ -22,7 +24,7 @@ def verify_source(root, manifest):
     for name, path in paths.items():
         safe_path(name)
         assert digest(path.read_bytes()) == manifest['files'][name], f'Hash mismatch: {name}'
-    assert sum(p.stat().st_size for p in paths.values()) < 250_000_000
+    assert sum(p.stat().st_size for p in paths.values()) < MAX_SNAPSHOT_BYTES, 'Approved snapshot exceeds publication packaging limit'
     all_ids = set()
     for index_name, count_key in [('app-index.json', 'appCourses'), ('index.json', 'legacyCourses')]:
         index = json.loads(paths[index_name].read_bytes())
@@ -78,7 +80,7 @@ def main():
     raw = (root/'approved-files.json').read_bytes()
     assert digest(raw) == args.expected_manifest_sha256, 'Publication approval manifest changed'
     approved = json.loads(raw)
-    assert (approved['appCourses'],approved['legacyCourses'],approved['courseFiles']) == (1782,38,1790)
+    assert (approved['appCourses'],approved['legacyCourses'],approved['courseFiles']) == (2042,38,2050)
     paths = verify_source(root, approved)
     if args.check_live: check_live(json.loads((root/'expected-live.json').read_bytes()), approved)
     dist = root.parent/'dist'
