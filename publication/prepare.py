@@ -4,7 +4,7 @@ import argparse, hashlib, json, shutil, time, urllib.request
 
 BASE = 'https://cranecourse.github.io/crane-course-data/'
 # Bounded static packaging size; GitHub Pages allows 1 GB. Course-admission rules are separate.
-MAX_SNAPSHOT_BYTES = 350_000_000
+MAX_SNAPSHOT_BYTES = 1_000_000_000
 def digest(data): return hashlib.sha256(data).hexdigest()
 def safe_path(value):
     p = PurePosixPath(value)

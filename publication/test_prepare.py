@@ -28,12 +28,12 @@ class PublicationTests(unittest.TestCase):
             return stat
         with patch.object(Path,'stat',override):
             return module.verify_source(self.root,self.manifest)
-    def test_publication_packaging_accepts_reviewed_300mb_snapshot(self):
-        self.assertEqual(module.MAX_SNAPSHOT_BYTES,350_000_000)
-        self.assertEqual(len(self.verify_with_course_size(300_000_000)),3)
-    def test_publication_packaging_rejects_350mb_snapshot(self):
+    def test_publication_packaging_accepts_reviewed_900mb_snapshot(self):
+        self.assertEqual(module.MAX_SNAPSHOT_BYTES,1_000_000_000)
+        self.assertEqual(len(self.verify_with_course_size(900_000_000)),3)
+    def test_publication_packaging_rejects_1gb_snapshot(self):
         with self.assertRaisesRegex(AssertionError,'packaging limit'):
-            self.verify_with_course_size(350_000_000)
+            self.verify_with_course_size(1_000_000_000)
     def test_corrupted_course(self):
         (self.root/'site/courses/example.json').write_text('{}')
         with self.assertRaises(AssertionError):module.verify_source(self.root,self.manifest)
