@@ -67,14 +67,14 @@ def test_delta_excludes_old_passes_and_frozen_controls_and_rejects_drift():
         return {'runID':run,'sourceCommit':sha,'freshPassedIDs':ids,'errors':[],
                 'rows':[{'candidate':{'id':i},'status':'full-data-gates-passed'} for i in ids]
                     +[{'candidate':{'id':'frozen-control'},'status':'data-withheld'}]}
-    current=report(list(range(2510)),RUN,SHA)
-    baseline=report(list(range(2244)),BASE_RUN,BASE_SHA)
-    assert new_passes(current,baseline)==set(range(2244,2510))
+    current=report(list(range(2804)),RUN,SHA)
+    baseline=report(list(range(2510)),BASE_RUN,BASE_SHA)
+    assert new_passes(current,baseline)==set(range(2510,2804))
     current['rows'].append(current['rows'][0])
     with pytest.raises(AssertionError): new_passes(current,baseline)
-    current=report(list(range(1,2511)),RUN,SHA)
+    current=report(list(range(1,2805)),RUN,SHA)
     with pytest.raises(AssertionError): new_passes(current,baseline)
-    current=report(list(range(2510)),RUN,'wrong-sha')
+    current=report(list(range(2804)),RUN,'wrong-sha')
     with pytest.raises(AssertionError): new_passes(current,baseline)
 
 
@@ -86,7 +86,7 @@ def test_blank_image_is_a_specific_content_failure_not_a_transport_failure():
 
 def test_failed_source_requires_successful_exact_recovery_and_keeps_ozaukee_out():
     from copy import deepcopy
-    from imagery_checks.check import verify_recovered_passes, BASE_RUN, BASE_SHA, OZAUKEE
+    from imagery_checks.check import verify_recovered_passes, RECOVERED_RUN as BASE_RUN, RECOVERED_SHA as BASE_SHA, OZAUKEE
     ids=list(range(2244))
     report={'errors':[{'id':OZAUKEE,'reason':'AssertionError: Swift/Python full Hole mismatch'}], 'freshPassedIDs':ids}
     oz={'id':OZAUKEE,'pass':False,'reason':'Swift/Python feature assignment differs; course withheld'}
@@ -110,7 +110,18 @@ def test_new_successful_source_must_have_no_execution_errors():
     def report(ids, run, sha):
         return {'runID':run,'sourceCommit':sha,'freshPassedIDs':ids,'errors':[],
                 'rows':[{'candidate':{'id':i},'status':'full-data-gates-passed'} for i in ids]}
-    current=report(list(range(2510)),RUN,SHA)
-    baseline=report(list(range(2244)),BASE_RUN,BASE_SHA)
+    current=report(list(range(2804)),RUN,SHA)
+    baseline=report(list(range(2510)),BASE_RUN,BASE_SHA)
     current['errors']=[{'id':'not-accepted','reason':'unreviewed execution error'}]
     with pytest.raises(AssertionError,match='execution errors'): new_passes(current,baseline)
+
+
+def test_successful_baseline_must_have_no_execution_errors():
+    from imagery_checks.check import new_passes, RUN, SHA, BASE_RUN, BASE_SHA
+    def report(ids, run, sha):
+        return {'runID':run,'sourceCommit':sha,'freshPassedIDs':ids,'errors':[],
+                'rows':[{'candidate':{'id':i},'status':'full-data-gates-passed'} for i in ids]}
+    current=report(list(range(2804)),RUN,SHA)
+    baseline=report(list(range(2510)),BASE_RUN,BASE_SHA)
+    baseline['errors']=[{'id':'not-accepted','reason':'unreviewed execution error'}]
+    with pytest.raises(AssertionError,match='Baseline source'): new_passes(current,baseline)
