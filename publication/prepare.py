@@ -80,7 +80,7 @@ def main():
     raw = (root/'approved-files.json').read_bytes()
     assert digest(raw) == args.expected_manifest_sha256, 'Publication approval manifest changed'
     approved = json.loads(raw)
-    assert (approved['appCourses'],approved['legacyCourses'],approved['courseFiles']) == (2335,38,2343)
+    assert (approved['appCourses'],approved['legacyCourses'],approved['courseFiles']) == (2615,38,2623)
     paths = verify_source(root, approved)
     if args.check_live: check_live(json.loads((root/'expected-live.json').read_bytes()), approved)
     dist = root.parent/'dist'

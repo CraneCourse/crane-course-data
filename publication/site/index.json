@@ -1,19 +1,19 @@
 {
-  "builtAt": "2026-10-26T15:15:22.400904+00:00",
+  "builtAt": "2026-10-27T14:22:43.913432+00:00",
   "courses": [
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 42.3425954401,
         "lon": -77.2999357877
       },
       "city": "Bath",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/458216f8-4ac8-46c7-a5eb-a70d2ae419e6.json",
       "holes": 18,
       "id": "458216f8-4ac8-46c7-a5eb-a70d2ae419e6",
       "name": "Bath Country Club",
-      "sha256": "8d7118815f91c3541267fcdb9694cacbc50725a6b04baa2c1be24869e8d23c57",
+      "sha256": "7bc0c9ed4d4a6a7cdbfb527513449677a0d90a13c5fe801f11a7a745d046aea8",
       "state": "NY",
       "tees": [
         "blue",
@@ -23,18 +23,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 42.9056286872,
         "lon": -76.9649793889
       },
       "city": "Geneva",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/30cff352-5828-4898-869e-27572c066de8.json",
       "holes": 18,
       "id": "30cff352-5828-4898-869e-27572c066de8",
       "name": "Big Oak Public Golf Course",
-      "sha256": "7b5b6ace9cde323ea8e4cd66e5f225501733a8c0201a16ce4cd036d8b22e8faa",
+      "sha256": "e308a8d91c3344bc00db04e63277473d25951dfc1e5624023fd27ba7675937ed",
       "state": "NY",
       "tees": [
         "blue",
@@ -43,18 +43,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 37.6327664,
         "lon": -121.8962782
       },
       "city": "Pleasanton",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/90d34fdb-bbee-4e03-b77f-fedc187a82d4.json",
       "holes": 18,
       "id": "90d34fdb-bbee-4e03-b77f-fedc187a82d4",
       "name": "Castlewood Country Club - Hill Course",
-      "sha256": "6616953382a4a8f119e8d7e1c33364eda8518a4d2005f7d2e6cff712e23838b3",
+      "sha256": "48be6783e785fce9d917e221fcde5f7645d876e60028b2f9c38d0c3a8dea1350",
       "state": "CA",
       "tees": [
         "black",
@@ -64,18 +64,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 47.2000501348,
         "lon": -122.5696778297
       },
       "city": "University Place",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/11e81205-be02-4d73-b0ca-f327ba18013b.json",
       "holes": 18,
       "id": "11e81205-be02-4d73-b0ca-f327ba18013b",
       "name": "Chambers Bay",
-      "sha256": "6de6303e0340805aeb365d0c3633f277ca686d122070b8ddfa9ef7620e84e6ac",
+      "sha256": "193731dc73aefa445bb31da10fbf43cb306bb7e46ca631b4bf22d8ca7e5db7f8",
       "state": "WA",
       "tees": [
         "blue",
@@ -86,18 +86,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 40.0053537,
         "lon": -105.0260174
       },
       "city": "Erie",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/db18bece-fceb-4527-adee-36772fc16c17.json",
       "holes": 18,
       "id": "db18bece-fceb-4527-adee-36772fc16c17",
       "name": "Colorado National Golf Club",
-      "sha256": "f2452345396eb046331600cb6e1f5286dc1ea35ff900d7e27944f9dbedf171d8",
+      "sha256": "696749636b0be5e5da1c0e0904da4277341e3d6d4ada5a27161ab762742ecf85",
       "state": "CO",
       "tees": [
         "black",
@@ -112,18 +112,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 38.8799693,
         "lon": -104.7912414
       },
       "city": "Colorado Springs",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/0d2bf55e-418c-48b8-97b2-2a0a2da612a6.json",
       "holes": 18,
       "id": "0d2bf55e-418c-48b8-97b2-2a0a2da612a6",
       "name": "Colorado Springs Country Club",
-      "sha256": "dc8b8c183ea47c45dd4e217f108d41ed837993f595b463b2b231adf3f06f8a6e",
+      "sha256": "81de896968bbe3e7e29aa43672aabfdcb6498e669426a89dad406006139aeabd",
       "state": "CO",
       "tees": [
         "black",
@@ -132,18 +132,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 32.2461460054,
         "lon": -80.7434099987
       },
       "city": "Hilton Head Island",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/53ab4f0a-5bc0-49fc-8d0c-eb8ad3e23fd8.json",
       "holes": 18,
       "id": "53ab4f0a-5bc0-49fc-8d0c-eb8ad3e23fd8",
       "name": "Country Club Of Hilton Head",
-      "sha256": "5cf476f65bf47f26b19a48a03a0a8eeb39986f79ff6cd484980cf51e021ee647",
+      "sha256": "c100c9dc600c37cb66c2b49ee2fb6190d284040479bf71077b675c7a3e98918e",
       "state": "SC",
       "tees": [
         "black",
@@ -155,18 +155,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 43.2449474,
         "lon": -88.4019428
       },
       "city": "Erin",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/c11311e7-51b8-4495-adbc-355748feef56.json",
       "holes": 18,
       "id": "c11311e7-51b8-4495-adbc-355748feef56",
       "name": "Erin Hills",
-      "sha256": "8527bab6ec240fb736a35d66aad8da3aba1132efbf3f4cbbdd60e8bc5b9db518",
+      "sha256": "9143e795c973def9d7b7fb5d498fd01405720d2c085b36ca90644c17c14a977c",
       "state": "WI",
       "tees": [
         "black",
@@ -179,18 +179,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 42.8342026742,
         "lon": -76.9741287857
       },
       "city": "Geneva",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/ec631dc6-c54f-4540-9e7c-be75d759e91b.json",
       "holes": 9,
       "id": "ec631dc6-c54f-4540-9e7c-be75d759e91b",
       "name": "Geneva Country Club",
-      "sha256": "3e81d3954bc28416864fa3539e10e81d6f34bc9a40c889643b37f0700389ca30",
+      "sha256": "8acadbbe43bcc6c01e2b681e8338ac6bbcdae0c610c300bd35d63f20abeab5b5",
       "state": "NY",
       "tees": [
         "blue",
@@ -198,18 +198,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 29.385181,
         "lon": -98.7583014
       },
       "city": "San Antonio",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/7d018c05-69b9-41d2-9154-5fe67319ef6e.json",
       "holes": 18,
       "id": "7d018c05-69b9-41d2-9154-5fe67319ef6e",
       "name": "Golf Club of Texas",
-      "sha256": "be9ea31ae8e553f5c98a50ed64c8f31635904070deadbf3aa64b102a5d34c337",
+      "sha256": "08cd947c3a8ac92825034640c73717e86c25afe94696e553e1666a34f43e2016",
       "state": "TX",
       "tees": [
         "black",
@@ -221,18 +221,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 29.6056444,
         "lon": -81.1886889
       },
       "city": "Palm Coast",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/bcc23409-7ba0-4dd6-a598-b844f6b62293.json",
       "holes": 18,
       "id": "bcc23409-7ba0-4dd6-a598-b844f6b62293",
       "name": "Hammock Beach Resort The Ocean Course",
-      "sha256": "b75785cd51579b164e160346a7614d7e91c1ea1e29e7f0753a8e96dd4cbd258d",
+      "sha256": "9745c7d7b4c8ca762995e9ba34f790b1caee6fc615dd8b9c5a0b8a9873cc657c",
       "state": "FL",
       "tees": [
         "black",
@@ -243,18 +243,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 42.6345742607,
         "lon": -77.0703759656
       },
       "city": "Penn Yan",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/24925661-c5ad-4a89-87f2-b97a8f77fe83.json",
       "holes": 18,
       "id": "24925661-c5ad-4a89-87f2-b97a8f77fe83",
       "name": "Lakeside Country Club",
-      "sha256": "6817e75ca477ba793ad20b937a0588a429edfc9fbb7bcc66c212fdc266150e2f",
+      "sha256": "5587bc4860acfc1369d644779e89b6b295ae24cf28c7f323dfe203887416258b",
       "state": "NY",
       "tees": [
         "blue",
@@ -265,36 +265,36 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 42.6537831806,
         "lon": -77.2912216187
       },
       "city": "Naples",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/2cfe80e9-2d2f-4123-abd9-5f48aa21a8f8.json",
       "holes": 9,
       "id": "2cfe80e9-2d2f-4123-abd9-5f48aa21a8f8",
       "name": "Majestic Hills Golf Course",
-      "sha256": "8be515e0d8b16e16a2392a67cfe951d0770637d80c7b22918fe43b21ffb8f1eb",
+      "sha256": "1e60c161f35aa5dc0c67ad622cfbb5124c62ec3412f6a803bdb805d6e4987702",
       "state": "NY",
       "tees": [
         "middle"
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 29.6499712,
         "lon": -82.3651725
       },
       "city": "Gainesville",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/1617bc72-1ad4-4d06-888a-cc655b4bb891.json",
       "holes": 18,
       "id": "1617bc72-1ad4-4d06-888a-cc655b4bb891",
       "name": "Mark Bostick Golf Course At The University Of Florida",
-      "sha256": "add1a60571c88d560645546d45b56a533d1e3dec9be2687c768a2361fc905420",
+      "sha256": "84e15c51ed56491fdd8cb77cd6dfb49ee9ce2568ca3f2414b25c79f5d72b910f",
       "state": "FL",
       "tees": [
         "blue",
@@ -304,18 +304,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 44.7971939,
         "lon": -93.3615191
       },
       "city": "Bloomington",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/10bd6244-2445-4836-8af5-87e9552eff29.json",
       "holes": 18,
       "id": "10bd6244-2445-4836-8af5-87e9552eff29",
       "name": "Minnesota Valley Country Club",
-      "sha256": "a19e2805b2f71a39dd402e4dd33e86a559a1cec1c991d5d56bdd670cb22583c8",
+      "sha256": "7375f36b2f18006407587219494c42508ea4bfef722113f81e77ac7cedc6110e",
       "state": "MN",
       "tees": [
         "blue",
@@ -327,18 +327,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 33.4616364565,
         "lon": -111.9617668452
       },
       "city": "Phoenix",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/7f1e2c7c-a103-4e0f-a91b-51da1e74851a.json",
       "holes": 18,
       "id": "7f1e2c7c-a103-4e0f-a91b-51da1e74851a",
       "name": "Papago Golf Club",
-      "sha256": "4fc2186e44aa37cf8c906b17f531e70112bf511dde188edcd0de129f4e5b87d5",
+      "sha256": "a45a56841d683296d4a0eb946c8b8e097306b7f87929d0208ee4efdd81c254d7",
       "state": "AZ",
       "tees": [
         "black",
@@ -352,18 +352,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 36.5685,
         "lon": -121.949
       },
       "city": "Pebble Beach",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/40977ee8-33ee-4195-b6a2-99a4ca83c2bc.json",
       "holes": 18,
       "id": "40977ee8-33ee-4195-b6a2-99a4ca83c2bc",
       "name": "Pebble Beach Golf Links",
-      "sha256": "c0ac978e05f351ef75c35677ee0e5ff50c9146abebe9c32907503e8a76933922",
+      "sha256": "5f270f73aa5418891dd82970c37abf1ae43e800f9f0d2201e561ef3141de8e62",
       "state": "CA",
       "tees": [
         "blue",
@@ -375,18 +375,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 33.646869962,
         "lon": -116.2444015873
       },
       "city": "La Quinta",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/d2ffc96f-6ea2-4cf9-b6f5-2fda3b9b64f8.json",
       "holes": 18,
       "id": "d2ffc96f-6ea2-4cf9-b6f5-2fda3b9b64f8",
       "name": "Pga West Greg Norman Course",
-      "sha256": "3bb976f5a10348f46f96026f2b5afa4bcb247e50933f559dbb989986d23f58fc",
+      "sha256": "cf0e71efe0c79804715ebcc982815a6c303175b76b87ea5ee43e22847f1ea664",
       "state": "CA",
       "tees": [
         "black",
@@ -400,18 +400,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 33.6544233867,
         "lon": -116.2757349014
       },
       "city": "La Quinta",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/49724583-02ca-40a6-8d87-5d650a34d703.json",
       "holes": 18,
       "id": "49724583-02ca-40a6-8d87-5d650a34d703",
       "name": "Pga West Private Arnold Palmer Course",
-      "sha256": "4f5b840c580816ee9b87e79ccfffec6fd3a9b8e838e78c80bd0812c2e116ebfe",
+      "sha256": "b99d98051bd3038fcb173a911c9c81f5d2f1ee54a915cd8e26bf47cb703b8916",
       "state": "CA",
       "tees": [
         "black",
@@ -425,18 +425,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 33.6428386,
         "lon": -116.2685836
       },
       "city": "La Quinta",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/5107284f-63df-489f-9bc7-d0dd15f005d1.json",
       "holes": 18,
       "id": "5107284f-63df-489f-9bc7-d0dd15f005d1",
       "name": "Pga West Private Jack Nicklaus Private Course",
-      "sha256": "ddc3277bc343f4e883817959d009c2c5df143fc4c9ba99e4cdfe9eb8103e28d9",
+      "sha256": "795aa2750336c0b80966a6d5428f47eb120009d77c4498d0efbc43c93428e6cb",
       "state": "CA",
       "tees": [
         "black",
@@ -450,18 +450,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 35.1975711099,
         "lon": -79.4577169418
       },
       "city": "Pinehurst",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/86620a66-2f67-409e-8aaa-8d503d820631.json",
       "holes": 18,
       "id": "86620a66-2f67-409e-8aaa-8d503d820631",
       "name": "Pinehurst Resort Country Club No 2",
-      "sha256": "4727a0a3464a1f3f97e5b19cbdc8f575da8e001b0c879149761458087d444611",
+      "sha256": "7f280d3cd12101ad921add70e629f2b23d62ec4c1298f25cfec57ecc1c76db7c",
       "state": "NC",
       "tees": [
         "blue",
@@ -473,18 +473,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 35.1843007542,
         "lon": -79.4466179609
       },
       "city": "Pinehurst",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/8a17d0e9-b216-44d9-aae2-f235e22f7acc.json",
       "holes": 18,
       "id": "8a17d0e9-b216-44d9-aae2-f235e22f7acc",
       "name": "Pinehurst Resort Country Club No 7",
-      "sha256": "bc144df991563c15fbd3793d62392412defe15d04abda6df1a10bbd9696ccf5b",
+      "sha256": "ecf4de6a6aecc55de68faddacb3627073d8f4f4cd932fd4634eba3326d2e9234",
       "state": "NC",
       "tees": [
         "blue",
@@ -497,18 +497,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 35.2182855405,
         "lon": -79.4714015722
       },
       "city": "Pinehurst",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/d0c2313d-9b8d-4822-9578-66ca22d33d1c.json",
       "holes": 18,
       "id": "d0c2313d-9b8d-4822-9578-66ca22d33d1c",
       "name": "Pinehurst Resort Country Club No 8",
-      "sha256": "11b0fa8bd7a4d67bf58822a85d9dd5981e48a935222c269d71aa4f88efca5d0e",
+      "sha256": "2daa9cb4cd2fad3507ef3f580a5546d00fff88ae376c4cac9c66fc8aa95a31f9",
       "state": "NC",
       "tees": [
         "blue",
@@ -519,18 +519,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 42.6054105136,
         "lon": -77.4143028259
       },
       "city": "Naples",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/ad7f9ae2-e55c-4969-bb13-7d5185817801.json",
       "holes": 18,
       "id": "ad7f9ae2-e55c-4969-bb13-7d5185817801",
       "name": "Reservoir Creek Golf Course",
-      "sha256": "3004636ee135d7c416a31988cb3716db1b028e60705cae07a7a9bffc4223a953",
+      "sha256": "b65ccec7654a835fd680d9ac33151c31bb2d6075bdb1bde52ddb2b25f17718c0",
       "state": "NY",
       "tees": [
         "blue",
@@ -540,18 +540,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 33.535412034,
         "lon": -111.9151711464
       },
       "city": "Scottsdale",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/1ed27559-addf-477c-8a66-6ecb6b8a167c.json",
       "holes": 18,
       "id": "1ed27559-addf-477c-8a66-6ecb6b8a167c",
       "name": "Scottsdale Silverado Golf Club",
-      "sha256": "4572cfd349cfe306319b89441d9c2be674c41849a1d0206d50fcaa08ac22673c",
+      "sha256": "586065b3f8dd3800553f736057595c058d6b2a9213b0227d0f76af7d57ba7098",
       "state": "AZ",
       "tees": [
         "gold",
@@ -561,18 +561,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 32.7800672,
         "lon": -97.1012147
       },
       "city": "Arlington",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/9379add5-9103-43fb-a659-b6c617b65eb0.json",
       "holes": 18,
       "id": "9379add5-9103-43fb-a659-b6c617b65eb0",
       "name": "Texas Rangers Golf Club",
-      "sha256": "9c3bef593f8cf6b6d8fd2735125ab24d9a350af35822aa5aeaf697aed9b13e53",
+      "sha256": "6931bd43406e4d405a58ac8f41b15f4d394030012a68261789bf1327714ca373",
       "state": "TX",
       "tees": [
         "Black",
@@ -582,18 +582,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 32.8150056,
         "lon": -97.1111696
       },
       "city": "Euless",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/8b348733-f617-461c-8ef6-47e2198899a4.json",
       "holes": 18,
       "id": "8b348733-f617-461c-8ef6-47e2198899a4",
       "name": "Texas Star Golf Course",
-      "sha256": "42781cb6291c6dc02ce98b27a9577a7000bcda2feabe4c54c87252abc4a35e5f",
+      "sha256": "2bf4089a97c8b87e0b73dea569e5f171a4564d7156f50ebaead3d6e9eb6cc613",
       "state": "TX",
       "tees": [
         "blue",
@@ -603,18 +603,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 33.4810280703,
         "lon": -111.958361201
       },
       "city": "Phoenix",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/e9898b90-8142-4ece-b1c7-809302124622.json",
       "holes": 18,
       "id": "e9898b90-8142-4ece-b1c7-809302124622",
       "name": "The Arizona Country Club",
-      "sha256": "0304420958b1858650984f06e07724eff5f5a8d1e521d7bc415810a922429aa8",
+      "sha256": "29af416dcd6aee2368c318a1b57c40f91da28dccdd2ff93dc2de5221ad64ac45",
       "state": "AZ",
       "tees": [
         "blue",
@@ -625,18 +625,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 43.7102987,
         "lon": -87.8105925
       },
       "city": "Sheboygan Falls",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/806869cd-d6ae-49aa-a7a3-e6d4eddebcbf.json",
       "holes": 18,
       "id": "806869cd-d6ae-49aa-a7a3-e6d4eddebcbf",
       "name": "The Bull at Pinehurst Farms",
-      "sha256": "af2215478c050bb1f2d06726faa9812ed1f6df1b101cc1834d5be83f1739c07c",
+      "sha256": "d07e12fa97802266d3416bfe21f1ec1f2384546a3fe5a802d55337953fb4285e",
       "state": "WI",
       "tees": [
         "black",
@@ -647,18 +647,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 37.5753175721,
         "lon": -77.6267575557
       },
       "city": "Richmond",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/8441d9e6-9ab1-439b-beee-91b16c49e650.json",
       "holes": 18,
       "id": "8441d9e6-9ab1-439b-beee-91b16c49e650",
       "name": "The Country Club Of Virginia Tuckahoe Creek Course",
-      "sha256": "ade99c7b6186e5537b4a81fca36a6a8c780bfed93c8335d9d53fee27324838f1",
+      "sha256": "3a2b2b4eeb6952a4687b3cb92c4f4a8a0eaed84203dd34a8200edbe401e5d624",
       "state": "VA",
       "tees": [
         "black",
@@ -670,18 +670,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 30.3678474,
         "lon": -81.6747055
       },
       "city": "Jacksonville",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/2490794e-b371-4b0f-9669-294b30209815.json",
       "holes": 9,
       "id": "2490794e-b371-4b0f-9669-294b30209815",
       "name": "The First Tee Of North Florida Brentwood Golf Course",
-      "sha256": "6bc91ca0a4a802c82dc829729f7848332e4f66343f829cc524ca7c4925272b21",
+      "sha256": "568606a288b6fd02783302492ee66876b1b2d2b84e21eb808ca3f8da68aea1eb",
       "state": "FL",
       "tees": [
         "blue",
@@ -691,18 +691,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 32.6124839857,
         "lon": -80.0226384401
       },
       "city": "Kiawah Island",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/2f8238b3-85d2-4d54-b1af-779dec846381.json",
       "holes": 18,
       "id": "2f8238b3-85d2-4d54-b1af-779dec846381",
       "name": "The Ocean Course At Kiawah Island Golf Resort",
-      "sha256": "87b6bb431fca4a080aeee88ef3aaaf5cb6520b3fc7562574fb0ea6dfae1b70e4",
+      "sha256": "a2259c766cf92c1fa357b7aa460b2fc689ef6cba8986b625e19da5ed951ec6b0",
       "state": "SC",
       "tees": [
         "carolina",
@@ -713,18 +713,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 39.4693984,
         "lon": -104.9096345
       },
       "city": "Castle Pines",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/a44d859b-2d85-4253-8b6d-b06ed374c71e.json",
       "holes": 18,
       "id": "a44d859b-2d85-4253-8b6d-b06ed374c71e",
       "name": "The Ridge At Castle Pines Colorado",
-      "sha256": "89aaa897c78661a8f23795eeb5fedb8af28c912f19259f0e01dfa830eec52e72",
+      "sha256": "d7e46961f6f6d3de04e69a994ed282a0d9b2ebbd11e06363d9e23ad43f5ce351",
       "state": "CO",
       "tees": [
         "black",
@@ -734,18 +734,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 33.6516369845,
         "lon": -116.2600708008
       },
       "city": "La Quinta",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/a3eb4392-fa9b-465b-b5d3-faa9a0147a12.json",
       "holes": 18,
       "id": "a3eb4392-fa9b-465b-b5d3-faa9a0147a12",
       "name": "The Stadium Course At Pga West",
-      "sha256": "ac4758c7ddf9400f5513b09854404c7552df81c6c9052ca1dc38d77e9ee8b112",
+      "sha256": "5dd6342da607745aa5c39a447a555eb70d0c12f683b2fada9c7a6ec1ea8284d7",
       "state": "CA",
       "tees": [
         "black",
@@ -759,18 +759,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 32.8971363,
         "lon": -117.247647
       },
       "city": "San Diego",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/9b9891db-3b45-48db-892f-149601b79d52.json",
       "holes": 18,
       "id": "9b9891db-3b45-48db-892f-149601b79d52",
       "name": "Torrey Pines South Course",
-      "sha256": "e4a2ceb42ef133a9245abaa97e98f42c21715ece11b6cf63d128b94b1225a3e6",
+      "sha256": "f6cb4d9fd04467a5a6555850832d929482198345173b4607fd636fd47c9528d9",
       "state": "CA",
       "tees": [
         "black",
@@ -782,18 +782,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 40.3333738,
         "lon": -105.1043686
       },
       "city": "Berthoud",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/43c3a4e2-b921-4d92-a2a8-bf49b0dfa38c.json",
       "holes": 18,
       "id": "43c3a4e2-b921-4d92-a2a8-bf49b0dfa38c",
       "name": "Tpc Colorado",
-      "sha256": "7eb18fbb309397c4a9a66e8cbe34e33435a400c530a1d1dc55c26a8dea325023",
+      "sha256": "5dd378db4d252c8106676e3eb7696a022f0be383266ab0954780ab7e6f39774a",
       "state": "CO",
       "tees": [
         "black",
@@ -806,18 +806,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 37.6380667,
         "lon": -121.889426
       },
       "city": "Pleasanton",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/5ae10e34-4746-4466-8d61-45a2ffa5d448.json",
       "holes": 18,
       "id": "5ae10e34-4746-4466-8d61-45a2ffa5d448",
       "name": "Valley At Castlewood Country Club",
-      "sha256": "aa77a8c415fa1c2235b78914c0f2c0f5b5ee213dff4d3d2a926a699560576217",
+      "sha256": "078f3d80f483777bcd3487f6cca24666c197de3e9315a2e2cf7afcdbbdaac87a",
       "state": "CA",
       "tees": [
         "Black",
@@ -830,18 +830,18 @@
       ]
     },
     {
-      "builtAt": "2026-10-26T15:15:22.400904+00:00",
+      "builtAt": "2026-10-27T14:22:43.913432+00:00",
       "center": {
         "lat": 42.3978424,
         "lon": -76.8905868
       },
       "city": "Watkins Glen",
-      "dataVersion": "approved-2026-10-26-2335",
+      "dataVersion": "approved-2026-10-27-2615",
       "file": "courses/47454fab-f250-4b4d-b339-42375e95c90e.json",
       "holes": 9,
       "id": "47454fab-f250-4b4d-b339-42375e95c90e",
       "name": "Watkins Glen Golf Club",
-      "sha256": "262c87ffbbad992bd27590b167b8deae2ddacaa4413ec41a5d946315cf25415f",
+      "sha256": "946ee79525a0c2f48ceb34660a0163ce2685c178612524c4a3f59d3c4f121df5",
       "state": "NY",
       "tees": [
         "Blue",
@@ -850,7 +850,7 @@
       ]
     }
   ],
-  "dataVersion": "approved-2026-10-26-2335",
+  "dataVersion": "approved-2026-10-27-2615",
   "sources": [
     "© OpenStreetMap contributors — ODbL 1.0 — https://www.openstreetmap.org/copyright",
     "OSM extracts by Geofabrik — https://download.geofabrik.de/",

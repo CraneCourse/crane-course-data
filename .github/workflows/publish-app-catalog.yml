@@ -18,7 +18,7 @@ jobs:
       - name: Test publication guardrails
         run: python3 publication/test_prepare.py
       - name: Verify the approved snapshot and current deployment
-        run: python3 publication/prepare.py --check-live --expected-manifest-sha256 4adea6e1fa689212b37c690c0f61d0e24562954b69b491db8d91d0e50815d086
+        run: python3 publication/prepare.py --check-live --expected-manifest-sha256 83f6b7c02e6ed43edb540cb2e10a770459f8ada54fd5986564e44eceeaab4475
       - uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b
         with:
           path: dist
