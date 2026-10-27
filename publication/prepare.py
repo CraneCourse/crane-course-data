@@ -1,6 +1,8 @@
 """Publish only the reviewed snapshot. No survey, scorecard or geometry processing."""
 from pathlib import Path, PurePosixPath
-import argparse, hashlib, json, shutil, time, urllib.request
+import argparse, hashlib, json, shutil, time, urllib.request, urllib.error, socket
+from email.utils import parsedate_to_datetime
+from datetime import datetime, timezone
 
 BASE = 'https://cranecourse.github.io/crane-course-data/'
 # Bounded static packaging size; GitHub Pages allows 1 GB. Course-admission rules are separate.
@@ -47,28 +49,81 @@ def verify_source(root, manifest):
     assert course_paths == {f'courses/{i}.json' for i in all_ids}
     return paths
 
-def fetch(name):
+# Only static Pages reads are retried. Survey/source acquisition is separate.
+MAX_FETCH_ATTEMPTS = 4
+MAX_TRANSIENT_RETRIES = 12  # Shared across one complete baseline verification.
+MAX_RETRY_WAIT_SECONDS = 60
+TRANSIENT_HTTP = {500, 502, 503, 504}
+
+def retry_delay(value, attempt):
+    delay = 2 ** attempt
+    if value:
+        try:
+            requested = int(value)
+        except ValueError:
+            try:
+                when = parsedate_to_datetime(value)
+                if when.tzinfo is None: when = when.replace(tzinfo=timezone.utc)
+                requested = (when - datetime.now(timezone.utc)).total_seconds()
+            except (ValueError, TypeError, OverflowError):
+                requested = 0
+        delay = max(delay, requested)
+    if delay > MAX_RETRY_WAIT_SECONDS:
+        raise RuntimeError('Server Retry-After exceeds bounded publication wait; defer publication')
+    return delay
+
+def fetch(name, retry_budget=None):
     safe_path(name)
     url = BASE + name
-    req = urllib.request.Request(url, headers={'Cache-Control':'no-cache','User-Agent':'CraneCourse-approved-publication/1.0'})
-    with urllib.request.urlopen(req, timeout=40) as response:
-        assert response.status == 200 and response.url == url
-        data = response.read(16_000_001)
-        assert len(data) <= 16_000_000
-        return data
+    if retry_budget is None: retry_budget = {'remaining':MAX_TRANSIENT_RETRIES}
+    for attempt in range(1, MAX_FETCH_ATTEMPTS + 1):
+        req = urllib.request.Request(url, headers={'Cache-Control':'no-cache','User-Agent':'CraneCourse-approved-publication/1.0'})
+        try:
+            with urllib.request.urlopen(req, timeout=40) as response:
+                assert response.status == 200 and response.url == url, f'Unexpected response: {url}'
+                data = response.read(16_000_001)
+                assert len(data) <= 16_000_000, f'Oversize response: {url}'
+            if attempt > 1:
+                print(json.dumps({'event':'fetch-recovered','url':url,'attempt':attempt}), flush=True)
+            return data
+        except (urllib.error.URLError, TimeoutError, ConnectionError) as error:
+            headers = getattr(error, 'headers', None) or {}
+            code = getattr(error, 'code', None)
+            reason = getattr(error, 'reason', error)
+            transient = code in TRANSIENT_HTTP if code is not None else isinstance(reason, (TimeoutError, socket.timeout, ConnectionResetError, ConnectionAbortedError))
+            retry_after = headers.get('Retry-After')
+            diagnostic = {'event':'fetch-failed','url':url,'attempt':attempt,
+                          'status':code,'error':str(error),'retryAfter':retry_after,
+                          'server':headers.get('Server'),'requestID':headers.get('X-GitHub-Request-Id'),
+                          'cache':headers.get('X-Cache'),'via':headers.get('Via')}
+            print(json.dumps(diagnostic), flush=True)
+            if isinstance(error, urllib.error.HTTPError): error.close()
+            if not transient or attempt == MAX_FETCH_ATTEMPTS or retry_budget['remaining'] <= 0:
+                raise RuntimeError(f'Cannot verify live file {url}; publication stopped') from error
+            delay = retry_delay(retry_after, attempt)
+            retry_budget['remaining'] -= 1
+            print(json.dumps({'event':'fetch-retry','url':url,'waitSeconds':delay,
+                              'remainingRetries':retry_budget['remaining']}), flush=True)
+            time.sleep(delay)
 
 def check_live(before, approved):
-    current = digest(fetch('app-index.json'))
+    retry_budget = {'remaining':MAX_TRANSIENT_RETRIES}
+    def read(name): return fetch(name, retry_budget=retry_budget)
+    current = digest(read('app-index.json'))
     candidates = [m['files'] for m in (before, approved)
                   if current == m['files']['app-index.json']]
     assert candidates, 'Live catalog changed; review before deploying'
     # A static-page cleanup can keep the same catalog hash. Require every file
     # to match one complete approved snapshot, rather than accepting a mixture.
-    for name in sorted(set().union(*(set(c) for c in candidates))):
+    names = sorted(set().union(*(set(c) for c in candidates)))
+    for ordinal, name in enumerate(names, 1):
         if name == '.nojekyll': continue  # GitHub Pages does not serve dotfiles.
-        actual = current if name == 'app-index.json' else digest(fetch(name))
+        actual = current if name == 'app-index.json' else digest(read(name))
         candidates = [c for c in candidates if c.get(name) == actual]
         assert candidates, f'Live file changed or mixed deployment: {name}'
+        if ordinal % 100 == 0 or ordinal == len(names):
+            print(json.dumps({'event':'baseline-progress','checked':ordinal,'total':len(names),
+                              'retriesUsed':MAX_TRANSIENT_RETRIES-retry_budget['remaining']}), flush=True)
         time.sleep(.1)
 
 def main():
