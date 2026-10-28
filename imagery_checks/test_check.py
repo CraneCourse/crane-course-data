@@ -67,14 +67,14 @@ def test_delta_excludes_old_passes_and_frozen_controls_and_rejects_drift():
         return {'runID':run,'sourceCommit':sha,'freshPassedIDs':ids,'errors':[],
                 'rows':[{'candidate':{'id':i},'status':'full-data-gates-passed'} for i in ids]
                     +[{'candidate':{'id':'frozen-control'},'status':'data-withheld'}]}
-    current=report(list(range(3084)),RUN,SHA)
-    baseline=report(list(range(2804)),BASE_RUN,BASE_SHA)
-    assert new_passes(current,baseline)==set(range(2804,3084))
+    current=report(list(range(3153)),RUN,SHA)
+    baseline=report(list(range(3084)),BASE_RUN,BASE_SHA)
+    assert new_passes(current,baseline)==set(range(3084,3153))
     current['rows'].append(current['rows'][0])
     with pytest.raises(AssertionError): new_passes(current,baseline)
-    current=report(list(range(1,3085)),RUN,SHA)
+    current=report(list(range(1,3154)),RUN,SHA)
     with pytest.raises(AssertionError): new_passes(current,baseline)
-    current=report(list(range(3084)),RUN,'wrong-sha')
+    current=report(list(range(3153)),RUN,'wrong-sha')
     with pytest.raises(AssertionError): new_passes(current,baseline)
 
 
@@ -110,8 +110,8 @@ def test_new_successful_source_must_have_no_execution_errors():
     def report(ids, run, sha):
         return {'runID':run,'sourceCommit':sha,'freshPassedIDs':ids,'errors':[],
                 'rows':[{'candidate':{'id':i},'status':'full-data-gates-passed'} for i in ids]}
-    current=report(list(range(3084)),RUN,SHA)
-    baseline=report(list(range(2804)),BASE_RUN,BASE_SHA)
+    current=report(list(range(3153)),RUN,SHA)
+    baseline=report(list(range(3084)),BASE_RUN,BASE_SHA)
     current['errors']=[{'id':'not-accepted','reason':'unreviewed execution error'}]
     with pytest.raises(AssertionError,match='execution errors'): new_passes(current,baseline)
 
@@ -121,7 +121,7 @@ def test_successful_baseline_must_have_no_execution_errors():
     def report(ids, run, sha):
         return {'runID':run,'sourceCommit':sha,'freshPassedIDs':ids,'errors':[],
                 'rows':[{'candidate':{'id':i},'status':'full-data-gates-passed'} for i in ids]}
-    current=report(list(range(3084)),RUN,SHA)
-    baseline=report(list(range(2804)),BASE_RUN,BASE_SHA)
+    current=report(list(range(3153)),RUN,SHA)
+    baseline=report(list(range(3084)),BASE_RUN,BASE_SHA)
     baseline['errors']=[{'id':'not-accepted','reason':'unreviewed execution error'}]
     with pytest.raises(AssertionError,match='Baseline source'): new_passes(current,baseline)

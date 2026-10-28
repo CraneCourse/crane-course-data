@@ -15,11 +15,11 @@ from collections import Counter
 from PIL import Image, ImageDraw
 from jsonschema import Draft202012Validator, FormatChecker
 
-RUN = '40454410612'
-SHA = '76bb827e365463f26ebfff68f0ee6c3cffdb7f98'
-BASE_RUN = '40271874764'
-BASE_SHA = '3ddcc1daa8a718dc591e07dfcef754a6dfa4d347'
-EXPECTED_NEW = 280
+RUN = '40640854379'
+SHA = '7fce4149fa38d2cbb8491cc7f40889513a98c49b'
+BASE_RUN = '40454410612'
+BASE_SHA = '76bb827e365463f26ebfff68f0ee6c3cffdb7f98'
+EXPECTED_NEW = 69
 RECOVERED_RUN = '40063763126'
 RECOVERED_SHA = 'a4d71b4bc7d9eace954f2fcec0d0cdf721c75aa3'
 REPLAY_RUN = '40098946399'
@@ -78,7 +78,7 @@ def passed_ids(report, run, sha):
 def new_passes(current, baseline):
     ids=passed_ids(current,RUN,SHA)
     old=passed_ids(baseline,BASE_RUN,BASE_SHA)
-    assert len(ids)==3084 and len(old)==2804
+    assert len(ids)==3153 and len(old)==3084
     assert current['errors']==[], 'Current source has unreviewed execution errors'
     assert baseline['errors']==[], 'Baseline source has unreviewed execution errors'
     assert old<=ids, 'Earlier passes disappeared; inspect before running downloads'
