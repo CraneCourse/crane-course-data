@@ -1,0 +1,46 @@
+{
+  "builtAt": "2026-11-15T19:35:43.950191+00:00",
+  "cachedCards": 63,
+  "carriedCards": 5575,
+  "complete": true,
+  "counts": {
+    "border-unresolved": 288,
+    "scorecard-acquired": 5851
+  },
+  "inputs": {
+    "baseline": {
+      "created_at": "2026-10-16T23:25:04Z",
+      "head_sha": "ad8c6ebf5f4042bb471f796a69aa6e1b33fd2ffe",
+      "html_url": "https://github.com/CraneCourse/crane-course-data/actions/runs/38981324295",
+      "id": 38981324295,
+      "path": ".github/workflows/resolve.yml"
+    },
+    "cardsFrom": {
+      "created_at": "2026-10-28T05:56:13Z",
+      "head_sha": "7fce4149fa38d2cbb8491cc7f40889513a98c49b",
+      "html_url": "https://github.com/CraneCourse/crane-course-data/actions/runs/40640854379",
+      "id": 40640854379,
+      "path": ".github/workflows/national-validation.yml"
+    },
+    "geometry": {
+      "created_at": "2026-11-15T18:48:00Z",
+      "head_sha": "3922bb4b8e19f915a66f2fe59de86a2ff027746c",
+      "html_url": "https://github.com/CraneCourse/crane-course-data/actions/runs/43748778195",
+      "id": 43748778195,
+      "path": ".github/workflows/national.yml"
+    }
+  },
+  "note": "Scorecard bodies remain in the national-acquisition artifact; resume with previous_run set to this run.",
+  "remainingIDs": [],
+  "requests": 213,
+  "reservation": {
+    "day": "2026-11-15",
+    "granted": 213,
+    "key": "Validate national geometry candidates/43752124056/1/national-validation-cards"
+  },
+  "resumeAfterUTC": null,
+  "resumedCards": 0,
+  "runID": "43752124056",
+  "sourceCommit": "5c8e66c0fa990cb2c278e13b1afd00234da3c536",
+  "stopped": null
+}
