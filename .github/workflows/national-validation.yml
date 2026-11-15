@@ -210,7 +210,8 @@ jobs:
   validate:
     if: always() && needs.scorecards.result == 'success'
     needs: [resolve, scorecards, match]
-    runs-on: macos-14
+    # macos-14 images were retired by GitHub on 2026-11-02. macos-15 ships Xcode 16.4 (the previous image used Xcode 15.4).
+    runs-on: macos-15
     timeout-minutes: 180
     env:
       GEOMETRY_RUN: ${{ needs.resolve.outputs.geometry_run }}
@@ -218,6 +219,7 @@ jobs:
       PREVIOUS_RUN: ${{ needs.resolve.outputs.previous_run }}
       REQUEST_BUDGET: ${{ needs.resolve.outputs.request_budget }}
       CARDS_FROM_RUN: ${{ needs.resolve.outputs.cards_from_run }}
+      DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
     permissions:
       contents: write
       actions: read
@@ -241,6 +243,10 @@ jobs:
           pattern: national-matched-*
           merge-multiple: true
           path: work
+      - name: Record the toolchain used by the Swift reference
+        run: |
+          mkdir -p work
+          { sw_vers; xcodebuild -version; swiftc --version; } 2>&1 | tee work/toolchain.txt
       - run: python -m pipeline.national_validation controls
       - name: Actual Swift CoreLocation, full Hole encoding and all common Watch tees
         run: |
@@ -260,6 +266,7 @@ jobs:
             work/national-validation
             work/validation
             work/swift.json
+            work/toolchain.txt
             reports/national-validation-*
           retention-days: 7
       - name: Record research results only; no deployment
