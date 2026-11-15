@@ -163,8 +163,10 @@ frozen controls still take their existing paths. Reused cards keep their recorde
 and date and are labelled `carriedFromRun` (`carried-from-earlier-survey` in reports,
 `carriedCards` in counts). Cards for IDs that are no longer geometry candidates are
 ignored. Geometry is matched fresh, with the same gates. Every other candidate is
-requested through the ledger exactly as before. Leaving `cards_from_run` empty acquires
-every card again.
+requested through the ledger exactly as before. While the original frozen-baseline
+artifacts of run `38981324295` are gone (since October 2026), a new survey needs
+`cards_from_run`: with neither `previous_run` nor `cards_from_run`, validation stops
+before reserving any requests because the frozen 38-course payloads are missing.
 
 ## Request ledger, border accounting and report labels (Claude, October 17, 2026)
 

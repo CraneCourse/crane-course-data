@@ -50,7 +50,7 @@ def verify():
     cards_from=os.environ.get('CARDS_FROM_RUN','').strip()
     if cards_from:
         meta=get(cards_from); check_previous(meta,os.environ['GITHUB_REPOSITORY'])
-        check_cards_from(cards_from,previous,latest,os.environ['GEOMETRY_RUN'],records['baseline'])
+        check_cards_from(cards_from,previous,latest,os.environ['GEOMETRY_RUN'],records['baseline'],meta['conclusion'])
         records['cardsFrom']={k:meta[k] for k in ('id','head_sha','created_at','html_url','path')}
     write(ROOT/'inputs.json',records)
 
@@ -61,7 +61,7 @@ def latest_recorded_run(reports=Path('reports')):
     return str(max(runs)) if runs else None
 
 
-def check_cards_from(cards_from, previous, latest, geometry_run, baseline, reports=Path('reports')):
+def check_cards_from(cards_from, previous, latest, geometry_run, baseline, conclusion, reports=Path('reports')):
     """cards_from_run only starts validation of a NEW geometry survey from the newest saved cards.
 
     previous_run keeps its meaning (resume this survey) and excludes cards_from_run. The
@@ -69,6 +69,7 @@ def check_cards_from(cards_from, previous, latest, geometry_run, baseline, repor
     baseline. Its committed acquisition summary binds the artifact that is read later.
     """
     assert not previous and latest is None, 'This survey already has a recorded run; resume it with previous_run only'
+    assert conclusion=='success', f'Card source run concluded {conclusion}; review before reusing its cards'
     newest=latest_recorded_run(reports)
     assert newest is not None and cards_from==newest, f'Reuse cards from the latest recorded validation run {newest}'
     summary=reports/f'national-acquisition-{cards_from}.json'
@@ -100,6 +101,7 @@ def carried_cards(files, cards_from, reports=Path('reports'), source=Path('work/
     for row in prior_acquisition['rows']:
         cid=row['candidate']['id']
         if row['status']!='scorecard-acquired' or cid not in files: continue
+        if row['source'].get('type')=='reviewed-official-scorecard': continue  # Re-fetched with its pinned hash instead.
         record=read(source/'scorecards'/f'{cid}.json')
         assert isinstance(record.get('response'),dict) and isinstance(record['response'].get('holes'),list), f'Saved card {cid} has no holes'
         assert {k:v for k,v in record.items() if k!='response'}==row['source'], f'Saved card {cid} differs from its recorded provenance'
@@ -162,7 +164,7 @@ def resolve():
     if os.environ.get('GITHUB_EVENT_NAME')=='workflow_dispatch':
         values={'proceed':'true','geometry_run':os.environ['INPUT_GEOMETRY_RUN'],'geometry_sha':os.environ['INPUT_GEOMETRY_SHA'],
                 'previous_run':os.environ.get('INPUT_PREVIOUS_RUN',''),'request_budget':os.environ.get('INPUT_REQUEST_BUDGET') or '500',
-                'cards_from_run':os.environ.get('INPUT_CARDS_FROM_RUN','')}
+                'cards_from_run':os.environ.get('INPUT_CARDS_FROM_RUN','').strip()}
         reason='Manual dispatch'
     else:
         def conclusion(run):
@@ -310,6 +312,9 @@ def acquire():
 def need():
     """Requests acquisition can make: unresolved-free candidates without a saved, reused or prior card."""
     report,files=geometry_inputs(); border=border_status(); frozen=Path('work/frozen/work/validation')
+    # Same check acquire makes, before any reservation: no frozen baseline, no requests.
+    floor=baseline_ids()
+    assert all((frozen/f'{cid}.json').exists() for cid in floor), 'Frozen 38-course baseline payloads missing; set previous_run or cards_from_run'
     previous={}
     if os.environ.get('PREVIOUS_RUN','').strip():
         previous={r['candidate']['id']:r for r in read(Path('work/previous')/'acquisition.json')['rows']}

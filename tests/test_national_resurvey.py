@@ -174,21 +174,24 @@ def test_new_survey_may_start_from_the_newest_saved_cards(verify_env):
 def test_cards_from_rejects_same_survey_and_other_baseline(tmp_path):
     baseline = {'id': int(nv.BASELINE_RUN)}
     write(tmp_path / 'national-acquisition-250.json', {'runID': '250', 'inputs': {'geometry': G_OLD, 'baseline': baseline}})
-    nv.check_cards_from('250', '', None, '300', baseline, tmp_path)
+    nv.check_cards_from('250', '', None, '300', baseline, 'success', tmp_path)
     with pytest.raises(AssertionError, match='Same geometry'):
-        nv.check_cards_from('250', '', None, '100', baseline, tmp_path)
+        nv.check_cards_from('250', '', None, '100', baseline, 'success', tmp_path)
     with pytest.raises(AssertionError, match='different frozen baseline'):
-        nv.check_cards_from('250', '', None, '300', {'id': 1}, tmp_path)
+        nv.check_cards_from('250', '', None, '300', {'id': 1}, 'success', tmp_path)
     with pytest.raises(AssertionError):
-        nv.check_cards_from('250', '250', None, '300', baseline, tmp_path)
+        nv.check_cards_from('250', '250', None, '300', baseline, 'success', tmp_path)
     with pytest.raises(AssertionError):
-        nv.check_cards_from('250', '', '400', '300', baseline, tmp_path)
+        nv.check_cards_from('250', '', '400', '300', baseline, 'success', tmp_path)
+    for conclusion in ('failure', 'cancelled', None):     # card source must have succeeded
+        with pytest.raises(AssertionError, match='concluded'):
+            nv.check_cards_from('250', '', None, '300', baseline, conclusion, tmp_path)
 
 
 def test_manual_dispatch_passes_cards_from_and_schedule_does_not(tmp_path, monkeypatch):
     out = tmp_path / 'out'; out.write_text('')
     monkeypatch.setenv('GITHUB_OUTPUT', str(out)); monkeypatch.setenv('GITHUB_EVENT_NAME', 'workflow_dispatch')
-    for k, v in {'INPUT_GEOMETRY_RUN': '300', 'INPUT_GEOMETRY_SHA': 'h' * 40, 'INPUT_PREVIOUS_RUN': '', 'INPUT_REQUEST_BUDGET': '', 'INPUT_CARDS_FROM_RUN': '250'}.items():
+    for k, v in {'INPUT_GEOMETRY_RUN': '300', 'INPUT_GEOMETRY_SHA': 'h' * 40, 'INPUT_PREVIOUS_RUN': '', 'INPUT_REQUEST_BUDGET': '', 'INPUT_CARDS_FROM_RUN': ' 250 \t'}.items():
         monkeypatch.setenv(k, v)
     nv.resolve()
     assert out.read_text().splitlines() == ['proceed=true', 'geometry_run=300', 'geometry_sha=' + 'h' * 40, 'previous_run=', 'request_budget=500', 'cards_from_run=250']
@@ -351,3 +354,44 @@ def test_same_geometry_resume_rejections_are_unchanged(world, monkeypatch, tampe
     with pytest.raises(AssertionError):
         nv.acquire()
     assert world['fetched'] == []
+
+
+def test_failed_card_source_run_is_refused_by_verify(verify_env, monkeypatch):
+    import urllib.request
+    original = urllib.request.urlopen
+    def failed(req, timeout):
+        body = json.loads(original(req, timeout).read())
+        if body['id'] == 250: body['conclusion'] = 'failure'
+        return io.BytesIO(json.dumps(body).encode())
+    monkeypatch.setattr('urllib.request.urlopen', failed)
+    with pytest.raises(AssertionError, match='concluded failure'):
+        verify_env(G_NEW, cards_from='250')
+
+
+def test_reviewed_cards_are_not_carried_and_take_the_reviewed_path(world):
+    src = world['src']
+    a = read(src / 'acquisition.json')
+    reviewed_card = card(A, type='reviewed-official-scorecard')
+    for row in a['rows']:
+        if row['candidate']['id'] == A: row['source'] = source(reviewed_card)
+    write(src / 'acquisition.json', a); write(src / 'scorecards' / f'{A}.json', reviewed_card)
+    assert A not in nv.carried_cards({A: None, B: None}, '250')
+    assert nv.need() == 4                           # A now needs a request too
+    nv.acquire()
+    assert read(nv.ROOT / 'acquisition.json')['carriedCards'] == 0 and A in world['fetched']
+
+
+def test_new_survey_without_card_source_reserves_nothing_when_frozen_baseline_is_gone(world, monkeypatch):
+    import pipeline.api_ledger as ledger
+    monkeypatch.setenv('CARDS_FROM_RUN', '')
+    shutil.rmtree('work/frozen')                    # run 38981324295 artifacts expired, no carry downloaded
+    with pytest.raises(AssertionError, match='Frozen 38-course baseline'):
+        nv.need()
+    # The workflow runs: reserve "$(need)". A failed need prints nothing, so reserve gets ''.
+    calls = []
+    monkeypatch.setattr(ledger, 'reserve', lambda *a: calls.append(a))
+    monkeypatch.setenv('GITHUB_ACTIONS', 'true')
+    monkeypatch.setattr('sys.argv', ['api_ledger', 'reserve', '', 'national-validation-cards'])
+    with pytest.raises(ValueError):
+        ledger.main()
+    assert calls == [] and not Path('ledger').exists()
