@@ -1,0 +1,12 @@
+{
+  "dailyLimit": 500,
+  "day": "2026-11-15",
+  "reservations": [
+    {
+      "granted": 120,
+      "key": "Inventory national course directory/43744181943/1/directory-inventory",
+      "requested": 120,
+      "reservedAt": "2026-11-15T18:00:01.859300+00:00"
+    }
+  ]
+}
