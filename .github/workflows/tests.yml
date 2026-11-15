@@ -28,8 +28,11 @@ jobs:
       - run: python -m pytest -q
   feature-parity:
     if: github.event_name == 'workflow_dispatch' && inputs.reference_checks
-    runs-on: macos-14
+    # macos-14 images were retired by GitHub on 2026-11-02; macos-15 ships Xcode 16.4 (previously 15.4).
+    runs-on: macos-15
     timeout-minutes: 15
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
