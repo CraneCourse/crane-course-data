@@ -47,7 +47,64 @@ def verify():
     if previous:
         meta=get(previous); check_previous(meta,os.environ['GITHUB_REPOSITORY'])
         records['previous']={k:meta[k] for k in ('id','head_sha','created_at','html_url','path')}
+    cards_from=os.environ.get('CARDS_FROM_RUN','').strip()
+    if cards_from:
+        meta=get(cards_from); check_previous(meta,os.environ['GITHUB_REPOSITORY'])
+        check_cards_from(cards_from,previous,latest,os.environ['GEOMETRY_RUN'],records['baseline'])
+        records['cardsFrom']={k:meta[k] for k in ('id','head_sha','created_at','html_url','path')}
     write(ROOT/'inputs.json',records)
+
+
+def latest_recorded_run(reports=Path('reports')):
+    """Newest validation run of any geometry survey (finished report or acquisition summary)."""
+    runs=[int(read(path)['runID']) for pattern in ('national-validation-*.json','national-acquisition-*.json') for path in reports.glob(pattern)]
+    return str(max(runs)) if runs else None
+
+
+def check_cards_from(cards_from, previous, latest, geometry_run, baseline, reports=Path('reports')):
+    """cards_from_run only starts validation of a NEW geometry survey from the newest saved cards.
+
+    previous_run keeps its meaning (resume this survey) and excludes cards_from_run. The
+    card source must be the newest recorded run, of a different survey, on the same frozen
+    baseline. Its committed acquisition summary binds the artifact that is read later.
+    """
+    assert not previous and latest is None, 'This survey already has a recorded run; resume it with previous_run only'
+    newest=latest_recorded_run(reports)
+    assert newest is not None and cards_from==newest, f'Reuse cards from the latest recorded validation run {newest}'
+    summary=reports/f'national-acquisition-{cards_from}.json'
+    assert summary.exists(), f'Run {cards_from} has no committed acquisition summary to bind its saved cards'
+    recorded=read(summary)['inputs']
+    assert str(recorded['geometry']['id'])!=str(geometry_run), 'Same geometry survey: resume with previous_run instead'
+    assert recorded['baseline']==baseline, 'Card source used a different frozen baseline'
+
+
+def carried_cards(files, cards_from, reports=Path('reports'), source=Path('work/cards-from'), at=None):
+    """Saved cards of an earlier survey's newest run, for current geometry candidates only.
+
+    Scorecard identity is the course ID; geometry is re-matched fresh. A card whose ID is no
+    longer a geometry candidate is ignored. Each card keeps its recorded provenance and dates.
+    """
+    prior_inputs=read(source/'inputs.json'); current_inputs=read(ROOT/'inputs.json')
+    assert str(current_inputs['cardsFrom']['id'])==str(cards_from)
+    assert prior_inputs['baseline']==current_inputs['baseline'], 'Card source used a different frozen baseline'
+    assert prior_inputs['geometry']!=current_inputs['geometry'], 'Same geometry survey: resume with previous_run instead'
+    summary=read(reports/f'national-acquisition-{cards_from}.json')
+    assert str(summary['runID'])==str(cards_from) and summary['inputs']==prior_inputs, 'Card artifact differs from its committed acquisition summary'
+    prior_acquisition=read(source/'acquisition.json')
+    ids=[r['candidate']['id'] for r in prior_acquisition['rows']]
+    assert len(set(ids))==len(ids), 'Duplicate card source rows'
+    assert dict(Counter(r['status'] for r in prior_acquisition['rows']))==summary['counts'], 'Card artifact counts differ from the committed summary'
+    resume_after=prior_acquisition.get('resumeAfterUTC')
+    if resume_after: assert (at or datetime.now(timezone.utc))>=datetime.fromisoformat(resume_after), 'Source Retry-After/reset not reached'
+    cards={}
+    for row in prior_acquisition['rows']:
+        cid=row['candidate']['id']
+        if row['status']!='scorecard-acquired' or cid not in files: continue
+        record=read(source/'scorecards'/f'{cid}.json')
+        assert isinstance(record.get('response'),dict) and isinstance(record['response'].get('holes'),list), f'Saved card {cid} has no holes'
+        assert {k:v for k,v in record.items() if k!='response'}==row['source'], f'Saved card {cid} differs from its recorded provenance'
+        cards[cid]=record
+    return cards
 
 
 RESUMABLE_EVENTS=('workflow_dispatch','schedule')
@@ -104,7 +161,8 @@ def scheduled_inputs(reports=Path('reports'), run_conclusion=None, at=None):
 def resolve():
     if os.environ.get('GITHUB_EVENT_NAME')=='workflow_dispatch':
         values={'proceed':'true','geometry_run':os.environ['INPUT_GEOMETRY_RUN'],'geometry_sha':os.environ['INPUT_GEOMETRY_SHA'],
-                'previous_run':os.environ.get('INPUT_PREVIOUS_RUN',''),'request_budget':os.environ.get('INPUT_REQUEST_BUDGET') or '500'}
+                'previous_run':os.environ.get('INPUT_PREVIOUS_RUN',''),'request_budget':os.environ.get('INPUT_REQUEST_BUDGET') or '500',
+                'cards_from_run':os.environ.get('INPUT_CARDS_FROM_RUN','')}
         reason='Manual dispatch'
     else:
         def conclusion(run):
@@ -125,8 +183,10 @@ def border_status():
 def geometry_inputs():
     report=read(f'reports/national-geometry-{os.environ["GEOMETRY_RUN"]}.json')
     assert report['complete'] and report['sourceCommit']==os.environ['GEOMETRY_SHA']
-    assert report['candidateCount']==len(report['rows'])==16776
-    assert len({r['candidate']['id'] for r in report['rows']})==16776
+    from pipeline.national import expected_candidate_count
+    expected=expected_candidate_count(report)  # The survey's recorded inventory report, not a constant.
+    assert report['candidateCount']==len(report['rows'])==expected
+    assert len({r['candidate']['id'] for r in report['rows']})==expected
     ids={r['candidate']['id'] for r in report['rows'] if r['status']=='geometry-candidate'}
     files={p.stem:p for p in Path('work/national/candidates').glob('*.json')}
     assert set(files)==ids, 'Missing, extra or duplicate geometry inputs'
@@ -193,8 +253,12 @@ def acquire():
         assert set(previous)==set(files)
         resume_after=prior_acquisition.get('resumeAfterUTC')
         if resume_after: assert datetime.now(timezone.utc)>=datetime.fromisoformat(resume_after), 'Source Retry-After/reset not reached'
+    cards_from=os.environ.get('CARDS_FROM_RUN','').strip(); carried={}
+    if cards_from:
+        assert not os.environ.get('PREVIOUS_RUN','').strip()
+        carried=carried_cards(files,cards_from)
     reviewed=read('inputs/reviewed-scorecards.json'); client=Client(Budget())
-    rows=[]; cached=0; resumed=0; official={}
+    rows=[]; cached=0; resumed=0; carried_count=0; official={}
     # One sequential client for every state. Stable ordering favors existing IDs;
     # remaining IDs are round-robin by state for bounded-run geographic coverage.
     by_state={}
@@ -224,6 +288,11 @@ def acquire():
                 p=read(frozen/f'{cid}.json')
                 record=dict(p['scorecardSource'],response=p['scorecard'],reusedFromRun=BASELINE_RUN)
                 cached+=1
+            elif cid in carried:
+                # Only where a fresh request would otherwise be made: reviewed and frozen
+                # cards still take their existing paths above. Original dates are kept.
+                record=dict(carried[cid]); record.setdefault('carriedFromRun',cards_from)
+                carried_count+=1
             else: record=client.card(cid)
             if 'response' not in record: raise RuntimeError(record.get('error','Scorecard acquisition failed'))
             row.update(status='scorecard-acquired',source={k:v for k,v in record.items() if k!='response'})
@@ -232,10 +301,10 @@ def acquire():
             if isinstance(exc,urllib.error.HTTPError): client.budget.http_error(exc)
             row.update(status='incomplete',reason=f'{type(exc).__name__}: {exc}',source={k:v for k,v in record.items() if k!='response'})
         rows.append(row)
-        write(ROOT/'acquisition.json',acquisition_state(rows,False,client,cached,resumed,official))
+        write(ROOT/'acquisition.json',acquisition_state(rows,False,client,cached,resumed,official,carried_count))
         print(cid,row['status'],flush=True)
     assert {r['candidate']['id'] for r in rows}==set(files)
-    write(ROOT/'acquisition.json',acquisition_state(rows,all(r['status'] in ('scorecard-acquired','border-unresolved') for r in rows),client,cached,resumed,official))
+    write(ROOT/'acquisition.json',acquisition_state(rows,all(r['status'] in ('scorecard-acquired','border-unresolved') for r in rows),client,cached,resumed,official,carried_count))
 
 
 def need():
@@ -244,16 +313,18 @@ def need():
     previous={}
     if os.environ.get('PREVIOUS_RUN','').strip():
         previous={r['candidate']['id']:r for r in read(Path('work/previous')/'acquisition.json')['rows']}
+    cards_from=os.environ.get('CARDS_FROM_RUN','').strip()
+    carried=carried_cards(files,cards_from) if cards_from else {}
     reviewed=read('inputs/reviewed-scorecards.json')
     count=sum(1 for cid in files if border[cid]=='inside' and previous.get(cid,{}).get('status')!='scorecard-acquired'
-              and (cid in reviewed or not (frozen/f'{cid}.json').exists()))
+              and (cid in reviewed or not ((frozen/f'{cid}.json').exists() or cid in carried)))
     return min(count,int(os.environ.get('REQUEST_BUDGET') or '500'))
 
 
-def acquisition_state(rows,complete,client,cached,resumed,official):
+def acquisition_state(rows,complete,client,cached,resumed,official,carried=0):
     b=client.budget
     return {'rows':rows,'complete':complete,'requests':client.requests,'budget':b.budget,'reservation':{'key':b.key,'day':b.day,'granted':b.budget},
-            'stopped':client.stopped,'cachedCards':cached,'resumedCards':resumed,'resumeAfterUTC':client.resume_after,'officialSources':official}
+            'stopped':client.stopped,'cachedCards':cached,'resumedCards':resumed,'carriedCards':carried,'resumeAfterUTC':client.resume_after,'officialSources':official}
 
 
 def summarize():
@@ -263,7 +334,7 @@ def summarize():
     a=read(ROOT/'acquisition.json')
     summary={'runID':os.environ['GITHUB_RUN_ID'],'sourceCommit':os.environ['GITHUB_SHA'],'builtAt':now(),'inputs':read(ROOT/'inputs.json'),
         'complete':a['complete'],'counts':dict(Counter(r['status'] for r in a['rows'])),'requests':a['requests'],'reservation':a['reservation'],
-        'stopped':a['stopped'],'resumeAfterUTC':a.get('resumeAfterUTC'),'cachedCards':a['cachedCards'],'resumedCards':a['resumedCards'],
+        'stopped':a['stopped'],'resumeAfterUTC':a.get('resumeAfterUTC'),'cachedCards':a['cachedCards'],'resumedCards':a['resumedCards'],'carriedCards':a.get('carriedCards',0),
         'remainingIDs':sorted(r['candidate']['id'] for r in a['rows'] if r['status']=='incomplete'),
         'note':'Scorecard bodies remain in the national-acquisition artifact; resume with previous_run set to this run.'}
     name=f'reports/national-acquisition-{os.environ["GITHUB_RUN_ID"]}.json'
@@ -414,7 +485,7 @@ def finish():
     facilities=sorted({read(f'work/validation/{cid}.json')['layoutResolution']['boundaryID'] for cid in fresh_ready})
     result={'runID':os.environ['GITHUB_RUN_ID'],'sourceCommit':os.environ['GITHUB_SHA'],'builtAt':built,'complete':complete,
         'inputs':read(ROOT/'inputs.json'),'geometryCounts':report['counts'],'counts':dict(Counter(r['status'] for r in report['rows'])),
-        'requestCount':acquisition['requests'],'requestBudget':acquisition['budget'],'cachedCards':acquisition['cachedCards'],'resumedCards':acquisition['resumedCards'],'reservation':acquisition['reservation'],'resumeAfterUTC':acquisition.get('resumeAfterUTC'),
+        'requestCount':acquisition['requests'],'requestBudget':acquisition['budget'],'cachedCards':acquisition['cachedCards'],'resumedCards':acquisition['resumedCards'],'carriedCards':acquisition.get('carriedCards',0),'reservation':acquisition['reservation'],'resumeAfterUTC':acquisition.get('resumeAfterUTC'),
         'freshGeometryFullDataPassCount':len(fresh_ready),'freshPassDistinctBoundaryCount':len(facilities),'freshPassScorecardProvenance':provenance,
         'frozenPublishedControlsPassCount':len(floor),'borderUnresolvedCount':sum(r['status']=='border-unresolved' for r in report['rows']),
         'geometryCandidateDirectoryEntries':report['counts'].get('geometry-candidate',0),
@@ -439,7 +510,8 @@ def scorecard_provenance(ids,acquisition):
     for row in acquisition['rows']:
         if row['candidate']['id'] not in ids: continue
         source=row.get('source',{})
-        kind='reused-published-card' if source.get('reusedFromRun') else 'reviewed-official-card' if source.get('type')=='reviewed-official-scorecard' else 'fetched-or-resumed'
+        kind=('reused-published-card' if source.get('reusedFromRun') else 'reviewed-official-card' if source.get('type')=='reviewed-official-scorecard'
+              else 'carried-from-earlier-survey' if source.get('carriedFromRun') else 'fetched-or-resumed')
         g=groups.setdefault(kind,{'count':0,'earliestFetchedAt':None,'latestFetchedAt':None}); g['count']+=1
         date=source.get('fetchedAt')
         if date:

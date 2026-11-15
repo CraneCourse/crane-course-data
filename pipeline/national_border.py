@@ -114,10 +114,11 @@ def classify_all(rows, extracts_by_state, fetcher=fetch):
 def main():
     import os
     from pathlib import Path
-    from pipeline.national import EXTRACTS
+    from pipeline.national import EXTRACTS, expected_candidate_count
     cloud_only()
     report = read(f'reports/national-geometry-{os.environ["GEOMETRY_RUN"]}.json')
-    assert report['complete'] and len(report['rows']) == report['candidateCount'] == 16776
+    # The directory size comes from the survey's recorded (verified) inventory report.
+    assert report['complete'] and len(report['rows']) == report['candidateCount'] == expected_candidate_count(report)
     rows, evidence = classify_all(report['rows'], EXTRACTS)
     assert set(rows) == {r['candidate']['id'] for r in report['rows']}
     write(Path('work/national-validation/border.json'), {'builtAt': now(), 'searchMeters': SEARCH_METERS, 'margin': MARGIN,

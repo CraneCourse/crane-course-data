@@ -1,6 +1,15 @@
 name: Survey national mapped geometry
 on:
   workflow_dispatch:
+    inputs:
+      inventory_run:
+        description: Successful "Inventory national course directory" run ID on main (its artifact expires after 7 days)
+        required: true
+        type: string
+      inventory_sha:
+        description: Exact source commit (head SHA) of that inventory run
+        required: true
+        type: string
 permissions:
   contents: read
 concurrency:
@@ -22,13 +31,16 @@ jobs:
           python-version: '3.12'
       - run: pip install -r requirements.txt
       - run: python -m pytest -q
+      # Checks the run ID format, then branch, event, completion, workflow and exact SHA.
       - run: python -m pipeline.national verify
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          INVENTORY_RUN: ${{ inputs.inventory_run }}
+          INVENTORY_SHA: ${{ inputs.inventory_sha }}
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           github-token: ${{ github.token }}
-          run-id: '38981104633'
+          run-id: ${{ inputs.inventory_run }}
           name: national-directory-inventory
           path: .
       - id: selection
@@ -40,7 +52,7 @@ jobs:
           path: |
             work/catalog
             work/national
-            reports/catalog-inventory-38981104633.json
+            reports/catalog-inventory-${{ inputs.inventory_run }}.json
           retention-days: 7
   states:
     needs: prepare

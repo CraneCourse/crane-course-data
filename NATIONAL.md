@@ -82,8 +82,12 @@ sources, vendor outreach or local course processing is used.
 
 ## Cloud survey and validation workflow
 
-`national.yml` pins the successful 16,776-candidate inventory and verifies its
-workflow, branch, exact source commit and completion before reuse. A cloud canary
+`national.yml` takes the inventory run ID and its exact source commit as required
+dispatch inputs (`inventory_run`, `inventory_sha`) and verifies that run's workflow,
+branch, event, exact source commit and completion before reuse. Candidate and withheld
+counts are read from that inventory report and cross-checked against its candidates
+file; all 50 states and DC must reach a terminal page. (The October 2026 survey used
+inventory run `38981104633`, 16,776 candidates.) A cloud canary
 run (`38982553669`, source `231ad9b`) passed 61 tests, then stopped before state
 extraction because the official Maryland extent does **not** establish DC coverage.
 The corrected allowlist uses Geofabrik's dedicated
@@ -122,8 +126,8 @@ resume waits for the source reset rather than rotating runner IPs to bypass it.
 Successful saved cards can be reused with their original source dates and pinned
 provenance. Optional `previous_run` resumes the same geometry survey without a new
 code push. A later dispatch must name the latest recorded validation run for that
-geometry survey; omitting the resume cannot reset its request ledger. Newly screened
-geometry can use an earlier pinned scorecard with its source date preserved. Budget and acquisition failures stay incomplete, with every candidate
+geometry survey; omitting the resume cannot reset its request ledger. A new geometry
+survey's first validation may set `cards_from_run` instead (see Re-surveying). Budget and acquisition failures stay incomplete, with every candidate
 accounted for. A complete geometry survey may precede complete scorecard validation.
 
 The official [bulk schema](https://github.com/opengolfapi/data/blob/main/SCHEMA.md)
@@ -131,6 +135,36 @@ was inspected as a possible efficient source. Its April 2026 public release carr
 per-hole pars/handicaps and explicitly excludes per-tee yardages, which these quality
 gates require. Total course yardage cannot substitute for hole/tee yardage. No bulk
 adapter, invented yardages or weakened gate was introduced.
+
+### Re-surveying
+
+Every hand-off between these workflows is a GitHub artifact with limited retention,
+so dispatch them in order without long gaps:
+
+1. **Inventory national course directory** (`catalog.yml`, no inputs). Its
+   `national-directory-inventory` artifact expires after **7 days**; it also commits
+   `reports/catalog-inventory-<run>.json` to `main`.
+2. **Survey national mapped geometry** (`national.yml`) with `inventory_run` = that run
+   ID and `inventory_sha` = its head SHA, within those 7 days. Its
+   `national-geometry-evidence` artifact expires after **7 days**.
+3. **Validate national geometry candidates** (`national-validation.yml`) with
+   `geometry_run`/`geometry_sha` = the survey run, `previous_run` empty, and
+   `cards_from_run` = the newest recorded validation run of the earlier survey, within
+   the survey's 7 days and before that run's 30-day `national-acquisition` and
+   `national-frozen-carry` artifacts expire. The nightly schedule then resumes the new
+   run as usual; later manual dispatches use `previous_run` only.
+
+`cards_from_run` is accepted only for a geometry survey with no recorded validation run,
+only without `previous_run`, and only when it names the newest recorded validation run
+of a different survey on the same frozen baseline. Its artifact must match its committed
+acquisition summary. A saved card is reused only for a current geometry candidate with
+the same course ID whose card would otherwise be fetched; reviewed official cards and
+frozen controls still take their existing paths. Reused cards keep their recorded source
+and date and are labelled `carriedFromRun` (`carried-from-earlier-survey` in reports,
+`carriedCards` in counts). Cards for IDs that are no longer geometry candidates are
+ignored. Geometry is matched fresh, with the same gates. Every other candidate is
+requested through the ledger exactly as before. Leaving `cards_from_run` empty acquires
+every card again.
 
 ## Request ledger, border accounting and report labels (Claude, October 17, 2026)
 
@@ -169,8 +203,8 @@ Corrections from `docs/national-survey-independent-review.md` in the private app
   around every directory center's 3.5 km search area. If the envelope is not fully inside
   the assigned extract, the entry is `border-unresolved`; if the center is outside it, the
   entry is `outside-extract`. Neither is absent mapping. Border-unresolved geometry
-  candidates are not sent through acceptance and spend no requests. All 16,776 IDs keep an
-  entry.
+  candidates are not sent through acceptance and spend no requests. Every directory ID
+  in the survey (16,776 in October 2026) keeps an entry.
 - **Report labels.** Validation reports lead with full-gate passes on newly surveyed
   geometry. They count layouts and distinct course boundaries, and state each scorecard's
   provenance and dates (reused cards keep their original dates). Frozen controls, controls
