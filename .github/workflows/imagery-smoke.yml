@@ -27,21 +27,15 @@ jobs:
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
         with:
           github-token: ${{ github.token }}
-          run-id: '40640854379'
+          run-id: '43762521806'
           name: national-validation-evidence
           path: .
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
+      # The previous batch's artifacts have expired; its validation report is committed on main
+      # (c0a4ecf6, "Record national data validation 40640854379") and is verified by run ID and source commit.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
-          github-token: ${{ github.token }}
-          run-id: '40454410612'
-          name: national-validation-evidence
-          path: baseline
-      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093
-        with:
-          github-token: ${{ github.token }}
-          run-id: '40098946399'
-          name: parity-replay
-          path: recovery
+          ref: c0a4ecf62116549a96d5c9231b7390db24500236
+          path: baseline-src
       - name: Sequential USDA downloads and saved-file reopen checks
         run: python -m imagery_checks.check
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

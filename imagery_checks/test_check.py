@@ -61,21 +61,47 @@ def test_urls_fail_closed_and_rate_limit_stops_following_requests():
     assert c.requests==1
 
 
-def test_delta_excludes_old_passes_and_frozen_controls_and_rejects_drift():
-    from imagery_checks.check import new_passes, RUN, SHA, BASE_RUN, BASE_SHA
+def batch():
+    """Synthetic baseline/current reports with the exact pinned sizes and the reviewed set of lost passes."""
+    from imagery_checks.check import RUN, SHA, BASE_RUN, BASE_SHA, ALLOWED_LOST, CURRENT_PASSES, BASE_PASSES, EXPECTED_NEW
+    kept=[f'kept-{i}' for i in range(BASE_PASSES-len(ALLOWED_LOST))]
+    new=[f'new-{i}' for i in range(EXPECTED_NEW)]
+    assert len(kept)+len(new)==CURRENT_PASSES
     def report(ids, run, sha):
         return {'runID':run,'sourceCommit':sha,'freshPassedIDs':ids,'errors':[],
                 'rows':[{'candidate':{'id':i},'status':'full-data-gates-passed'} for i in ids]
                     +[{'candidate':{'id':'frozen-control'},'status':'data-withheld'}]}
-    current=report(list(range(3153)),RUN,SHA)
-    baseline=report(list(range(3084)),BASE_RUN,BASE_SHA)
-    assert new_passes(current,baseline)==set(range(3084,3153))
-    current['rows'].append(current['rows'][0])
-    with pytest.raises(AssertionError): new_passes(current,baseline)
-    current=report(list(range(1,3154)),RUN,SHA)
-    with pytest.raises(AssertionError): new_passes(current,baseline)
-    current=report(list(range(3153)),RUN,'wrong-sha')
-    with pytest.raises(AssertionError): new_passes(current,baseline)
+    return (report(kept+new,RUN,SHA), report(kept+sorted(ALLOWED_LOST),BASE_RUN,BASE_SHA), kept, new, ALLOWED_LOST)
+
+
+def test_delta_excludes_old_passes_and_frozen_controls_and_accounts_for_every_lost_pass():
+    from imagery_checks.check import new_passes
+    current,baseline,kept,new,lost=batch()
+    assert new_passes(current,baseline)==set(new)
+    # a duplicate row is rejected
+    dup=dict(current); dup['rows']=current['rows']+[current['rows'][0]]
+    with pytest.raises(AssertionError): new_passes(dup,baseline)
+    # an earlier pass that disappears without being on the reviewed list stops the batch
+    gone=dict(current); gone['freshPassedIDs']=current['freshPassedIDs'][1:]
+    gone['rows']=[r for r in current['rows'] if r['candidate']['id']!=kept[0]]
+    with pytest.raises(AssertionError): new_passes(gone,baseline)
+    # a reviewed lost pass that unexpectedly passes again also stops the batch (the set must match exactly)
+    back=sorted(lost)[0]
+    again=dict(current); again['freshPassedIDs']=current['freshPassedIDs'][:-1]+[back]
+    again['rows']=[r for r in current['rows'] if r['candidate']['id']!=new[-1]]+[{'candidate':{'id':back},'status':'full-data-gates-passed'}]
+    with pytest.raises(AssertionError): new_passes(again,baseline)
+    # count-preserving swaps: the totals (3235 / 3153 / 101) still hold, only the lost SET differs
+    first=sorted(lost)[0]
+    swapped_current=dict(current); ids=[kept[1]]*0+kept[1:]+[first]+new   # kept[0] vanishes, a reviewed lost pass returns
+    swapped_current['freshPassedIDs']=ids
+    swapped_current['rows']=[{'candidate':{'id':i},'status':'full-data-gates-passed'} for i in ids]
+    with pytest.raises(AssertionError,match='unexpectedly'): new_passes(swapped_current,baseline)
+    other=dict(baseline); ids=kept+sorted(lost)[1:]+['some-other-course']
+    other['freshPassedIDs']=ids; other['rows']=[{'candidate':{'id':i},'status':'full-data-gates-passed'} for i in ids]
+    with pytest.raises(AssertionError,match='unexpectedly'): new_passes(current,other)
+    # wrong source commit
+    wrong=dict(current); wrong['sourceCommit']='wrong-sha'
+    with pytest.raises(AssertionError): new_passes(wrong,baseline)
 
 
 def test_blank_image_is_a_specific_content_failure_not_a_transport_failure():
@@ -84,44 +110,15 @@ def test_blank_image_is_a_specific_content_failure_not_a_transport_failure():
         inspect_image(image_bytes(True),doc(),[-75.55,40.45,-75.45,40.55],{'width':2048,'height':2048})
 
 
-def test_failed_source_requires_successful_exact_recovery_and_keeps_ozaukee_out():
-    from copy import deepcopy
-    from imagery_checks.check import verify_recovered_passes, RECOVERED_RUN as BASE_RUN, RECOVERED_SHA as BASE_SHA, OZAUKEE
-    ids=list(range(2244))
-    report={'errors':[{'id':OZAUKEE,'reason':'AssertionError: Swift/Python full Hole mismatch'}], 'freshPassedIDs':ids}
-    oz={'id':OZAUKEE,'pass':False,'reason':'Swift/Python feature assignment differs; course withheld'}
-    replay={'run':BASE_RUN,'sourceCommit':BASE_SHA,'originalFreshPasses':2244,'originalFreshPassesPreserved':True,
-            'executionErrors':[],'requests':0,'published':False,'ozaukee':oz,
-            'results':[{'id':i,'pass':True} for i in ids]+[oz], 'replayed':2245}
-    verify_recovered_passes(report,replay,set(ids[1992:]))
-    for field,value in [('sourceCommit','wrong'),('executionErrors',[{'reason':'other error'}]),
-                        ('originalFreshPassesPreserved',False),('originalFreshPasses',2243)]:
-        changed=deepcopy(replay);changed[field]=value
-        with pytest.raises(AssertionError):verify_recovered_passes(report,changed,set(ids[1992:]))
-    changed=deepcopy(replay);changed['results'][2000]['pass']=False
-    with pytest.raises(AssertionError):verify_recovered_passes(report,changed,set(ids[1992:]))
-    with pytest.raises(AssertionError):verify_recovered_passes(report,replay,{OZAUKEE})
-    changed=deepcopy(report);changed['errors'].append({'id':'other','reason':'unreviewed mismatch'})
-    with pytest.raises(AssertionError):verify_recovered_passes(changed,replay,set(ids[1992:]))
-
-
 def test_new_successful_source_must_have_no_execution_errors():
-    from imagery_checks.check import new_passes, RUN, SHA, BASE_RUN, BASE_SHA
-    def report(ids, run, sha):
-        return {'runID':run,'sourceCommit':sha,'freshPassedIDs':ids,'errors':[],
-                'rows':[{'candidate':{'id':i},'status':'full-data-gates-passed'} for i in ids]}
-    current=report(list(range(3153)),RUN,SHA)
-    baseline=report(list(range(3084)),BASE_RUN,BASE_SHA)
+    from imagery_checks.check import new_passes
+    current,baseline,*_=batch()
     current['errors']=[{'id':'not-accepted','reason':'unreviewed execution error'}]
     with pytest.raises(AssertionError,match='execution errors'): new_passes(current,baseline)
 
 
 def test_successful_baseline_must_have_no_execution_errors():
-    from imagery_checks.check import new_passes, RUN, SHA, BASE_RUN, BASE_SHA
-    def report(ids, run, sha):
-        return {'runID':run,'sourceCommit':sha,'freshPassedIDs':ids,'errors':[],
-                'rows':[{'candidate':{'id':i},'status':'full-data-gates-passed'} for i in ids]}
-    current=report(list(range(3153)),RUN,SHA)
-    baseline=report(list(range(3084)),BASE_RUN,BASE_SHA)
+    from imagery_checks.check import new_passes
+    current,baseline,*_=batch()
     baseline['errors']=[{'id':'not-accepted','reason':'unreviewed execution error'}]
     with pytest.raises(AssertionError,match='Baseline source'): new_passes(current,baseline)

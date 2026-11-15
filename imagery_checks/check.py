@@ -15,15 +15,37 @@ from collections import Counter
 from PIL import Image, ImageDraw
 from jsonschema import Draft202012Validator, FormatChecker
 
-RUN = '40640854379'
-SHA = '7fce4149fa38d2cbb8491cc7f40889513a98c49b'
-BASE_RUN = '40454410612'
-BASE_SHA = '76bb827e365463f26ebfff68f0ee6c3cffdb7f98'
-EXPECTED_NEW = 69
-RECOVERED_RUN = '40063763126'
-RECOVERED_SHA = 'a4d71b4bc7d9eace954f2fcec0d0cdf721c75aa3'
-REPLAY_RUN = '40098946399'
-REPLAY_SHA = '94df77a5acb48bee806423be080ab392071d7663'
+RUN = '43762521806'  # resumed validation of survey 43748778195 (workflow_dispatch, macos-15 Swift gate)
+SHA = '8fab61eba33aac7db502083c6c4243214fbf6201'
+BASE_RUN = '40640854379'  # the last tested source (the October 28 batch)
+BASE_SHA = '7fce4149fa38d2cbb8491cc7f40889513a98c49b'
+CURRENT_PASSES = 3235
+BASE_PASSES = 3153
+EXPECTED_NEW = 101
+# Earlier passes that no longer pass because OpenStreetMap changed after the October survey (geometry no longer a complete
+# numbered layout, par/scorecard conflicts, tee polygon or green changes), reviewed November 15, 2026. Fourteen are
+# live courses whose published payloads stay as published. The set must match exactly: any other difference stops.
+ALLOWED_LOST = frozenset({
+    '066a90b7-713f-4cb6-9b9c-3fafb013aaee',
+    '11bb4c5c-3b35-48a7-97da-d2fb44fa3f1c',
+    '1601f851-6669-41fe-b382-580b0c943938',
+    '1db822ef-62f1-41c7-a609-184b35c1dd38',
+    '23de2c67-8d0a-4593-aa16-6ed9ca2cf967',
+    '2602d6c5-7c70-4815-b61d-069e9b9135b4',
+    '34f01500-1fc8-4810-87b2-2e591974f782',
+    '3fb5099e-80ed-4247-8d53-e27eaee90e79',
+    '3ff5d64e-a3aa-4e82-af56-6d413e3e965c',
+    '4367d9fa-5301-4aea-aef7-a00dd76cb3e6',
+    '4730a2c4-cf1b-4512-a93b-0f79645c074d',
+    '674d3e99-e467-49f6-abf5-707cb9cc6a68',
+    '6cd21e45-0acb-4b56-a917-bc23db51abec',
+    '95c3a977-105c-4ad0-ad83-3a87a0c60723',
+    '95c3d4b9-9433-4a91-8743-c6f7a8af4b80',
+    '9ddacca0-c6b3-4925-8fe9-e917c40cd8e0',
+    'c0655d6f-5a10-44da-aef1-8075eee57830',
+    'f2442130-d663-445b-8a1e-062edaf774f6',
+    'f79f586e-963c-4c07-a217-d7cae7aa5ddc',
+})
 OZAUKEE = 'bc3df947-b18d-4684-9316-a9f0181fff19'
 HOST = 'apps.geo.fpac.usda.gov'
 ENDPOINT = f'https://{HOST}/geo-imagery/rest/services/naip/conus_naip/ImageServer/exportImage'
@@ -49,7 +71,7 @@ def verify_run():
     repo = os.environ['GITHUB_REPOSITORY']
     assert repo == 'CraneCourse/crane-course-data'
     evidence=[]
-    for run, sha, event, outcome in ((RUN, SHA, 'schedule', 'success'), (BASE_RUN, BASE_SHA, 'schedule', 'success')):
+    for run, sha, event, outcome in ((RUN, SHA, 'workflow_dispatch', 'success'), (BASE_RUN, BASE_SHA, 'schedule', 'success')):
         req = urllib.request.Request(f'https://api.github.com/repos/{repo}/actions/runs/{run}', headers={
             'Authorization': 'Bearer '+os.environ['GITHUB_TOKEN'], 'Accept': 'application/vnd.github+json'})
         with urllib.request.urlopen(req, timeout=30) as r: d=json.load(r)
@@ -57,15 +79,7 @@ def verify_run():
         assert d['status']=='completed' and d['conclusion']==outcome and d['event']==event
         assert str(d['id'])==run and d['head_sha']==sha and d['path']=='.github/workflows/national-validation.yml'
         evidence.append({k:d[k] for k in ('id','head_sha','html_url','created_at','path')})
-    req = urllib.request.Request(f'https://api.github.com/repos/{repo}/actions/runs/{REPLAY_RUN}', headers={
-        'Authorization': 'Bearer '+os.environ['GITHUB_TOKEN'], 'Accept': 'application/vnd.github+json'})
-    with urllib.request.urlopen(req, timeout=30) as r: replay=json.load(r)
-    assert replay['head_repository']['full_name']==repo and replay['head_branch']=='codex/ozaukee-parity-fix'
-    assert str(replay['id'])==REPLAY_RUN and replay['head_sha']==REPLAY_SHA
-    assert replay['path']=='.github/workflows/tests.yml' and replay['event']=='workflow_dispatch'
-    assert replay['status']=='completed' and replay['conclusion']=='success'
-    write(OUT/'input-run.json', {'current':evidence[0], 'baseline':evidence[1],
-          'recoveryReplay':{k:replay[k] for k in ('id','head_sha','html_url','created_at','path')}})
+    write(OUT/'input-run.json', {'current':evidence[0], 'baseline':evidence[1]})
 
 def passed_ids(report, run, sha):
     assert report['sourceCommit']==sha and str(report['runID'])==run
@@ -78,43 +92,25 @@ def passed_ids(report, run, sha):
 def new_passes(current, baseline):
     ids=passed_ids(current,RUN,SHA)
     old=passed_ids(baseline,BASE_RUN,BASE_SHA)
-    assert len(ids)==3153 and len(old)==3084
+    assert len(ids)==CURRENT_PASSES and len(old)==BASE_PASSES
     assert current['errors']==[], 'Current source has unreviewed execution errors'
     assert baseline['errors']==[], 'Baseline source has unreviewed execution errors'
-    assert old<=ids, 'Earlier passes disappeared; inspect before running downloads'
+    lost=old-ids
+    assert lost==ALLOWED_LOST, f'Earlier passes changed unexpectedly: unexplained {sorted(lost-ALLOWED_LOST)}, missing {sorted(ALLOWED_LOST-lost)}'
     selected=ids-old
     assert len(selected)==EXPECTED_NEW
     return selected
 
 
-def verify_recovered_passes(report, replay, selected):
-    """The failed source is usable only with this exact independently verified replay.
-
-    No source error is ignored or admitted. The replay used unchanged full gates,
-    retained all prior passes, and withheld Ozaukee; this task tests only those passes.
-    """
-    assert report['errors']==[{'id':OZAUKEE,'reason':'AssertionError: Swift/Python full Hole mismatch'}]
-    assert replay['run']==RECOVERED_RUN and replay['sourceCommit']==RECOVERED_SHA
-    assert replay['originalFreshPasses']==2244 and replay['originalFreshPassesPreserved'] is True
-    assert replay['executionErrors']==[] and replay['requests']==0 and replay['published'] is False
-    assert replay['ozaukee']=={'id':OZAUKEE,'pass':False,
-                            'reason':'Swift/Python feature assignment differs; course withheld'}
-    rows=replay['results']; by_id={r['id']:r for r in rows}
-    assert len(by_id)==len(rows)==replay['replayed']
-    accepted=set(report['freshPassedIDs'])
-    assert OZAUKEE not in accepted and OZAUKEE not in selected
-    assert all(by_id[cid]['pass'] is True for cid in accepted)
-    assert selected<=accepted
-
-
 def inputs():
     report = read(f'reports/national-validation-{RUN}.json')
-    baseline = read(f'baseline/reports/national-validation-{BASE_RUN}.json')
+    baseline = read(f'baseline-src/reports/national-validation-{BASE_RUN}.json')
     ids = new_passes(report,baseline)
     assert OZAUKEE not in ids
     oz=next(r for r in report['rows'] if r['candidate']['id']==OZAUKEE)
     assert oz['status']=='data-withheld' and oz['reason']=='Swift/Python feature assignment differs; course withheld'
-    write(OUT/'selected-ids.json', {'currentRun':RUN,'baselineRun':BASE_RUN,'count':len(ids),'ids':sorted(ids)})
+    write(OUT/'selected-ids.json', {'currentRun':RUN,'baselineRun':BASE_RUN,'count':len(ids),'ids':sorted(ids),
+                                    'earlierPassesNoLongerPassing':sorted(ALLOWED_LOST)})
     root=Path('work/national-validation/candidate-export')
     index=read(root/'index.json'); entries={e['id']:e for e in index['courses']}
     assert len(entries)==len(index['courses']) and ids<=entries.keys()
